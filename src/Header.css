@@ -30,18 +30,18 @@ header h2 {
     margin: 0;
 }
 
-navbar {
+nav {
     background: var(--background);
     position: sticky;
     top: 0;
     height: 3.25em;
 }
 
-navbar ul {
+nav ul {
     background: inherit;
 }
 
-navbar a {
+nav a {
     padding: 1em 0.5em;
     display: inline-block;
 }

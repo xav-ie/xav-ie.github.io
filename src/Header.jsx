@@ -1,21 +1,18 @@
 import './Header.css';
 import ThemeToggle from './ThemeToggle';
+import Logo from "./Logo"
 
 const Header = ()=>{
     return (
 	<>
 	    <header>
-		<div className="logo">
-		    <object id="heart" type="image/svg+xml" data="/heart.svg">
-			Your browser does not support SVG
-		    </object>
-		</div>
+		<Logo/>
 		<div className="title">
 		    <h1>Xavier Ruiz</h1>
 		    <h2>Software Developer</h2>
 		</div>
 	    </header>
-	    <navbar className="row no-margin middle-xs shadow">
+	    <nav className="row no-margin middle-xs shadow">
 		<ul className="header-links no-margin">
 		    <li>
 			<a href="#about_me">
@@ -35,7 +32,7 @@ const Header = ()=>{
 
 		</ul>
 		
-	    </navbar>
+	    </nav>
 	    <div className="theme-toggle-wrapper">
 		<ThemeToggle/>
 	    </div>
