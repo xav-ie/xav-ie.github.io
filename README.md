@@ -8,7 +8,11 @@ Click the link below to find out more:
 
 ***
 
-TODO:
--create gifs of all my pens
--make a basic site layout
--add descriptions and write-ups for all the pens
+Built with [Vite](https://vite.dev), [React](https://react.dev), and TypeScript. Dev shell managed via [devenv](https://devenv.sh) on Nix.
+
+```sh
+pnpm install
+pnpm dev      # start the dev server
+pnpm build    # type-check and build for production
+pnpm lint     # run ESLint
+```

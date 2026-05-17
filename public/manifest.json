@@ -4,22 +4,13 @@
   "icons": [
     {
       "src": "heart.svg",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "heart.svg",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "heart.svg",
-      "type": "image/png",
-      "sizes": "512x512"
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#260f3e",
+  "background_color": "#260f3e"
 }
