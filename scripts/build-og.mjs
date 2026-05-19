@@ -1,36 +1,123 @@
 #!/usr/bin/env node
-import { execFileSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { writeFile, readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import satori from 'satori';
+import { Resvg } from '@resvg/resvg-js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const heart = resolve(__dirname, '../public/heart.svg');
+const heartPath = resolve(__dirname, '../public/heart.svg');
 const output = resolve(__dirname, '../public/og.png');
+const fontRegularPath = resolve(__dirname, 'fonts/Inter-Regular.ttf');
+const fontBoldPath = resolve(__dirname, 'fonts/Inter-Bold.ttf');
 
 const bg = '#150b1e';
 const fg = '#fff17b';
 
-const args = [
-  '-size', '1200x630', `xc:${bg}`,
-  '(', '-background', 'none', heart, '-resize', '360x360', ')',
-  '-gravity', 'East', '-geometry', '+100+0', '-composite',
-  '-gravity', 'NorthWest', '-fill', fg, '-font', 'DejaVu-Sans-Bold',
-  '-pointsize', '110', '-annotate', '+90+200', 'Xavier Ruiz',
-  '-gravity', 'NorthWest', '-fill', fg, '-font', 'DejaVu-Sans',
-  '-pointsize', '50', '-annotate', '+92+330', 'Full-Stack Developer',
-  '-gravity', 'NorthWest', '-fill', fg, '-font', 'DejaVu-Sans',
-  '-pointsize', '36', '-annotate', '+92+540', 'xav.ie',
-  output,
-];
+async function main() {
+  const [heartSvg, regular, bold] = await Promise.all([
+    readFile(heartPath, 'utf8'),
+    readFile(fontRegularPath),
+    readFile(fontBoldPath),
+  ]);
+  const heartDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(heartSvg)}`;
+
+  const tree = {
+    type: 'div',
+    props: {
+      style: {
+        width: '100%',
+        height: '100%',
+        background: bg,
+        color: fg,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '60px 90px',
+        fontFamily: 'Inter',
+      },
+      children: [
+        {
+          type: 'div',
+          props: {
+            style: {
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              justifyContent: 'space-between',
+            },
+            children: [
+              {
+                type: 'div',
+                props: {
+                  style: { display: 'flex', flexDirection: 'column' },
+                  children: [
+                    {
+                      type: 'div',
+                      props: {
+                        style: { fontSize: 110, fontWeight: 700, lineHeight: 1.05 },
+                        children: 'Xavier Ruiz',
+                      },
+                    },
+                    {
+                      type: 'div',
+                      props: {
+                        style: { fontSize: 50, fontWeight: 400, marginTop: 8 },
+                        children: 'Full-Stack Developer',
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                type: 'div',
+                props: {
+                  style: { fontSize: 36, fontWeight: 400 },
+                  children: 'xav.ie',
+                },
+              },
+            ],
+          },
+        },
+        {
+          type: 'img',
+          props: {
+            src: heartDataUri,
+            width: 360,
+            height: 360,
+          },
+        },
+      ],
+    },
+  };
+
+  const svg = await satori(tree, {
+    width: 1200,
+    height: 630,
+    fonts: [
+      { name: 'Inter', data: regular, weight: 400, style: 'normal' },
+      { name: 'Inter', data: bold, weight: 700, style: 'normal' },
+    ],
+  });
+
+  const png = new Resvg(svg, {
+    fitTo: { mode: 'width', value: 1200 },
+  })
+    .render()
+    .asPng();
+
+  await writeFile(output, png);
+  console.log(`generated og.png → public/og.png (${png.length} bytes)`);
+}
 
 try {
-  execFileSync('convert', args, { stdio: 'pipe' });
-  console.log('generated og.png → public/og.png');
+  await main();
 } catch (err) {
-  if (existsSync(output)) {
+  try {
+    await stat(output);
     console.warn(`og.png generation failed (${err.message}); keeping existing public/og.png`);
-  } else {
+  } catch {
     console.error(`og.png generation failed (${err.message}) and no fallback exists`);
     process.exit(1);
   }
