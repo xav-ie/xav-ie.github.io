@@ -25,7 +25,7 @@ const args = [
 ];
 
 try {
-  execFileSync('magick', args, { stdio: 'pipe' });
+  execFileSync('convert', args, { stdio: 'pipe' });
   console.log('generated og.png → public/og.png');
 } catch (err) {
   if (existsSync(output)) {
