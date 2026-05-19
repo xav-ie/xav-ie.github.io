@@ -4,6 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "fetch-avatar": "node scripts/fetch-avatar.mjs",
+    "build-og": "node scripts/build-og.mjs",
+    "predev": "node scripts/fetch-avatar.mjs && node scripts/build-og.mjs",
+    "prebuild": "node scripts/fetch-avatar.mjs && node scripts/build-og.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

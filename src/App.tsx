@@ -4,6 +4,8 @@ import Header from './Header';
 import Footer from './Footer';
 import AboutMe from './AboutMe';
 import Projects from './Projects';
+import OpenSource from './OpenSource';
+import Doodles from './Doodles';
 
 const App = () => {
   return (
@@ -12,6 +14,8 @@ const App = () => {
       <main>
         <AboutMe />
         <Projects />
+        <OpenSource />
+        <Doodles />
       </main>
       <Footer />
     </div>

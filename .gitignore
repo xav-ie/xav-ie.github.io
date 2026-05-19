@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Prebuild-generated assets
+public/og.png
+public/me.jpg
+
 # Nix / devenv
 .devenv
 .direnv

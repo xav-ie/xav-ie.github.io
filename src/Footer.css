@@ -1,7 +1,12 @@
 footer {
-  padding: 1em;
-  padding-top: 0.5em;
-  padding-bottom: 2em;
+  padding: 0.5em 0 2em;
+}
+
+.footerInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1em;
+  box-sizing: border-box;
 }
 
 footer ul {

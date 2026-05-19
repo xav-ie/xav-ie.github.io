@@ -1,30 +1,46 @@
 :root {
-  --foreground: #ddd05d;
-  --background: #260f3e;
+  --background: #150b1e;
+  --foreground: #fff17b;
   --alt: #51d136;
-  --shadow: #1c0c24;
-  --highlight: #3a1f54;
+
+  --shadow: color-mix(in srgb, var(--background), black 12%);
+  --highlight: color-mix(in srgb, var(--background), white 20%);
+  --surface-top: color-mix(in srgb, var(--background), white 6%);
+  --surface-bottom: color-mix(in srgb, var(--background), black 6%);
+  --rim: rgba(255, 255, 255, 0.08);
 }
 
 html {
   background-color: var(--background);
 }
 
+[id] {
+  scroll-margin-top: 4.5em;
+}
+
 body {
   margin: 0;
   font-size: 16px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--background);
   color: var(--foreground);
-  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
+  transition:
+    background 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+p {
+  max-width: 65ch;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 ul {
@@ -33,6 +49,12 @@ ul {
 
 a {
   color: var(--alt);
+  border-radius: 1em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
 }
 
 .no-padding {
@@ -45,12 +67,33 @@ a {
 }
 
 .shadow {
-  box-shadow: 4px 4px 6px 0px var(--shadow), -4px -4px 4px 0px var(--highlight);
-  transition: color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background 0.2s ease-in-out;
+  box-shadow:
+    10px 10px 24px -2px var(--shadow),
+    -2px -2px 4px -3px var(--highlight),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.14),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.04),
+    inset -4px -4px 5px rgba(0, 0, 0, 0.25),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset -1px 0 0 rgba(255, 255, 255, 0.1);
+  transition:
+    color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out,
+    background 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
 }
 
-.shadow:hover {
-  box-shadow: 4px 4px 6px 1px var(--shadow), -4px -4px 4px 2px var(--highlight);
+.shadow:not(.card, .profileImage, nav, footer):hover {
+  box-shadow:
+    14px 14px 30px -2px var(--shadow),
+    -3px -3px 6px -3px var(--highlight),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.18),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.06),
+    inset -4px -4px 5px rgba(0, 0, 0, 0.25),
+    inset 0 2px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    inset -1px 0 0 rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
 }
 
 .round {
@@ -59,13 +102,14 @@ a {
 
 h1 {
   font-size: 3em;
+  margin: 0;
 }
 h2 {
   font-size: 2em;
   font-weight: 300;
 }
 h3 {
-  font-size: 2em;
+  font-size: 1.5em;
   margin: 0.25em 0;
 }
 
@@ -75,4 +119,43 @@ h3 {
 
 .no-bullets {
   list-style-type: none;
+}
+
+/* Inset shadows render under <img> content; the pseudo paints them on top. */
+.image-frame {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  line-height: 0;
+  box-shadow:
+    10px 10px 24px -2px var(--shadow),
+    -2px -2px 4px -3px var(--highlight);
+}
+
+.image-frame:hover {
+  box-shadow:
+    14px 14px 30px -2px var(--shadow),
+    -3px -3px 6px -3px var(--highlight);
+}
+
+.image-frame > img,
+.image-frame > video {
+  display: block;
+  width: 100%;
+  border-radius: inherit;
+}
+
+.image-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    inset 1px 1px 2px rgba(255, 255, 255, 0.14),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.04),
+    inset -4px -4px 5px rgba(0, 0, 0, 0.25),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset -1px 0 0 rgba(255, 255, 255, 0.1);
 }
