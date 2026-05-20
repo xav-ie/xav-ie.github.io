@@ -3,9 +3,14 @@ import { writeFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
+// Displayed at 268x268 in src/components/AboutMe.astro; fetch at 2x
+// for retina sharpness.
+const DISPLAY_SIZE = 268;
+const FETCH_SIZE = DISPLAY_SIZE * 2;
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const target = resolve(__dirname, "../public/me.jpg");
-const source = "https://github.com/xav-ie.png?size=268";
+const source = `https://github.com/xav-ie.png?size=${FETCH_SIZE}`;
 
 try {
   const res = await fetch(source, { redirect: "follow" });
