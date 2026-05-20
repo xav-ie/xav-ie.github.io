@@ -8,8 +8,8 @@ export type ProjectData = {
   imageURL?: string;
 };
 
-type Props = { project: ProjectData };
-const { project } = Astro.props as Props;
+type Props = { project: ProjectData; eager?: boolean };
+const { project, eager = false } = Astro.props as Props;
 
 const isVideo = (url: string) => /\.(mp4|webm|mov)$/i.test(url);
 const isExternal = /^https?:\/\//.test(project.url);
@@ -39,7 +39,12 @@ const imageLinkLabel = isExternal
                 aria-hidden="true"
               ></video>
             ) : (
-              <img src={`/projects/${project.imageURL}`} alt="" />
+              <img
+                src={`/projects/${project.imageURL}`}
+                alt=""
+                loading={eager ? 'eager' : 'lazy'}
+                fetchpriority={eager ? undefined : 'low'}
+              />
             )}
           </div>
         ) : (
