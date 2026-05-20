@@ -40,7 +40,7 @@ const Project = ({ project }: { project: ProjectData }) => {
                 {useVideo ? (
                   <video
                     ref={videoRef}
-                    src={`/projects/${project.imageURL}`}
+                    src={`/projects/${project.imageURL}#t=0.1`}
                     muted
                     loop
                     playsInline

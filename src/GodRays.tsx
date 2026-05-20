@@ -109,6 +109,16 @@ const GodRays = () => {
           />
         </mask>
 
+        <filter
+          id="gr-blur"
+          x="-50%"
+          y="-50%"
+          width="200%"
+          height="200%"
+        >
+          <feGaussianBlur stdDeviation={c.blur} />
+        </filter>
+
         {c.dust && (
           <filter
             id="gr-dust"
@@ -135,7 +145,7 @@ const GodRays = () => {
           <g
             mask="url(#gr-ray-mask)"
             opacity={c.intensity}
-            style={{ filter: `blur(${c.blur}px)` }}
+            filter="url(#gr-blur)"
           >
             {rays.map((r, i) => {
               const length = c.rayLength * r.lengthScale;

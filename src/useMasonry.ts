@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import Masonry from 'masonry-layout';
-import imagesLoaded from 'imagesloaded';
 
 export const useMasonry = <T extends HTMLElement>() => {
   const ref = useRef<T>(null);
@@ -14,11 +13,22 @@ export const useMasonry = <T extends HTMLElement>() => {
       gutter: 16,
       transitionDuration: 0,
     });
-    const imgLoad = imagesLoaded(el);
-    const relayout = () => masonry.layout?.();
-    imgLoad.on('progress', relayout);
+
+    let raf = 0;
+    const relayout = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        masonry.layout?.();
+      });
+    };
+
+    const observer = new ResizeObserver(relayout);
+    for (const item of el.querySelectorAll('.project')) observer.observe(item);
+
     return () => {
-      imgLoad.off('progress', relayout);
+      cancelAnimationFrame(raf);
+      observer.disconnect();
       masonry.destroy?.();
     };
   }, []);
