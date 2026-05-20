@@ -3,31 +3,40 @@ import { writeFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
-// Displayed at 268x268 in src/components/AboutMe.astro; fetch at 2x
-// for retina sharpness.
-const DISPLAY_SIZE = 268;
-const FETCH_SIZE = DISPLAY_SIZE * 2;
+// Displayed at 300x300 max in src/components/AboutMe.astro. We fetch a 1x
+// and a 2x JPEG so the <img srcset> can serve the right one per DPR.
+// (GitHub caps this avatar at ~460 server-side, so the "2x" request
+// usually returns 460x460, not 600x600 — still a meaningful improvement
+// for retina screens.)
+const SIZES = [
+  { suffix: "", fetchSize: 300 },
+  { suffix: "-2x", fetchSize: 600 },
+];
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const target = resolve(__dirname, "../public/me.jpg");
-const source = `https://github.com/xav-ie.png?size=${FETCH_SIZE}`;
 
-try {
-  const res = await fetch(source, { redirect: "follow" });
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-  const buf = Buffer.from(await res.arrayBuffer());
-  await writeFile(target, buf);
-  console.log(`fetched avatar → public/me.jpg (${buf.length} bytes)`);
-} catch (err) {
+async function fetchOne({ suffix, fetchSize }) {
+  const target = resolve(__dirname, `../public/me${suffix}.jpg`);
+  const source = `https://github.com/xav-ie.png?size=${fetchSize}`;
   try {
-    await stat(target);
-    console.warn(
-      `avatar fetch failed (${err.message}); keeping existing public/me.jpg`,
-    );
-  } catch {
-    console.error(
-      `avatar fetch failed (${err.message}) and no fallback file exists`,
-    );
-    process.exit(1);
+    const res = await fetch(source, { redirect: "follow" });
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    const buf = Buffer.from(await res.arrayBuffer());
+    await writeFile(target, buf);
+    console.log(`fetched avatar → ${target} (${buf.length} bytes)`);
+  } catch (err) {
+    try {
+      await stat(target);
+      console.warn(
+        `avatar fetch failed for ${target} (${err.message}); keeping existing file`,
+      );
+    } catch {
+      console.error(
+        `avatar fetch failed for ${target} (${err.message}) and no fallback file exists`,
+      );
+      process.exit(1);
+    }
   }
 }
+
+await Promise.all(SIZES.map(fetchOne));

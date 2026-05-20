@@ -1,6 +1,11 @@
 ---
 import { DEFAULT_RAY_CONFIG } from '../godRaysConfig';
 
+// Static SVG god-rays: a square viewBox anchored to the upper-right of
+// the header via preserveAspectRatio="xMaxYMin slice". The browser scales
+// the SVG uniformly to fill the container without distortion, no JS or
+// ResizeObserver needed.
+
 const c = DEFAULT_RAY_CONFIG;
 
 const lcg = (seed: number) => {
@@ -21,23 +26,25 @@ const rays = Array.from({ length: c.rayCount }, (_, i) => {
   return { angle, strokeWidth, opacity, lengthScale };
 });
 
+// Fixed virtual coordinate space the rays live in. 1200 matches the
+// header's max-width so on desktop the rays render 1:1 with their tuned
+// values, and scale uniformly down on narrower viewports.
+const VB_W = 1200;
+const VB_H = 1200;
+const sunX = (c.sunX / 100) * VB_W; // 70% of 1200 = 840
+// Negative Y puts the sun ABOVE the viewBox, so only the rays radiating
+// downward through the header are visible; there's no convergence point
+// rendered inside the header itself.
+const sunY = -100;
 const maskExtent = c.rayLength * 1.4;
 const maskFalloff = Math.max(5, Math.min(95, c.maskFalloff));
-
-// Initial values; client script updates viewBox and sun translate on resize.
-const initialW = 1200;
-const initialH = 200;
-const initialSunX = (c.sunX / 100) * initialW;
 ---
 
 <svg
   class="god-rays"
-  viewBox={`0 0 ${initialW} ${initialH}`}
-  preserveAspectRatio="none"
+  viewBox={`0 0 ${VB_W} ${VB_H}`}
+  preserveAspectRatio="xMaxYMin slice"
   aria-hidden="true"
-  data-sun-x-pct={c.sunX}
-  data-sun-y={c.sunY}
-  data-rotation-seconds={c.rotationSeconds}
 >
   <defs>
     <radialGradient id="gr-mask-grad" cx="50%" cy="50%" r="50%">
@@ -66,95 +73,28 @@ const initialSunX = (c.sunX / 100) * initialW;
     <filter id="gr-blur" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation={c.blur} />
     </filter>
-
-    {c.dust && (
-      <filter
-        id="gr-dust"
-        x="0"
-        y="0"
-        width="100%"
-        height="100%"
-        filterUnits="userSpaceOnUse"
-      >
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency="0.85"
-          numOctaves="2"
-          stitchTiles="stitch"
-          seed={c.seed}
-        />
-        <feColorMatrix values="0 0 0 0 1   0 0 0 0 0.95   0 0 0 0 0.48   0 0 0 0.55 -0.2" />
-      </filter>
-    )}
   </defs>
 
-  <g class="gr-sun" transform={`translate(${initialSunX} ${c.sunY})`}>
-    <g class="gr-spin">
-      <g mask="url(#gr-ray-mask)" opacity={c.intensity} filter="url(#gr-blur)">
-        {rays.map((r) => {
-          const length = c.rayLength * r.lengthScale;
-          return (
-            <line
-              x1="0"
-              y1="0"
-              x2="0"
-              y2={-length}
-              stroke={c.color}
-              stroke-width={r.strokeWidth}
-              stroke-opacity={r.opacity}
-              transform={`rotate(${r.angle})`}
-            />
-          );
-        })}
-      </g>
+  <g transform={`translate(${sunX} ${sunY})`}>
+    <g mask="url(#gr-ray-mask)" opacity={c.intensity} filter="url(#gr-blur)">
+      {rays.map((r) => {
+        const length = c.rayLength * r.lengthScale;
+        return (
+          <line
+            x1="0"
+            y1="0"
+            x2="0"
+            y2={-length}
+            stroke={c.color}
+            stroke-width={r.strokeWidth}
+            stroke-opacity={r.opacity}
+            transform={`rotate(${r.angle})`}
+          />
+        );
+      })}
     </g>
   </g>
-
-  {c.dust && (
-    <rect
-      x="0"
-      y="0"
-      width={initialW}
-      height={initialH}
-      filter="url(#gr-dust)"
-      opacity="0.35"
-    />
-  )}
 </svg>
-
-<script>
-  const svgs = document.querySelectorAll<SVGSVGElement>('svg.god-rays');
-  svgs.forEach((svg) => {
-    const sunXPct = Number(svg.dataset.sunXPct ?? 0);
-    const sunY = Number(svg.dataset.sunY ?? 0);
-    const rotationSeconds = Number(svg.dataset.rotationSeconds ?? 0);
-    const sunGroup = svg.querySelector<SVGGElement>('.gr-sun');
-    const spinGroup = svg.querySelector<SVGGElement>('.gr-spin');
-
-    const update = () => {
-      const r = svg.getBoundingClientRect();
-      if (r.width <= 0 || r.height <= 0) return;
-      const w = Math.round(r.width);
-      const h = Math.round(r.height);
-      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      const sunPxX = (sunXPct / 100) * w;
-      sunGroup?.setAttribute('transform', `translate(${sunPxX} ${sunY})`);
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(svg);
-
-    if (rotationSeconds > 0 && spinGroup) {
-      const start = performance.now();
-      const tick = (now: number) => {
-        const angle = (((now - start) / 1000) / rotationSeconds) * 360;
-        spinGroup.setAttribute('transform', `rotate(${angle.toFixed(2)})`);
-        requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    }
-  });
-</script>
 
 <style>
   .god-rays {
