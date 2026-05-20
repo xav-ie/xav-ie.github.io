@@ -1,5 +1,5 @@
 :root {
-  --background: #150b1e;
+  --background: #12081a;
   --foreground: #fff17b;
   --alt: #51d136;
 
@@ -8,6 +8,21 @@
   --surface-top: color-mix(in srgb, var(--background), white 6%);
   --surface-bottom: color-mix(in srgb, var(--background), black 6%);
   --rim: rgba(255, 255, 255, 0.08);
+
+  --font-system-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-system-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  /* Body + h2 = IBM Plex Sans; mono = native stack; h1 + section titles = Sorts Mill Goudy. */
+  --font-body: "IBM Plex Sans", var(--font-system-sans);
+  --font-code: var(--font-system-mono);
+  --font-heading: "Sorts Mill Goudy", Georgia, "Times New Roman", serif;
+
+  --noise-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' seed='0' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.02 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --noise-size: 340px 340px;
 }
 
 html {
@@ -21,14 +36,15 @@ html {
 body {
   margin: 0;
   font-size: 16px;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: var(--font-body);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--background);
   color: var(--foreground);
+  background-color: var(--background);
+  background-image: var(--noise-image);
+  background-size: var(--noise-size);
+  background-repeat: repeat;
   transition:
     background 0.2s ease-in-out,
     color 0.2s ease-in-out;
@@ -39,8 +55,7 @@ p {
 }
 
 code {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: var(--font-code);
 }
 
 ul {
@@ -83,7 +98,7 @@ a {
     transform 0.2s ease-in-out;
 }
 
-.shadow:not(.card, .profileImage, nav, footer):hover {
+.shadow:not(.card, .profileImage, nav, footer, .image-frame):hover {
   box-shadow:
     14px 14px 30px -2px var(--shadow),
     -3px -3px 6px -3px var(--highlight),
@@ -101,12 +116,20 @@ a {
 }
 
 h1 {
+  font-family: var(--font-heading);
   font-size: 3em;
   margin: 0;
 }
 h2 {
   font-size: 2em;
+}
+/* Header tagline ("Full-Stack Developer") stays in body Plex, light weight. */
+.title h2 {
   font-weight: 300;
+}
+/* Section titles ("About Me", "Projects", "Open-Source Contributions", "Site Map") use the display font. */
+.section h2 {
+  font-family: var(--font-heading);
 }
 h3 {
   font-size: 1.5em;
@@ -136,6 +159,7 @@ h3 {
   box-shadow:
     14px 14px 30px -2px var(--shadow),
     -3px -3px 6px -3px var(--highlight);
+  transform: translateY(-1px);
 }
 
 .image-frame > img,
@@ -145,12 +169,25 @@ h3 {
   border-radius: inherit;
 }
 
+.image-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: var(--noise-image);
+  background-size: var(--noise-size);
+  background-repeat: repeat;
+  z-index: 1;
+}
+
 .image-frame::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   border-radius: inherit;
+  z-index: 2;
   box-shadow:
     inset 1px 1px 2px rgba(255, 255, 255, 0.14),
     inset 6px 6px 14px rgba(255, 255, 255, 0.04),

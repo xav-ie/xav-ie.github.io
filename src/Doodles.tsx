@@ -1,4 +1,5 @@
 import Project, { type ProjectData } from './Project';
+import { useMasonry } from './useMasonry';
 
 const artAndDoodles: ProjectData[] = [
   {
@@ -44,10 +45,12 @@ const artAndDoodles: ProjectData[] = [
 ];
 
 const Doodles = () => {
+  const gridRef = useMasonry<HTMLUListElement>();
+
   return (
     <div id="doodles" className="col-xs-12 section">
       <h2>Art and Doodles</h2>
-      <ul className="row no-bullets">
+      <ul ref={gridRef} className="row no-bullets masonry-grid">
         {artAndDoodles.map((p) => <Project key={p.name} project={p} />)}
       </ul>
     </div>

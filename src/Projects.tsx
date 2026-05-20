@@ -1,4 +1,5 @@
 import Project, { type ProjectData } from './Project';
+import { useMasonry } from './useMasonry';
 
 const currentProjects: ProjectData[] = [
   {
@@ -7,6 +8,7 @@ const currentProjects: ProjectData[] = [
     desc: 'An email client that runs inside Neovim. Threaded message lists, structured per-field search, in-buffer composing with auto-saved drafts, background sync, and an extensible hooks system. Picker integrations (telescope, fzf, native) and a mock mode for trying it without a real account. Heavily modified fork of pimalaya/himalaya-vim with 90%+ test coverage in CI.',
     technologiesUsed: ['Lua', 'Neovim', 'Nix'],
     url: 'https://github.com/xav-ie/himalaya-nvim',
+    imageURL: 'himalaya-nvim.svg',
   },
   {
     name: 'virtual-headset',
@@ -14,6 +16,7 @@ const currentProjects: ProjectData[] = [
     desc: 'A virtual HID headset device driver in Rust. Forwards the mic through PipeWire on a keyboard mute toggle and exposes a D-Bus control surface plus a Home Manager module for Waybar integration.',
     technologiesUsed: ['Rust', 'PipeWire', 'D-Bus', 'Nix'],
     url: 'https://github.com/xav-ie/virtual-headset',
+    imageURL: 'virtual-headset.svg',
   },
   {
     name: 'dots',
@@ -21,6 +24,7 @@ const currentProjects: ProjectData[] = [
     desc: 'My NixOS configuration and self-hosted homelab. Runs Traefik, Cloudflare Tunnel, and a half-dozen services via quadlet-nix, plus dozens of small per-machine packages I keep tucked away in here.',
     technologiesUsed: ['Nix', 'NixOS', 'quadlet-nix', 'Traefik'],
     url: 'https://github.com/xav-ie/dots',
+    imageURL: 'dots.svg',
   },
   {
     name: 'nuenv',
@@ -28,6 +32,7 @@ const currentProjects: ProjectData[] = [
     desc: 'A Nushell environment for Nix derivations. I forked the original after it went unmaintained to keep it usable and add features like environment binding.',
     technologiesUsed: ['Nushell', 'Nix', 'Bash'],
     url: 'https://github.com/xav-ie/nuenv',
+    imageURL: 'nuenv.svg',
   },
   {
     name: 'browser-session-mcp',
@@ -35,6 +40,7 @@ const currentProjects: ProjectData[] = [
     desc: 'An MCP server that gives each caller an isolated browser session against a shared persistent Chrome, and captures every console + network event to disk losslessly regardless of MCP transport churn. The session is a tool argument, not a transport concept — so sessions survive reconnects.',
     technologiesUsed: ['Rust', 'Puppeteer', 'MCP'],
     url: 'https://github.com/xav-ie/dots/tree/main/packages/browser-session-mcp',
+    imageURL: 'browser-session-mcp.svg',
   },
   {
     name: 'xnixvim',
@@ -42,6 +48,7 @@ const currentProjects: ProjectData[] = [
     desc: 'My Neovim config managed entirely through Nix via nixvim. Reproducible across machines, modular, and shaped around how I actually work in TypeScript, Rust, and Lua.',
     technologiesUsed: ['Nix', 'nixvim', 'Lua', 'Neovim'],
     url: 'https://github.com/xav-ie/xnixvim',
+    imageURL: 'xnixvim.svg',
   },
   {
     name: 'SpooKeyBoard',
@@ -49,14 +56,17 @@ const currentProjects: ProjectData[] = [
     desc: 'A small Python tool that reads ANSI escape sequences over SSH and replays them as keystrokes on the receiving machine via Linux uinput — essentially a remote keyboard pipeline.',
     technologiesUsed: ['Python', 'uinput', 'ANSI escapes'],
     url: 'https://github.com/xav-ie/SpooKeyBoard',
+    imageURL: 'SpooKeyBoard.svg',
   },
 ];
 
 const Projects = () => {
+  const gridRef = useMasonry<HTMLUListElement>();
+
   return (
     <div id="projects" className="col-xs-12 section">
       <h2>Projects</h2>
-      <ul className="row no-bullets">
+      <ul ref={gridRef} className="row no-bullets masonry-grid">
         {currentProjects.map((p) => <Project key={p.name} project={p} />)}
       </ul>
     </div>

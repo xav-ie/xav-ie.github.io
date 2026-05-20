@@ -1,21 +1,24 @@
 import './Header.css';
+import GodRays from './GodRays';
+import HeartGoldSvg from './HeartGoldSvg';
 
 const Header = () => {
   return (
     <>
-      <header>
-        <div className="col-xs-12 headerInner">
-          <div className="logo">
-            <object id="heart" type="image/svg+xml" data="/heart.svg">
-              Your browser does not support SVG
-            </object>
+      <div className="header-bleed">
+        <GodRays />
+        <header>
+          <div className="col-xs-12 headerInner">
+            <div className="logo">
+              <HeartGoldSvg size="7em" title="Heart" />
+            </div>
+            <div className="title">
+              <h1>Xavier Ruiz</h1>
+              <h2>Software Developer</h2>
+            </div>
           </div>
-          <div className="title">
-            <h1>Xavier Ruiz</h1>
-            <h2>Full-Stack Developer</h2>
-          </div>
-        </div>
-      </header>
+        </header>
+      </div>
       <nav className="row no-margin middle-xs shadow">
         <ul className="header-links col-xs-12">
           <li>

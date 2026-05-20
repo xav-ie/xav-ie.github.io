@@ -1,14 +1,38 @@
+.section > ul.row.masonry-grid {
+  display: block;
+  margin: 0;
+}
+
+.masonry-grid > .project {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 48em) {
+  .masonry-grid > .project {
+    width: calc(50% - 8px);
+  }
+}
+
 .card {
   padding: 1em;
-  background: linear-gradient(
-    155deg,
-    var(--surface-top) 0%,
-    var(--surface-bottom) 100%
-  );
+  background-image:
+    var(--noise-image),
+    linear-gradient(
+      155deg,
+      var(--surface-top) 0%,
+      var(--surface-bottom) 100%
+    );
+  background-size: var(--noise-size), auto;
+  background-repeat: repeat, no-repeat;
 }
 
 .cardContent {
   padding: 0 1em;
+}
+
+.project h3 {
+  font-family: var(--font-code);
 }
 
 .card::after {
@@ -40,6 +64,8 @@
     width: 50%;
     margin-left: 1em;
     margin-bottom: 0.5em;
+    position: relative;
+    z-index: 1;
   }
 }
 
@@ -87,8 +113,7 @@
 }
 
 .projectPlaceholderText {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: var(--font-code);
   color: var(--foreground);
   font-size: 1.1em;
   font-weight: 600;

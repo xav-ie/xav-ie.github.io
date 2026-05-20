@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300">
+  <defs>
+    <radialGradient id="bg" cx="30%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#1f1429"/>
+      <stop offset="100%" stop-color="#150b1e"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#bg)"/>
+
+  <g transform="translate(220 40)" opacity="0.45">
+    <rect width="280" height="155" rx="12" fill="#150b1e" stroke="#fff17b" stroke-width="8"/>
+    <line x1="0" y1="48" x2="280" y2="48" stroke="#fff17b" stroke-width="8"/>
+  </g>
+
+  <g transform="translate(170 75)" opacity="0.75">
+    <rect width="280" height="155" rx="12" fill="#150b1e" stroke="#fff17b" stroke-width="8"/>
+    <line x1="0" y1="48" x2="280" y2="48" stroke="#fff17b" stroke-width="8"/>
+  </g>
+
+  <g transform="translate(120 110)">
+    <rect width="280" height="155" rx="12" fill="#150b1e" stroke="#fff17b" stroke-width="8"/>
+    <line x1="0" y1="48" x2="280" y2="48" stroke="#fff17b" stroke-width="8"/>
+    <circle cx="28" cy="24" r="8" fill="#fff17b"/>
+    <circle cx="54" cy="24" r="8" fill="#fff17b"/>
+    <circle cx="80" cy="24" r="8" fill="#fff17b"/>
+    <circle cx="252" cy="24" r="8" fill="#51d136"/>
+  </g>
+</svg>

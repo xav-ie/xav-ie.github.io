@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300">
+  <defs>
+    <radialGradient id="bg" cx="30%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#1f1429"/>
+      <stop offset="100%" stop-color="#150b1e"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="300" fill="url(#bg)"/>
+
+  <text font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace"
+        font-size="52" font-weight="700" fill="#51d136" xml:space="preserve">
+    <tspan x="40" y="69">     __  ,</tspan>
+    <tspan x="40" y="125"> .--()°'.'</tspan>
+    <tspan x="40" y="181">'|, . ,'</tspan>
+    <tspan x="40" y="237"> !_-(_\</tspan>
+  </text>
+
+  <svg x="345" y="45" width="210" height="210" viewBox="0 0 501.56252 501.56251">
+    <g fill="#fff17b">
+      <path id="p0" d="M286.036 157.946L58.955 157.934L80.915 119.061L152.19 119.259L116.764 57.525L127.837 38.362L150.573 38.336L196.853 119.086L263.545 119.221Z"/>
+      <use href="#p0" transform="rotate(60 250.724 250.695)"/>
+      <use href="#p0" transform="rotate(120 250.724 250.695)"/>
+      <use href="#p0" transform="rotate(180 250.724 250.695)"/>
+      <use href="#p0" transform="rotate(240 250.724 250.695)"/>
+      <use href="#p0" transform="rotate(300 250.724 250.695)"/>
+    </g>
+  </svg>
+</svg>
