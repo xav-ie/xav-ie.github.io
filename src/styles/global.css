@@ -193,9 +193,6 @@ h1 {
 h2 {
   font-size: 2em;
 }
-.title h2 {
-  font-weight: 300;
-}
 .section h2 {
   font-family: var(--font-heading);
 }
@@ -382,7 +379,6 @@ main {
   padding: 0.75em;
   margin-left: -0.75em;
   display: inline-block;
-  font-weight: 500;
   word-break: break-word;
   border-radius: 2em;
 }
