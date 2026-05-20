@@ -1,5 +1,4 @@
-import './OpenSource.css';
-
+---
 type Contribution = {
   repo: string;
   url: string;
@@ -12,12 +11,6 @@ const contributions: Contribution[] = [
     url: 'https://github.com/atuinsh/atuin/pulls?q=author%3Axav-ie',
     summary: 'Brought Nushell support to `atuin hex` and OSC 7 cwd mirroring',
   },
-  // PRs to royshil/obs-backgroundremoval are still pending review; uncomment once merged.
-  // {
-  //   repo: 'royshil/obs-backgroundremoval',
-  //   url: 'https://github.com/royshil/obs-backgroundremoval/pulls?q=author%3Axav-ie',
-  //   summary: 'Cut preprocessing latency by 73%',
-  // },
   {
     repo: 'agentstation/vhs',
     url: 'https://github.com/agentstation/vhs/pulls?q=author%3Axav-ie',
@@ -54,28 +47,59 @@ const contributions: Contribution[] = [
     summary: 'Fixed dependency duplication bugs',
   },
 ];
+---
 
-const OpenSource = () => {
-  return (
-    <div id="oss" className="col-xs-12 section">
-      <h2>Open-Source Contributions</h2>
-      <ul className="row no-bullets oss-list">
-        {contributions.map((c) => (
-          <li key={c.repo} className="col-xs-12 col-md-6 oss-item">
-            <a
-              className="oss-card shadow round"
-              href={c.url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="oss-repo">{c.repo}</span>
-              <span className="oss-summary">{c.summary}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+<div id="oss" class="col-xs-12 section">
+  <h2>Open-Source Contributions</h2>
+  <ul class="row no-bullets oss-list">
+    {contributions.map((c) => (
+      <li class="col-xs-12 col-md-6 oss-item">
+        <a class="oss-card shadow round" href={c.url} target="_blank" rel="noreferrer">
+          <span class="oss-repo">{c.repo}</span>
+          <span class="oss-summary">{c.summary}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
 
-export default OpenSource;
+<style is:global>
+  .section > ul.row.oss-list {
+    margin-top: 1em;
+    row-gap: 1em;
+    column-gap: 0.5em;
+  }
+
+  .oss-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    padding: 1em 2.25em;
+    border-radius: 4em;
+    background-image:
+      var(--noise-image),
+      linear-gradient(155deg, var(--surface-top) 0%, var(--surface-bottom) 100%);
+    background-size: var(--noise-size), auto;
+    background-repeat: repeat, no-repeat;
+    text-decoration: none;
+    color: var(--foreground);
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .oss-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .oss-repo {
+    font-family: var(--font-code);
+    color: var(--alt);
+    font-weight: 600;
+    word-break: break-all;
+  }
+
+  .oss-summary {
+    font-size: 0.95em;
+    opacity: 0.9;
+  }
+</style>

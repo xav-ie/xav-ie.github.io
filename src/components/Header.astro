@@ -1,0 +1,131 @@
+---
+import GodRays from './GodRays.astro';
+import HeartGoldSvg from './HeartGoldSvg.astro';
+---
+
+<div class="header-bleed">
+  <GodRays />
+  <header>
+    <div class="col-xs-12 headerInner">
+      <div class="logo">
+        <HeartGoldSvg size="7em" title="Heart" />
+      </div>
+      <div class="title">
+        <h1>Xavier Ruiz</h1>
+        <h2>Software Developer</h2>
+      </div>
+    </div>
+  </header>
+</div>
+<nav class="row no-margin middle-xs shadow">
+  <ul class="header-links col-xs-12">
+    <li><a href="#about_me">#about_me</a></li>
+    <li><a href="#projects">#projects</a></li>
+    <li><a href="#oss">#oss</a></li>
+    <li><a href="#doodles">#doodles</a></li>
+  </ul>
+</nav>
+
+<style is:global>
+  .header-links li {
+    display: inline;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo object {
+    height: 6em;
+  }
+
+  .header-bleed {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  header {
+    padding: 1em;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .headerInner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 1em;
+    column-gap: 2em;
+  }
+
+  header .title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  header h1 {
+    margin: 0;
+  }
+
+  header h2 {
+    margin: 0;
+  }
+
+  nav {
+    background-color: var(--surface-bottom);
+    background-image:
+      var(--noise-image),
+      linear-gradient(
+        180deg,
+        var(--surface-top) 0%,
+        var(--surface-bottom) 100%
+      );
+    background-size: var(--noise-size), auto;
+    background-repeat: repeat, no-repeat;
+    position: sticky;
+    top: 0;
+    min-height: 3.25em;
+    z-index: 10;
+    border-bottom: 1px solid var(--shadow);
+    display: flex;
+    align-items: center;
+    padding: 0 1em;
+  }
+
+  nav ul.header-links {
+    background: transparent;
+    margin: 0 auto;
+    padding-top: 0;
+    padding-bottom: 0;
+    max-width: 1200px;
+    width: 100%;
+    box-sizing: border-box;
+    list-style: none;
+  }
+
+  nav a {
+    padding: 0.65em 0.5em;
+    display: inline-block;
+  }
+
+  @media (max-width: 500px) {
+    .headerInner {
+      justify-content: center;
+    }
+    .headerInner .title {
+      text-align: center;
+    }
+  }
+
+  .theme-toggle-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 1em;
+    flex-direction: row;
+    margin-top: 1em;
+  }
+</style>

@@ -1,5 +1,5 @@
-import Project, { type ProjectData } from './Project';
-import { useMasonry } from './useMasonry';
+---
+import Project, { type ProjectData } from './Project.astro';
 
 const artAndDoodles: ProjectData[] = [
   {
@@ -43,18 +43,11 @@ const artAndDoodles: ProjectData[] = [
     imageURL: 'opt.mp4',
   },
 ];
+---
 
-const Doodles = () => {
-  const gridRef = useMasonry<HTMLUListElement>();
-
-  return (
-    <div id="doodles" className="col-xs-12 section">
-      <h2>Art and Doodles</h2>
-      <ul ref={gridRef} className="row no-bullets masonry-grid">
-        {artAndDoodles.map((p) => <Project key={p.name} project={p} />)}
-      </ul>
-    </div>
-  );
-};
-
-export default Doodles;
+<div id="doodles" class="col-xs-12 section">
+  <h2>Art and Doodles</h2>
+  <ul class="row no-bullets masonry-grid">
+    {artAndDoodles.map((p) => <Project project={p} />)}
+  </ul>
+</div>

@@ -1,0 +1,431 @@
+@import "flexboxgrid/css/flexboxgrid.min.css";
+
+/* Metric-matched fallbacks for Sorts Mill Goudy, tuned per system font.
+   The headings stack tries them in order: Palatino (macOS) first, then
+   Noto Serif (Android / many Linux distros). Each carries its own
+   descriptor overrides so glyph widths and baselines approximate Sorts
+   Mill Goudy until the web font swaps in. Tuned via /font-tuner. */
+@font-face {
+  font-family: "Sorts Mill Goudy Fallback Palatino";
+  src: local("Palatino");
+  size-adjust: 99.5%;
+  ascent-override: 73.5%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Sorts Mill Goudy Fallback Noto";
+  src: local("Noto Serif");
+  size-adjust: 91%;
+  ascent-override: 76.5%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Sorts Mill Goudy Fallback Georgia";
+  src: local("Georgia");
+  size-adjust: 98.5%;
+  ascent-override: 74%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
+/* Metric-matched fallbacks for IBM Plex Sans, tuned per system font.
+   Helvetica Neue (macOS/iOS) first because it was the closest match, then
+   Roboto (Android default sans / ChromeOS), then Noto Sans (most modern
+   Linux distros). Tuned via /font-tuner. */
+@font-face {
+  font-family: "IBM Plex Sans Fallback Helvetica Neue";
+  src: local("Helvetica Neue");
+  size-adjust: 101%;
+  ascent-override: 95%;
+  descent-override: 23%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Fallback Roboto";
+  src: local("Roboto");
+  size-adjust: 105.5%;
+  ascent-override: 103.5%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "IBM Plex Sans Fallback Noto Sans";
+  src: local("Noto Sans");
+  size-adjust: 99.5%;
+  ascent-override: 100%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+:root {
+  --background: #12081a;
+  --foreground: #fff17b;
+  --alt: #51d136;
+
+  --shadow: color-mix(in srgb, var(--background), black 12%);
+  --highlight: color-mix(in srgb, var(--background), white 20%);
+  --surface-top: color-mix(in srgb, var(--background), white 6%);
+  --surface-bottom: color-mix(in srgb, var(--background), black 6%);
+  --rim: rgba(255, 255, 255, 0.08);
+
+  --font-system-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  --font-system-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  --font-body:
+    "IBM Plex Sans", "IBM Plex Sans Fallback Helvetica Neue",
+    "IBM Plex Sans Fallback Roboto", "IBM Plex Sans Fallback Noto Sans",
+    var(--font-system-sans);
+  --font-code: var(--font-system-mono);
+  --font-heading:
+    "Sorts Mill Goudy", "Sorts Mill Goudy Fallback Palatino",
+    "Sorts Mill Goudy Fallback Noto", "Sorts Mill Goudy Fallback Georgia",
+    "Times New Roman", serif;
+
+  --noise-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' seed='0' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.02 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --noise-size: 340px 340px;
+}
+
+html {
+  background-color: var(--background);
+}
+
+[id] {
+  scroll-margin-top: 4.5em;
+}
+
+body {
+  margin: 0;
+  font-size: 16px;
+  font-family: var(--font-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--foreground);
+  background-color: var(--background);
+  background-image: var(--noise-image);
+  background-size: var(--noise-size);
+  background-repeat: repeat;
+  transition:
+    background 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+p {
+  max-width: 65ch;
+}
+
+code {
+  font-family: var(--font-code);
+}
+
+ul {
+  padding: 0;
+}
+
+a {
+  color: var(--alt);
+  border-radius: 1em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+.no-margin {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin: 0 !important;
+}
+
+.shadow {
+  box-shadow:
+    10px 10px 24px -2px var(--shadow),
+    -2px -2px 4px -3px var(--highlight),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.14),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.04),
+    inset -4px -4px 5px rgba(0, 0, 0, 0.25),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset -1px 0 0 rgba(255, 255, 255, 0.1);
+  transition:
+    color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out,
+    background 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
+}
+
+.shadow:not(.card, .profileImage, nav, footer, .image-frame):hover {
+  box-shadow:
+    14px 14px 30px -2px var(--shadow),
+    -3px -3px 6px -3px var(--highlight),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.18),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.06),
+    inset -4px -4px 5px rgba(0, 0, 0, 0.25),
+    inset 0 2px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+    inset -1px 0 0 rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.round {
+  border-radius: 2em;
+}
+
+h1 {
+  font-family: var(--font-heading);
+  font-size: 3em;
+  margin: 0;
+}
+h2 {
+  font-size: 2em;
+}
+.title h2 {
+  font-weight: 300;
+}
+.section h2 {
+  font-family: var(--font-heading);
+}
+h3 {
+  font-size: 1.5em;
+  margin: 0.25em 0;
+}
+
+.section {
+  margin-top: 3em;
+}
+
+.no-bullets {
+  list-style-type: none;
+}
+
+.image-frame {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  line-height: 0;
+  box-shadow:
+    10px 10px 24px -2px var(--shadow),
+    -2px -2px 4px -3px var(--highlight);
+}
+
+.image-frame:hover {
+  box-shadow:
+    14px 14px 30px -2px var(--shadow),
+    -3px -3px 6px -3px var(--highlight);
+  transform: translateY(-1px);
+}
+
+.image-frame > img,
+.image-frame > video {
+  display: block;
+  width: 100%;
+  border-radius: inherit;
+}
+
+.image-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: var(--noise-image);
+  background-size: var(--noise-size);
+  background-repeat: repeat;
+  z-index: 1;
+}
+
+.image-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 2;
+  box-shadow:
+    inset 1px 1px 2px rgba(255, 255, 255, 0.14),
+    inset 6px 6px 14px rgba(255, 255, 255, 0.04),
+    inset -4px -4px 5px rgba(0, 0, 0, 0.25),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset -1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+main {
+  padding: 1em;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.sectionIntro {
+  opacity: 0.8;
+  max-width: 60ch;
+  line-height: 1.5;
+  margin: 0.25em 0 1em;
+}
+
+.section > ul.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 0;
+}
+
+@media (min-width: 48em) {
+  .section > ul.row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.section > ul.row > li {
+  padding: 0;
+  max-width: none;
+}
+
+/* CSS columns layout for Projects + Doodles (no JS). Items flow
+   column-major: top → bottom of column 1, then column 2. */
+.section > ul.row.masonry-grid {
+  display: block;
+  margin: 0;
+  column-count: 1;
+  column-gap: 1rem;
+}
+
+@media (min-width: 48em) {
+  .section > ul.row.masonry-grid {
+    column-count: 2;
+  }
+}
+
+.masonry-grid > .project {
+  width: 100%;
+  margin: 0 0 1rem;
+  break-inside: avoid;
+  display: block;
+}
+
+.card {
+  padding: 1em;
+  background-image:
+    var(--noise-image),
+    linear-gradient(155deg, var(--surface-top) 0%, var(--surface-bottom) 100%);
+  background-size: var(--noise-size), auto;
+  background-repeat: repeat, no-repeat;
+}
+
+.cardContent {
+  padding: 0 1em;
+}
+
+.project h3 {
+  font-family: var(--font-code);
+}
+
+.card::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.cardImage {
+  margin-bottom: 1em;
+  max-width: 300px;
+}
+
+/* Reserve a 2:1 box for every project thumbnail so the page doesn't
+   reflow when images, videos, or SVGs finish loading. */
+.cardImage .image-frame,
+.cardImage .projectPlaceholder {
+  aspect-ratio: 2 / 1;
+  width: 100%;
+}
+
+.cardImage .image-frame > img,
+.cardImage .image-frame > video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardImage a {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100%;
+  display: block;
+}
+
+@media (min-width: 48em) {
+  .cardImage {
+    float: right;
+    width: 50%;
+    margin-left: 1em;
+    margin-bottom: 0.5em;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.project a {
+  padding: 0.75em;
+  margin-left: -0.75em;
+  display: inline-block;
+  font-weight: 500;
+  word-break: break-word;
+  border-radius: 2em;
+}
+
+.project .date {
+  font-size: 0.9em;
+  opacity: 0.75;
+  margin: 0 0 0.5em;
+}
+
+.technologies {
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.projectPlaceholder {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  background:
+    radial-gradient(
+      circle at 30% 20%,
+      rgba(255, 255, 255, 0.05),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(81, 209, 54, 0.15),
+      transparent 55%
+    ),
+    linear-gradient(155deg, var(--surface-top) 0%, var(--surface-bottom) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.projectPlaceholderText {
+  font-family: var(--font-code);
+  color: var(--foreground);
+  font-size: 1.1em;
+  font-weight: 600;
+  text-shadow: 0 2px 6px var(--shadow);
+  word-break: break-word;
+}

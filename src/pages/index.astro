@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import AboutMe from '../components/AboutMe.astro';
+import Projects from '../components/Projects.astro';
+import OpenSource from '../components/OpenSource.astro';
+import Doodles from '../components/Doodles.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base>
+  <div class="App">
+    <Header />
+    <main>
+      <AboutMe />
+      <Projects />
+      <OpenSource />
+      <Doodles />
+    </main>
+    <Footer />
+  </div>
+</Base>
+
+<script>
+  // Video hover play/pause for project cards.
+  document.querySelectorAll<HTMLElement>('.video-frame').forEach((frame) => {
+    const video = frame.querySelector('video');
+    if (!video) return;
+    frame.addEventListener('mouseenter', () => {
+      void video.play().catch(() => {});
+    });
+    frame.addEventListener('mouseleave', () => {
+      video.pause();
+    });
+  });
+</script>

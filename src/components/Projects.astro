@@ -1,5 +1,5 @@
-import Project, { type ProjectData } from './Project';
-import { useMasonry } from './useMasonry';
+---
+import Project, { type ProjectData } from './Project.astro';
 
 const currentProjects: ProjectData[] = [
   {
@@ -59,18 +59,11 @@ const currentProjects: ProjectData[] = [
     imageURL: 'SpooKeyBoard.svg',
   },
 ];
+---
 
-const Projects = () => {
-  const gridRef = useMasonry<HTMLUListElement>();
-
-  return (
-    <div id="projects" className="col-xs-12 section">
-      <h2>Projects</h2>
-      <ul ref={gridRef} className="row no-bullets masonry-grid">
-        {currentProjects.map((p) => <Project key={p.name} project={p} />)}
-      </ul>
-    </div>
-  );
-};
-
-export default Projects;
+<div id="projects" class="col-xs-12 section">
+  <h2>Projects</h2>
+  <ul class="row no-bullets masonry-grid">
+    {currentProjects.map((p) => <Project project={p} />)}
+  </ul>
+</div>

@@ -1,3 +1,17 @@
+---
+import '../styles/global.css';
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const {
+  title = 'xav.ie',
+  description = 'Personal site of Xavier Ruiz — a full-stack developer in Boston.',
+} = Astro.props as Props;
+---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,22 +19,33 @@
     <link rel="icon" href="/heart.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#150b1e" />
-    <meta name="description" content="Personal site of Xavier Ruiz — a full-stack developer in Boston." />
+    <meta name="description" content={description} />
     <link rel="apple-touch-icon" href="/heart.svg" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="canonical" href="https://xav.ie/" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/* Non-blocking font load: parsed as a print stylesheet (which doesn't
+        block render), then promoted to "all" once it has loaded. The
+        <noscript> branch keeps fonts working when JS is disabled. */}
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300..700&family=Sorts+Mill+Goudy:ital@0;1&display=swap"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300..700&family=Sorts+Mill+Goudy:ital@0;1&display=swap"
+      />
+    </noscript>
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="xav.ie" />
     <meta property="og:title" content="Xavier Ruiz" />
-    <meta property="og:description" content="Personal site of Xavier Ruiz — a full-stack developer in Boston." />
+    <meta property="og:description" content={description} />
     <meta property="og:url" content="https://xav.ie/" />
     <meta property="og:image" content="https://xav.ie/og.png" />
     <meta property="og:image:width" content="1200" />
@@ -28,14 +53,12 @@
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Xavier Ruiz" />
-    <meta name="twitter:description" content="Personal site of Xavier Ruiz — a full-stack developer in Boston." />
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="https://xav.ie/og.png" />
 
-    <title>xav.ie</title>
+    <title>{title}</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <slot />
   </body>
 </html>

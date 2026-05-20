@@ -1,0 +1,64 @@
+---
+export type ProjectData = {
+  name: string;
+  date: string;
+  desc: string;
+  technologiesUsed: string[];
+  url: string;
+  imageURL?: string;
+};
+
+type Props = { project: ProjectData };
+const { project } = Astro.props as Props;
+
+const isVideo = (url: string) => /\.(mp4|webm|mov)$/i.test(url);
+const isExternal = /^https?:\/\//.test(project.url);
+const useVideo = !!project.imageURL && isVideo(project.imageURL);
+const linkAttrs: { target?: string; rel?: string } = isExternal
+  ? { target: '_blank', rel: 'noreferrer' }
+  : {};
+const slug = project.name.toLowerCase().replace(/\s+/g, '-');
+const imageLinkLabel = isExternal
+  ? `Open ${project.name} on GitHub (new tab)`
+  : `Open ${project.name}`;
+---
+
+<li class="project col-xs-12 col-md-6">
+  <div class="shadow card round">
+    <div class="cardImage">
+      <a href={project.url} {...linkAttrs} aria-label={imageLinkLabel}>
+        {project.imageURL ? (
+          <div class={`shadow round image-frame${useVideo ? ' video-frame' : ''}`}>
+            {useVideo ? (
+              <video
+                src={`/projects/${project.imageURL}#t=0.1`}
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-hidden="true"
+              ></video>
+            ) : (
+              <img src={`/projects/${project.imageURL}`} alt="" />
+            )}
+          </div>
+        ) : (
+          <div class="shadow round projectPlaceholder" aria-hidden="true">
+            <span class="projectPlaceholderText">{slug}</span>
+          </div>
+        )}
+      </a>
+    </div>
+    <div class="cardContent">
+      <h3>{project.name}</h3>
+      <p class="date">{project.date}</p>
+      <p>{project.desc}</p>
+      <p class="technologies">
+        {project.technologiesUsed.map((t, i) => (
+          <span>{(i ? ', ' : '') + t}</span>
+        ))}
+      </p>
+      <a href={project.url} {...linkAttrs}>{project.url}</a>
+    </div>
+  </div>
+</li>
