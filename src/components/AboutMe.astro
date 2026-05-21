@@ -3,10 +3,10 @@ import { Picture } from 'astro:assets';
 import me from '../assets/me.jpg';
 ---
 
-<div id="about_me" class="col-xs-12 section">
+<div id="about_me" class="col-span-12 section">
   <h2>About Me</h2>
-  <div class="row">
-    <div class="col-xs-12 col-sm-4 col-lg-3">
+  <div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12 sm:col-span-4 lg:col-span-3">
       <div class="profileImage shadow round image-frame">
         <Picture
           src={me}
@@ -19,7 +19,7 @@ import me from '../assets/me.jpg';
         />
       </div>
     </div>
-    <div class="col-xs-12 col-sm-8 col-lg-6 bio">
+    <div class="col-span-12 sm:col-span-8 lg:col-span-6 bio">
       <p>
         Hi, I'm Xavier and I live in Boston. I currently work in the
         e-commerce space, building tools to make stores fast, accessible,

@@ -6,8 +6,9 @@
   "scripts": {
     "fetch-avatar": "node scripts/fetch-avatar.mjs",
     "build-og": "node scripts/build-og.mjs",
-    "predev": "node scripts/fetch-avatar.mjs && node scripts/build-og.mjs",
-    "prebuild": "node scripts/fetch-avatar.mjs && node scripts/build-og.mjs",
+    "build-icon": "node scripts/build-icon.mjs",
+    "predev": "node scripts/fetch-avatar.mjs && node scripts/build-og.mjs && node scripts/build-icon.mjs",
+    "prebuild": "node scripts/fetch-avatar.mjs && node scripts/build-og.mjs && node scripts/build-icon.mjs",
     "dev": "astro dev",
     "build": "astro check && astro build",
     "check": "concurrently -c auto 'pnpm:check:*'",
@@ -25,6 +26,7 @@
     "@eslint/js": "^10.0.1",
     "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^25.6.0",
+    "@unocss/astro": "^66.6.8",
     "chrome-launcher": "^1.2.1",
     "concurrently": "^9.2.1",
     "eslint": "^10.3.0",
@@ -35,6 +37,7 @@
     "satori": "^0.26.0",
     "sharp": "^0.34.5",
     "typescript": "~6.0.3",
-    "typescript-eslint": "^8.59.2"
+    "typescript-eslint": "^8.59.2",
+    "unocss": "^66.6.8"
   }
 }

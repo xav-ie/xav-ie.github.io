@@ -26,7 +26,7 @@ const imageLinkLabel = isExternal
 const isSvg = project.image?.format === 'svg';
 ---
 
-<li class="project col-xs-12 col-md-6">
+<li class="project col-span-12 md:col-span-6">
   <div class="shadow card round">
     <div class="cardImage">
       <a href={project.url} {...linkAttrs} aria-label={imageLinkLabel}>

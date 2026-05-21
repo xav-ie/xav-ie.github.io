@@ -68,9 +68,9 @@ const currentProjects: ProjectData[] = [
 ];
 ---
 
-<div id="projects" class="col-xs-12 section">
+<div id="projects" class="col-span-12 section">
   <h2>Projects</h2>
-  <ul class="row no-bullets masonry-grid">
+  <ul class="masonry-grid list-none">
     {currentProjects.map((p) => <Project project={p} />)}
   </ul>
 </div>

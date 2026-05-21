@@ -1,11 +1,16 @@
 import { defineConfig, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import UnoCSS from "@unocss/astro";
 
 // xav-ie.github.io is a GitHub *user* site served from the root.
 export default defineConfig({
   site: "https://xav.ie",
   trailingSlash: "ignore",
   integrations: [
+    // injectReset:false — we keep our own resets in global.css (which
+    // includes hand-tuned font fallbacks and a noise background) and
+    // don't want UnoCSS overwriting them.
+    UnoCSS({ injectReset: false }),
     sitemap({
       // /font-tuner is a dev-only utility (noindex). Keep it out of the
       // public sitemap so it doesn't show up in search.

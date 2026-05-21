@@ -16,6 +16,8 @@ dist-ssr
 public/og.png
 public/me.jpg
 public/me-2x.jpg
+public/favicon.svg
+public/icon-512-maskable.png
 
 # Lighthouse audit reports
 lighthouse/

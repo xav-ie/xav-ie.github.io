@@ -50,9 +50,9 @@ const artAndDoodles: ProjectData[] = [
 ];
 ---
 
-<div id="doodles" class="col-xs-12 section">
+<div id="doodles" class="col-span-12 section">
   <h2>Art and Doodles</h2>
-  <ul class="row no-bullets masonry-grid">
+  <ul class="masonry-grid list-none">
     {artAndDoodles.map((p) => <Project project={p} />)}
   </ul>
 </div>
