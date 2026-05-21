@@ -227,6 +227,7 @@ h3 {
 }
 
 .image-frame > img,
+.image-frame > svg,
 .image-frame > video {
   display: block;
   width: 100%;
@@ -351,6 +352,7 @@ main {
 }
 
 .cardImage .image-frame > img,
+.cardImage .image-frame > svg,
 .cardImage .image-frame > video {
   width: 100%;
   height: 100%;

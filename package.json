@@ -10,10 +10,11 @@
     "prebuild": "node scripts/fetch-avatar.mjs && node scripts/build-og.mjs",
     "dev": "astro dev",
     "build": "astro check && astro build",
-    "lint": "eslint .",
-    "preview": "astro preview",
-    "lighthouse": "scripts/lighthouse.sh",
-    "astro": "astro"
+    "check": "concurrently -c auto 'pnpm:check:*'",
+    "check:lint": "eslint .",
+    "check:lighthouse": "node scripts/lighthouse.ts",
+    "check:knip": "knip",
+    "preview": "astro preview"
   },
   "dependencies": {
     "astro": "^6.2.2",
@@ -21,12 +22,19 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@astrojs/sitemap": "^3.7.2",
     "@eslint/js": "^10.0.1",
     "@resvg/resvg-js": "^2.6.2",
+    "@types/node": "^25.6.0",
+    "chrome-launcher": "^1.2.1",
+    "concurrently": "^9.2.1",
     "eslint": "^10.3.0",
+    "eslint-plugin-unicorn": "^64.0.0",
     "globals": "^17.6.0",
+    "knip": "^6.12.0",
     "lighthouse": "^13.2.0",
     "satori": "^0.26.0",
+    "sharp": "^0.34.5",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.59.2"
   }

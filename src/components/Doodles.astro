@@ -1,5 +1,10 @@
 ---
 import Project, { type ProjectData } from './Project.astro';
+import rockets from '../assets/projects/rockets.webp';
+import display from '../assets/projects/display.webp';
+import capture from '../assets/projects/capture.png';
+import pong from '../assets/projects/pong.webp';
+import opt from '../assets/projects/opt.webp';
 
 const artAndDoodles: ProjectData[] = [
   {
@@ -8,7 +13,7 @@ const artAndDoodles: ProjectData[] = [
     desc: "Little rockets 'learn' to hit a target through a genetic algorithm. Each generation is mutated from the fittest rockets of the last. Adapted from a Dan Shiffman tutorial.",
     technologiesUsed: ['JavaScript', 'p5.js'],
     url: '/projects/smart-rockets',
-    imageURL: 'rockets.mp4',
+    image: rockets,
   },
   {
     name: 'Moiré Effect',
@@ -16,7 +21,7 @@ const artAndDoodles: ProjectData[] = [
     desc: 'Two sets of horizontal lines rotated against each other. The vertical lines that appear are an optical illusion — the Moiré effect.',
     technologiesUsed: ['JavaScript', 'p5.js'],
     url: '/projects/moire-squares',
-    imageURL: 'display.mp4',
+    image: display,
   },
   {
     name: 'Binary Numbers',
@@ -24,7 +29,7 @@ const artAndDoodles: ProjectData[] = [
     desc: 'A binary representation of a number, with the decimal in the center. Mouse events shift the bits left and right, or you can type a decimal and watch it convert.',
     technologiesUsed: ['JavaScript', 'p5.js'],
     url: '/projects/binary-numbers',
-    imageURL: 'capture.PNG',
+    image: capture,
   },
   {
     name: 'Pong',
@@ -32,7 +37,7 @@ const artAndDoodles: ProjectData[] = [
     desc: 'Two-player Pong. WASD for player one, arrow keys for player two.',
     technologiesUsed: ['JavaScript', 'p5.js'],
     url: '/projects/pong',
-    imageURL: 'capture.mp4',
+    image: pong,
   },
   {
     name: 'Raycasting',
@@ -40,7 +45,7 @@ const artAndDoodles: ProjectData[] = [
     desc: 'A raycasting demo following Dan Shiffman. Not original work, but a satisfying one to step through.',
     technologiesUsed: ['JavaScript', 'p5.js'],
     url: '/projects/raycasting',
-    imageURL: 'opt.mp4',
+    image: opt,
   },
 ];
 ---

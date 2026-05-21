@@ -1,87 +1,91 @@
 #!/usr/bin/env node
-import { writeFile, readFile, stat } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
-import satori from 'satori';
-import { Resvg } from '@resvg/resvg-js';
+import { writeFile, readFile, stat } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import satori from "satori";
+import { Resvg } from "@resvg/resvg-js";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const heartPath = resolve(__dirname, '../public/heart.svg');
-const output = resolve(__dirname, '../public/og.png');
-const fontRegularPath = resolve(__dirname, 'fonts/Inter-Regular.ttf');
-const fontBoldPath = resolve(__dirname, 'fonts/Inter-Bold.ttf');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const heartPath = path.resolve(__dirname, "../public/heart.svg");
+const output = path.resolve(__dirname, "../public/og.png");
+const fontRegularPath = path.resolve(__dirname, "fonts/Inter-Regular.ttf");
+const fontBoldPath = path.resolve(__dirname, "fonts/Inter-Bold.ttf");
 
-const bg = '#150b1e';
-const fg = '#fff17b';
+const bg = "#150b1e";
+const fg = "#fff17b";
 
 async function main() {
   const [heartSvg, regular, bold] = await Promise.all([
-    readFile(heartPath, 'utf8'),
+    readFile(heartPath, "utf8"),
     readFile(fontRegularPath),
     readFile(fontBoldPath),
   ]);
   const heartDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(heartSvg)}`;
 
   const tree = {
-    type: 'div',
+    type: "div",
     props: {
       style: {
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
         background: bg,
         color: fg,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '60px 90px',
-        fontFamily: 'Inter',
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "60px 90px",
+        fontFamily: "Inter",
       },
       children: [
         {
-          type: 'div',
+          type: "div",
           props: {
             style: {
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-              justifyContent: 'space-between',
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+              justifyContent: "space-between",
             },
             children: [
               {
-                type: 'div',
+                type: "div",
                 props: {
-                  style: { display: 'flex', flexDirection: 'column' },
+                  style: { display: "flex", flexDirection: "column" },
                   children: [
                     {
-                      type: 'div',
+                      type: "div",
                       props: {
-                        style: { fontSize: 110, fontWeight: 700, lineHeight: 1.05 },
-                        children: 'Xavier Ruiz',
+                        style: {
+                          fontSize: 110,
+                          fontWeight: 700,
+                          lineHeight: 1.05,
+                        },
+                        children: "Xavier Ruiz",
                       },
                     },
                     {
-                      type: 'div',
+                      type: "div",
                       props: {
                         style: { fontSize: 50, fontWeight: 400, marginTop: 8 },
-                        children: 'Full-Stack Developer',
+                        children: "Full-Stack Developer",
                       },
                     },
                   ],
                 },
               },
               {
-                type: 'div',
+                type: "div",
                 props: {
                   style: { fontSize: 36, fontWeight: 400 },
-                  children: 'xav.ie',
+                  children: "xav.ie",
                 },
               },
             ],
           },
         },
         {
-          type: 'img',
+          type: "img",
           props: {
             src: heartDataUri,
             width: 360,
@@ -96,13 +100,13 @@ async function main() {
     width: 1200,
     height: 630,
     fonts: [
-      { name: 'Inter', data: regular, weight: 400, style: 'normal' },
-      { name: 'Inter', data: bold, weight: 700, style: 'normal' },
+      { name: "Inter", data: regular, weight: 400, style: "normal" },
+      { name: "Inter", data: bold, weight: 700, style: "normal" },
     ],
   });
 
   const png = new Resvg(svg, {
-    fitTo: { mode: 'width', value: 1200 },
+    fitTo: { mode: "width", value: 1200 },
   })
     .render()
     .asPng();
@@ -113,12 +117,16 @@ async function main() {
 
 try {
   await main();
-} catch (err) {
+} catch (error) {
   try {
     await stat(output);
-    console.warn(`og.png generation failed (${err.message}); keeping existing public/og.png`);
+    console.warn(
+      `og.png generation failed (${error.message}); keeping existing public/og.png`,
+    );
   } catch {
-    console.error(`og.png generation failed (${err.message}) and no fallback exists`);
+    console.error(
+      `og.png generation failed (${error.message}) and no fallback exists`,
+    );
     process.exit(1);
   }
 }

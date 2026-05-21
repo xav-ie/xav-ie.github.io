@@ -1,5 +1,6 @@
 onlyBuiltDependencies:
   - esbuild
+  - sharp
 
 # Refuse to install any package version released in the last 14 days
 # (in minutes). Supply-chain hygiene against typosquats and freshly

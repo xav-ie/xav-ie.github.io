@@ -1,19 +1,20 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 export type ProjectData = {
   name: string;
   date: string;
   desc: string;
   technologiesUsed: string[];
   url: string;
-  imageURL?: string;
+  image?: ImageMetadata;
 };
 
 type Props = { project: ProjectData; eager?: boolean };
 const { project, eager = false } = Astro.props as Props;
 
-const isVideo = (url: string) => /\.(mp4|webm|mov)$/i.test(url);
 const isExternal = /^https?:\/\//.test(project.url);
-const useVideo = !!project.imageURL && isVideo(project.imageURL);
 const linkAttrs: { target?: string; rel?: string } = isExternal
   ? { target: '_blank', rel: 'noreferrer' }
   : {};
@@ -27,25 +28,16 @@ const imageLinkLabel = isExternal
   <div class="shadow card round">
     <div class="cardImage">
       <a href={project.url} {...linkAttrs} aria-label={imageLinkLabel}>
-        {project.imageURL ? (
-          <div class={`shadow round image-frame${useVideo ? ' video-frame' : ''}`}>
-            {useVideo ? (
-              <video
-                src={`/projects/${project.imageURL}#t=0.1`}
-                muted
-                loop
-                playsinline
-                preload="metadata"
-                aria-hidden="true"
-              ></video>
-            ) : (
-              <img
-                src={`/projects/${project.imageURL}`}
-                alt=""
-                loading={eager ? 'eager' : 'lazy'}
-                fetchpriority={eager ? undefined : 'low'}
-              />
-            )}
+        {project.image ? (
+          <div class="shadow round image-frame">
+            <Image
+              src={project.image}
+              alt=""
+              widths={[300, 600]}
+              sizes="(min-width: 48em) 300px, 100vw"
+              loading={eager ? 'eager' : 'lazy'}
+              decoding={eager ? 'sync' : 'async'}
+            />
           </div>
         ) : (
           <div class="shadow round projectPlaceholder" aria-hidden="true">

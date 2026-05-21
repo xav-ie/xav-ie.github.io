@@ -24,6 +24,10 @@ const {
     <link rel="manifest" href="/manifest.json" />
     <link rel="canonical" href="https://xav.ie/" />
 
+    {/* Pages can preload their LCP image (or any other head asset)
+        by filling this slot. */}
+    <slot name="head" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     {/* Non-blocking font load: parsed as a print stylesheet (which doesn't
@@ -33,7 +37,7 @@ const {
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&family=Sorts+Mill+Goudy&display=swap"
       media="print"
-      onload="this.media='all'"
+      onload={"this.media='all'"}
     />
     <noscript>
       <link
