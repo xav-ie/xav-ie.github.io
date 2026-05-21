@@ -11,9 +11,12 @@ import me from '../assets/me.jpg';
         <Picture
           src={me}
           alt="Xavier Ruiz"
+          width={300}
+          height={300}
           formats={['avif', 'webp']}
-          widths={[300, 600]}
-          sizes="300px"
+          fallbackFormat="webp"
+          quality={60}
+          densities={[1, 2]}
           loading="eager"
           fetchpriority="high"
         />

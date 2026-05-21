@@ -12,8 +12,10 @@ import me from '../assets/me.jpg';
 const meOptimized = await getImage({
   src: me,
   format: 'avif',
-  widths: [300, 600],
-  sizes: '300px',
+  quality: 60,
+  width: 300,
+  height: 300,
+  densities: [1, 2],
 });
 ---
 

@@ -65,7 +65,7 @@ const maskFalloff = Math.max(5, Math.min(95, c.maskFalloff));
   </defs>
 
   <g transform={`translate(${sunX} ${sunY})`}>
-    <g mask="url(#gr-ray-mask)" opacity={c.intensity} filter="url(#gr-blur)">
+    <g class="rays" mask="url(#gr-ray-mask)" filter="url(#gr-blur)">
       {rays.map((r) => {
         const length = c.rayLength * r.lengthScale;
         return (
@@ -85,7 +85,7 @@ const maskFalloff = Math.max(5, Math.min(95, c.maskFalloff));
   </g>
 </svg>
 
-<style>
+<style define:vars={{ rayIntensity: c.intensity, rayIntensityLight: Math.min(1, c.intensity * 3.5) }}>
   .god-rays {
     position: absolute;
     inset: 0;
@@ -94,5 +94,29 @@ const maskFalloff = Math.max(5, Math.min(95, c.maskFalloff));
     pointer-events: none;
     z-index: 2;
     mix-blend-mode: screen;
+  }
+
+  /* The ray group's intensity is bridged from the config (see
+     god-rays-config.ts → intensity) so dark-mode behaviour stays
+     identical. Light mode boosts intensity because screen-blend
+     yellow against #bebdb6 has noticeably less perceived contrast
+     than against #12081a — the rays would otherwise fade away. */
+  .god-rays .rays {
+    opacity: var(--rayIntensity);
+  }
+
+  @media (prefers-color-scheme: light) {
+    .god-rays .rays {
+      opacity: var(--rayIntensityLight);
+    }
+  }
+
+  /* Manual theme override (see ThemeToggle.astro) — pinning beats the
+     OS preference, so re-state the per-scheme opacity here. */
+  :root[data-theme="dark"] .god-rays .rays {
+    opacity: var(--rayIntensity);
+  }
+  :root[data-theme="light"] .god-rays .rays {
+    opacity: var(--rayIntensityLight);
   }
 </style>

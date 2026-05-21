@@ -1,0 +1,161 @@
+---
+// Two-state toggle: light ↔ dark. When the user hasn't clicked it,
+// the site follows their OS preference via color-scheme: light dark
+// (see global.css). Click sets <html data-theme="..."> and stores the
+// choice in localStorage. The FOUC-prevention script in Base.astro
+// re-applies the stored choice before first paint on later visits.
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class="theme-toggle shadow"
+  aria-label="Toggle light and dark theme"
+>
+  <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+    <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="12" y1="2" x2="12" y2="5" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="2" y1="12" x2="5" y2="12" />
+      <line x1="19" y1="12" x2="22" y2="12" />
+      <line x1="4.5" y1="4.5" x2="6.6" y2="6.6" />
+      <line x1="17.4" y1="17.4" x2="19.5" y2="19.5" />
+      <line x1="4.5" y1="19.5" x2="6.6" y2="17.4" />
+      <line x1="17.4" y1="6.6" x2="19.5" y2="4.5" />
+    </g>
+  </svg>
+  <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+    <path
+      fill="currentColor"
+      d="M21 13.5A9 9 0 1 1 10.5 3a7 7 0 0 0 10.5 10.5Z"
+    />
+  </svg>
+</button>
+
+<script>
+  // Runs after DOMContentLoaded; the FOUC-prevention script in
+  // Base.astro has already applied any stored choice. We just need to
+  // listen for clicks and toggle.
+  const button = document.querySelector<HTMLButtonElement>("#theme-toggle");
+  if (button) {
+    function currentTheme(): "light" | "dark" {
+      const attribute = document.documentElement.dataset.theme;
+      if (attribute === "light" || attribute === "dark") return attribute;
+      // No explicit choice yet — derive from the OS preference so the
+      // toggle flips to the *opposite* of what's currently displayed.
+      return globalThis.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    button.addEventListener("click", () => {
+      const next = currentTheme() === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = next;
+      try {
+        localStorage.setItem("theme", next);
+      } catch {
+        // localStorage may throw in private-mode or quota-exceeded
+        // scenarios — fail silently; the in-memory dataset change still
+        // takes effect for this session.
+      }
+    });
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    /* 2.75em ≈ 44px at the body's 16px base, hitting the WCAG 2.5.5
+       minimum touch target. The .shadow utility from uno.config.ts
+       ships the embossed surface used by the project cards, but its
+       10px drop offset is sized for ~300px elements and visually
+       pulls a 44px button below its geometric centre. Overriding
+       box-shadow here with proportionally smaller offsets keeps the
+       same embossed look at button scale.
+
+       Position: relative anchors the absolutely-positioned icons
+       below so they cross-fade in place instead of snapping via
+       display none/block. */
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75em;
+    height: 2.75em;
+    padding: 0;
+    background-color: var(--surface-bottom);
+    color: var(--foreground);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    /* The .shadow utility carries three thin 1px edge highlights
+       (top / bottom / right) that read nicely on a 300px card but on
+       a 44px circle stack hard against the diffuse inset shadows and
+       look like banding. Dropped here in favour of just the corner-
+       based diffuse insets for a cleaner embossed read at button
+       scale. */
+    box-shadow:
+      4px 4px 12px -2px var(--shadow),
+      -1px -1px 2px -1px var(--highlight),
+      inset 1px 1px 1px rgba(255, 255, 255, 0.14),
+      inset 3px 3px 7px rgba(255, 255, 255, 0.04),
+      inset -2px -2px 3px rgba(0, 0, 0, 0.25),
+      inset -1px -1px 0 rgba(255, 255, 255, 0.1);
+    /* Opt out of the .shadow utility's property-level transitions on
+       color / box-shadow / background. The @property-registered theme
+       vars on :root already animate themselves (see global.css's
+       `transition: --background, --shadow, ...`), so the resolved
+       values on this element re-evaluate each frame *through* the var
+       interpolation. Declaring a parallel property transition causes
+       the browser to re-fire the property transition on every frame
+       of the var animation, producing the jitter. */
+    transition: none;
+  }
+
+  /* Both icons live in the same spot. Whichever opacity is 1 wins;
+     the other fades behind it. Cross-fade matches the duration of
+     the .shadow utility's color / background transition so the whole
+     theme swap reads as one motion. */
+  .theme-toggle .icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.5em;
+    height: 1.5em;
+    display: block;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  /* Show the icon that represents *what a click will switch TO*:
+     moon when the page is currently light, sun when currently dark.
+     prefers-color-scheme handles the no-override case; the
+     [data-theme] rules below take over once the user clicks. */
+  .theme-toggle .icon-sun {
+    opacity: 0;
+  }
+  .theme-toggle .icon-moon {
+    opacity: 1;
+  }
+  @media (prefers-color-scheme: dark) {
+    .theme-toggle .icon-sun {
+      opacity: 1;
+    }
+    .theme-toggle .icon-moon {
+      opacity: 0;
+    }
+  }
+
+  :root[data-theme="light"] .theme-toggle .icon-sun {
+    opacity: 0;
+  }
+  :root[data-theme="light"] .theme-toggle .icon-moon {
+    opacity: 1;
+  }
+  :root[data-theme="dark"] .theme-toggle .icon-sun {
+    opacity: 1;
+  }
+  :root[data-theme="dark"] .theme-toggle .icon-moon {
+    opacity: 0;
+  }
+</style>

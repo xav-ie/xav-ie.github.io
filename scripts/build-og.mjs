@@ -4,9 +4,9 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
+import { buildHeartSvg } from "../src/heart-svg.ts";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const heartPath = path.resolve(__dirname, "../public/heart.svg");
 const output = path.resolve(__dirname, "../public/og.png");
 const fontRegularPath = path.resolve(__dirname, "fonts/Inter-Regular.ttf");
 const fontBoldPath = path.resolve(__dirname, "fonts/Inter-Bold.ttf");
@@ -15,12 +15,28 @@ const bg = "#150b1e";
 const fg = "#fff17b";
 
 async function main() {
-  const [heartSvg, regular, bold] = await Promise.all([
-    readFile(heartPath, "utf8"),
+  const [regular, bold] = await Promise.all([
     readFile(fontRegularPath),
     readFile(fontBoldPath),
   ]);
-  const heartDataUri = `data:image/svg+xml;utf8,${encodeURIComponent(heartSvg)}`;
+
+  // Render the stylized heart to PNG first — satori's SVG support
+  // doesn't cover the gradients/filters/masks used in HeartGoldSvg, so
+  // we feed it a pre-rasterised image instead. resvg-js handles the
+  // full SVG cleanly. Drop-shadow CSS filter is off because the OG card
+  // already supplies surrounding contrast and we don't want a halo
+  // bleeding into the layout.
+  const heartSvgString = buildHeartSvg({
+    size: "360",
+    title: "xav.ie",
+    dropShadow: false,
+  });
+  const heartPng = new Resvg(heartSvgString, {
+    fitTo: { mode: "width", value: 360 },
+  })
+    .render()
+    .asPng();
+  const heartDataUri = `data:image/png;base64,${heartPng.toString("base64")}`;
 
   const tree = {
     type: "div",

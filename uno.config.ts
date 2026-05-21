@@ -44,6 +44,17 @@ export default defineConfig({
         "border-radius": "2em",
       },
     ],
+    // bg-noise-gradient-{angle} — repeated noise overlay on top of a
+    // surface-top → surface-bottom linear gradient. Used by section
+    // cards, OSS chips, and the sticky header nav.
+    [
+      /^bg-noise-gradient-(\d+)$/,
+      ([, deg]) => ({
+        "background-image": `var(--noise-image), linear-gradient(${deg}deg, var(--surface-top) 0%, var(--surface-bottom) 100%)`,
+        "background-size": "var(--noise-size), auto",
+        "background-repeat": "repeat, no-repeat",
+      }),
+    ],
   ],
   // image-frame and shadow-lift have pseudo-elements (::before/::after)
   // and :hover variants that don't fit the rule format. Inject them as

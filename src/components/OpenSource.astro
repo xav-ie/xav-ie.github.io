@@ -54,7 +54,7 @@ const contributions: Contribution[] = [
   <ul class="grid grid-cols-12 gap-4 list-none oss-list">
     {contributions.map((c) => (
       <li class="col-span-12 sm:col-span-6 oss-item">
-        <a class="oss-card shadow round" href={c.url} target="_blank" rel="noreferrer">
+        <a class="oss-card shadow round bg-noise-gradient-155" href={c.url} target="_blank" rel="noreferrer">
           <span class="oss-repo">{c.repo}</span>
           <span class="oss-summary">{c.summary}</span>
         </a>
@@ -76,11 +76,6 @@ const contributions: Contribution[] = [
     gap: 0.35em;
     padding: 1em 2.25em;
     border-radius: 4em;
-    background-image:
-      var(--noise-image),
-      linear-gradient(155deg, var(--surface-top) 0%, var(--surface-bottom) 100%);
-    background-size: var(--noise-size), auto;
-    background-repeat: repeat, no-repeat;
     text-decoration: none;
     color: var(--foreground);
     height: 100%;

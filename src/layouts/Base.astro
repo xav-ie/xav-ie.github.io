@@ -52,9 +52,23 @@ const personSchema = {
     <meta name="theme-color" content="#12081a" />
     <meta name="description" content={description} />
     <meta name="author" content="Xavier Ruiz" />
-    <link rel="apple-touch-icon" href="/heart.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="canonical" href="https://xav.ie/" />
+
+    {/* Apply any stored theme override before first paint to avoid a
+        light/dark flash on subsequent visits. Must be is:inline so
+        Astro doesn't defer it; runs synchronously in <head>. */}
+    <script is:inline>
+      try {
+        const t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") {
+          document.documentElement.dataset.theme = t;
+        }
+      } catch {
+        /* localStorage unavailable — fall back to color-scheme. */
+      }
+    </script>
 
     <slot name="head" />
 

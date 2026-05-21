@@ -1,12 +1,16 @@
 ---
 import Project, { type ProjectData } from './Project.astro';
-import himalayaNvim from '../assets/projects/himalaya-nvim.svg';
-import virtualHeadset from '../assets/projects/virtual-headset.svg';
-import dots from '../assets/projects/dots.svg';
-import nuenv from '../assets/projects/nuenv.svg';
-import browserSessionMcp from '../assets/projects/browser-session-mcp.svg';
-import xnixvim from '../assets/projects/xnixvim.svg';
-import spooKeyBoard from '../assets/projects/SpooKeyBoard.svg';
+// `?raw` gives us the SVG markup as a string so we can inline it into
+// the page (via Project.astro's <Fragment set:html>). Inlined SVGs
+// inherit the host document's theme variables, so the .c-* classes
+// inside resolve against :root in global.css.
+import himalayaNvim from '../assets/projects/himalaya-nvim.svg?raw';
+import virtualHeadset from '../assets/projects/virtual-headset.svg?raw';
+import dots from '../assets/projects/dots.svg?raw';
+import nuenv from '../assets/projects/nuenv.svg?raw';
+import browserSessionMcp from '../assets/projects/browser-session-mcp.svg?raw';
+import xnixvim from '../assets/projects/xnixvim.svg?raw';
+import spooKeyBoard from '../assets/projects/SpooKeyBoard.svg?raw';
 
 const currentProjects: ProjectData[] = [
   {
@@ -15,7 +19,7 @@ const currentProjects: ProjectData[] = [
     desc: 'An email client that runs inside Neovim. Threaded message lists, structured per-field search, in-buffer composing with auto-saved drafts, background sync, and an extensible hooks system. Picker integrations (telescope, fzf, native) and a mock mode for trying it without a real account. Heavily modified fork of pimalaya/himalaya-vim with 90%+ test coverage in CI.',
     technologiesUsed: ['Lua', 'Neovim', 'Nix'],
     url: 'https://github.com/xav-ie/himalaya-nvim',
-    image: himalayaNvim,
+    imageSvg: himalayaNvim,
   },
   {
     name: 'virtual-headset',
@@ -23,7 +27,7 @@ const currentProjects: ProjectData[] = [
     desc: 'A virtual HID headset device driver in Rust. Forwards the mic through PipeWire on a keyboard mute toggle and exposes a D-Bus control surface plus a Home Manager module for Waybar integration.',
     technologiesUsed: ['Rust', 'PipeWire', 'D-Bus', 'Nix'],
     url: 'https://github.com/xav-ie/virtual-headset',
-    image: virtualHeadset,
+    imageSvg: virtualHeadset,
   },
   {
     name: 'dots',
@@ -31,7 +35,7 @@ const currentProjects: ProjectData[] = [
     desc: 'My NixOS configuration and self-hosted homelab. Runs Traefik, Cloudflare Tunnel, and a half-dozen services via quadlet-nix, plus dozens of small per-machine packages I keep tucked away in here.',
     technologiesUsed: ['Nix', 'NixOS', 'quadlet-nix', 'Traefik'],
     url: 'https://github.com/xav-ie/dots',
-    image: dots,
+    imageSvg: dots,
   },
   {
     name: 'nuenv',
@@ -39,7 +43,7 @@ const currentProjects: ProjectData[] = [
     desc: 'A Nushell environment for Nix derivations. I forked the original after it went unmaintained to keep it usable and add features like environment binding.',
     technologiesUsed: ['Nushell', 'Nix', 'Bash'],
     url: 'https://github.com/xav-ie/nuenv',
-    image: nuenv,
+    imageSvg: nuenv,
   },
   {
     name: 'browser-session-mcp',
@@ -47,7 +51,7 @@ const currentProjects: ProjectData[] = [
     desc: 'An MCP server that gives each caller an isolated browser session against a shared persistent Chrome, and captures every console + network event to disk losslessly regardless of MCP transport churn. The session is a tool argument, not a transport concept — so sessions survive reconnects.',
     technologiesUsed: ['Rust', 'Puppeteer', 'MCP'],
     url: 'https://github.com/xav-ie/dots/tree/main/packages/browser-session-mcp',
-    image: browserSessionMcp,
+    imageSvg: browserSessionMcp,
   },
   {
     name: 'xnixvim',
@@ -55,7 +59,7 @@ const currentProjects: ProjectData[] = [
     desc: 'My Neovim config managed entirely through Nix via nixvim. Reproducible across machines, modular, and shaped around how I actually work in TypeScript, Rust, and Lua.',
     technologiesUsed: ['Nix', 'nixvim', 'Lua', 'Neovim'],
     url: 'https://github.com/xav-ie/xnixvim',
-    image: xnixvim,
+    imageSvg: xnixvim,
   },
   {
     name: 'SpooKeyBoard',
@@ -63,7 +67,7 @@ const currentProjects: ProjectData[] = [
     desc: 'A small Python tool that reads ANSI escape sequences over SSH and replays them as keystrokes on the receiving machine via Linux uinput — essentially a remote keyboard pipeline.',
     technologiesUsed: ['Python', 'uinput', 'ANSI escapes'],
     url: 'https://github.com/xav-ie/SpooKeyBoard',
-    image: spooKeyBoard,
+    imageSvg: spooKeyBoard,
   },
 ];
 ---

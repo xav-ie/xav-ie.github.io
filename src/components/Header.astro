@@ -1,6 +1,7 @@
 ---
 import GodRays from './GodRays.astro';
 import HeartGoldSvg from './HeartGoldSvg.astro';
+import ThemeToggle from './ThemeToggle.astro';
 ---
 
 <div class="header-bleed">
@@ -17,13 +18,16 @@ import HeartGoldSvg from './HeartGoldSvg.astro';
     </div>
   </header>
 </div>
-<nav class="grid grid-cols-12 gap-4 m-0 items-center shadow" aria-label="Primary">
-  <ul class="header-links col-span-12">
-    <li><a href="#about_me">#about_me</a></li>
-    <li><a href="#projects">#projects</a></li>
-    <li><a href="#oss">#oss</a></li>
-    <li><a href="#doodles">#doodles</a></li>
-  </ul>
+<nav class="shadow bg-noise-gradient-180" aria-label="Primary">
+  <div class="nav-inner">
+    <ul class="header-links" role="list">
+      <li><a href="#about_me">#about_me</a></li>
+      <li><a href="#projects">#projects</a></li>
+      <li><a href="#oss">#oss</a></li>
+      <li><a href="#doodles">#doodles</a></li>
+    </ul>
+    <ThemeToggle />
+  </div>
 </nav>
 
 <style>
@@ -72,33 +76,34 @@ import HeartGoldSvg from './HeartGoldSvg.astro';
 
   nav {
     background-color: var(--surface-bottom);
-    background-image:
-      var(--noise-image),
-      linear-gradient(
-        180deg,
-        var(--surface-top) 0%,
-        var(--surface-bottom) 100%
-      );
-    background-size: var(--noise-size), auto;
-    background-repeat: repeat, no-repeat;
     position: sticky;
     top: 0;
     min-height: 3.25em;
     z-index: 10;
     border-bottom: 1px solid var(--shadow);
+    padding: 0 1em;
     display: flex;
     align-items: center;
-    padding: 0 1em;
+  }
+
+  /* Constrain nav contents to the same 1200px content column as
+     <main> and <header>, so the links anchor to the same left edge
+     and the theme toggle anchors to the same right edge. */
+  .nav-inner {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    box-sizing: border-box;
   }
 
   nav ul.header-links {
     background: transparent;
-    margin: 0 auto;
-    padding-top: 0;
-    padding-bottom: 0;
-    max-width: 1200px;
-    width: 100%;
-    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
     list-style: none;
   }
 

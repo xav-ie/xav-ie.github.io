@@ -3,9 +3,15 @@
   "name": "Personal website of Xavier Ruiz",
   "icons": [
     {
-      "src": "heart.svg",
+      "src": "favicon.svg",
       "type": "image/svg+xml",
       "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180",
       "purpose": "any"
     },
     {

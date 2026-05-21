@@ -14,14 +14,7 @@ const GOLD_BORDER =
 const CPU =
   "28 10 28 11 20 11 20 15 18 15 18 13 17 13 17 10 24 10 24 4 25 4 25 2 22 2 22 4 23 4 23 9 17 9 16 9 9 9 9 4 10 4 10 2 7 2 7 4 8 4 8 10 16 10 16 13 14 13 14 14 12 14 12 11 4 11 4 10 2 10 2 13 4 13 4 12 11 12 11 14 7 14 7 17 6 17 6 19 9 19 9 17 8 17 8 15 11 15 14 15 14 17 15 17 14.99 19 11 19 11 23 10 23 10 25 13 25 13 23 12 23 12 20 15 20 15 28 14 28 14 30 17 30 17 28 16 28 16 20 20 20 20 23 19 23 19 25 22 25 22 23 21 23 21 19 16 19 16 17 18 17 18 16 20 16 20 18 24 18 24 19 26 19 26 16 24 16 24 17 21 17 21 16 21 15 21 12 28 12 28 13 30 13 30 10 28 10";
 
-const goldExtrusion = Array.from(
-  { length: 14 },
-  (_, index) => (index + 1) / 14,
-);
-const shadowExtrusion = Array.from(
-  { length: 14 },
-  (_, index) => (index + 1) / 14,
-);
+const EXTRUSION = Array.from({ length: 14 }, (_, index) => (index + 1) / 14);
 
 const DEFS = `<defs>
   <radialGradient id="hgs-gold" cx="0.82" cy="0.18" r="0.92">
@@ -118,27 +111,21 @@ const DEFS = `<defs>
 </defs>`;
 
 const BODY = `<g filter="url(#hgs-shadow)">
-  ${goldExtrusion
-    .map(
-      (t) => `<g transform="translate(${0.35 * t}, ${-0.35 * t})">
+  ${EXTRUSION.map(
+    (t) => `<g transform="translate(${0.35 * t}, ${-0.35 * t})">
     <path d="${GOLD_BORDER}" fill="url(#hgs-gold-body)"/>
     <polygon points="${CPU}" fill="url(#hgs-gold-body)"/>
   </g>`,
-    )
-    .join("\n  ")}
+  ).join("\n  ")}
   <polygon points="${HEART}" fill="url(#hgs-glass)" opacity="0.5"/>
   <polygon points="${HEART}" fill="none" stroke="rgba(0,30,10,0.55)" stroke-width="0.5" clip-path="url(#hgs-heart-clip)"/>
   <polygon points="${HEART}" fill="url(#hgs-glass-hotspot)" clip-path="url(#hgs-heart-clip)" filter="url(#hgs-glass-bloom)"/>
-  ${shadowExtrusion
-    .map(
-      (
-        t,
-      ) => `<g transform="translate(${-0.15 * t}, ${0.25 * t})" opacity="0.082">
+  ${EXTRUSION.map(
+    (t) => `<g transform="translate(${-0.15 * t}, ${0.25 * t})" opacity="0.082">
     <path d="${GOLD_BORDER}" fill="url(#hgs-gold-shadow)"/>
     <polygon points="${CPU}" fill="url(#hgs-gold-shadow)"/>
   </g>`,
-    )
-    .join("\n  ")}
+  ).join("\n  ")}
   <g>
     <path d="${GOLD_BORDER}" fill="url(#hgs-gold)"/>
     <polygon points="${CPU}" fill="url(#hgs-gold)"/>
