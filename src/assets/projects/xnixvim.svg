@@ -1,17 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300">
-  <defs>
-    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
-      <stop class="c-bg2-stop" offset="0%"/>
-      <stop class="c-bg-stop" offset="100%"/>
-    </radialGradient>
-  </defs>
-  <rect width="600" height="300" fill="url(#bg)"/>
-
-  <svg x="195" y="20" width="210" height="260" viewBox="0 0 602 734" preserveAspectRatio="xMidYMid meet">
-    <g transform="translate(2 3)">
-      <path class="c-alt-fill" d="M0,155.5704 L155,-1 L154.999997,727 L0,572.237919 L0,155.5704 Z"/>
-      <path class="c-alt-fill" d="M443.060403,156.982405 L600,-1 L596.818792,727 L442,572.219941 L443.060403,156.982405 Z" transform="translate(521 363.5) scale(-1 1) translate(-521 -363.5)"/>
-      <path class="c-fg-fill" d="M154.986294,0 L558,615.189696 L445.224605,728 L42,114.172017 L154.986294,0 Z"/>
-    </g>
-  </svg>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300"><defs><radialGradient id="bg" cx="50%" cy="50%" r="70%"><stop class="c-bg2-stop" offset="0%"/><stop class="c-bg-stop" offset="100%"/></radialGradient></defs><path fill="url(#bg)" d="M0 0h600v300H0z"/><svg width="210" height="260" x="195" y="20" viewBox="0 0 602 734"><path d="M2 158.57 157 2v728L2 575.24zm598.94 1.41L444 2l3.18 728L602 575.22z" class="c-alt-fill"/><path d="M156.99 3 560 618.19 447.22 731 44 117.17z" class="c-fg-fill"/></svg></svg>
