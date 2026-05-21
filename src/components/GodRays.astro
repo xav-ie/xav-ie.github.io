@@ -1,11 +1,6 @@
 ---
 import { DEFAULT_RAY_CONFIG } from '../god-rays-config';
 
-// Static SVG god-rays: a square viewBox anchored to the upper-right of
-// the header via preserveAspectRatio="xMaxYMin slice". The browser scales
-// the SVG uniformly to fill the container without distortion, no JS or
-// ResizeObserver needed.
-
 const c = DEFAULT_RAY_CONFIG;
 
 const lcg = (seed: number) => {
@@ -26,15 +21,9 @@ const rays = Array.from({ length: c.rayCount }, (_, i) => {
   return { angle, strokeWidth, opacity, lengthScale };
 });
 
-// Fixed virtual coordinate space the rays live in. 1200 matches the
-// header's max-width so on desktop the rays render 1:1 with their tuned
-// values, and scale uniformly down on narrower viewports.
 const VB_W = 1200;
 const VB_H = 1200;
-const sunX = (c.sunX / 100) * VB_W; // 70% of 1200 = 840
-// Negative Y puts the sun ABOVE the viewBox, so only the rays radiating
-// downward through the header are visible; there's no convergence point
-// rendered inside the header itself.
+const sunX = (c.sunX / 100) * VB_W;
 const sunY = -100;
 const maskExtent = c.rayLength * 1.4;
 const maskFalloff = Math.max(5, Math.min(95, c.maskFalloff));

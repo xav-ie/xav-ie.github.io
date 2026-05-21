@@ -1,19 +1,5 @@
 ---
-// Dev-only tuning page for the site fonts. Open
-// http://localhost:4321/font-tuner/body or /font-tuner/heading.
-// Overlay the fallback and the loaded web font, slide @font-face
-// descriptors until they visually align, then paste the generated
-// @font-face into src/styles/global.css.
-//
-// The loaded font comes from astro:fonts (the same subset+@font-face
-// shipped to production), so tuning here matches what users actually
-// see — unlike a generic Google Fonts CDN load.
-//
-// This is a dynamic route (rather than ?target=… query params) because
-// static builds resolve Astro.url.searchParams *once* at build time, so
-// query-param switching produced one page that always rendered the
-// default target. getStaticPaths generates one static page per target.
-
+// Dev-only font tuner: /font-tuner/body or /font-tuner/heading.
 import { Font } from 'astro:assets';
 
 type Preset = {
@@ -34,12 +20,8 @@ type Sample = {
 
 type Target = {
   label: string;
-  // CSS variable defined by <Font cssVariable="..." /> that resolves to
-  // the hashed family name astro:fonts registers.
   cssVariable: string;
   fallbackPrefix: string;
-  // Generic fallback used in the fallback stack when no font matches
-  // (purely cosmetic for the tuner UI; production stacks handle this).
   genericFallback: string;
   presets: Preset[];
   samples: Sample[];
@@ -51,7 +33,6 @@ const targets: Record<'body' | 'heading', Target> = {
     cssVariable: '--font-ibm-plex-sans',
     fallbackPrefix: 'IBM Plex Sans Fallback',
     genericFallback: 'sans-serif',
-    // Seeded from current production values in src/styles/global.css.
     presets: [
       { name: 'Helvetica Neue',  sizeAdjust: 101,   ascent: 95,    descent: 23, lineGap: 0 },
       { name: 'Helvetica',       sizeAdjust: 100,   ascent: 95,    descent: 23, lineGap: 0 },
@@ -105,7 +86,6 @@ const targets: Record<'body' | 'heading', Target> = {
     cssVariable: '--font-sorts-mill-goudy',
     fallbackPrefix: 'Sorts Mill Goudy Fallback',
     genericFallback: 'serif',
-    // Seeded from current production values in src/styles/global.css.
     presets: [
       { name: 'Palatino',     sizeAdjust: 97.5, ascent: 73.5, descent: 22.5, lineGap: 0 },
       {
@@ -146,9 +126,6 @@ const targets: Record<'body' | 'heading', Target> = {
 };
 
 export function getStaticPaths() {
-  // Dev-only tool: returning [] in production means Astro emits no
-  // /font-tuner/* routes into dist, so the page can't be hit on xav.ie
-  // and crawlers never see it. In dev the route is generated normally.
   if (!import.meta.env.DEV) return [];
   return [
     { params: { target: 'body' } },
@@ -167,9 +144,6 @@ const target = targets[targetId];
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex" />
     <title>{target.label} — Font Tuner</title>
-    {/* Load every web font on every page variant so toggling between
-        targets via the nav doesn't re-fetch — and so the loaded font
-        matches exactly what astro:fonts ships in production. */}
     <Font cssVariable="--font-ibm-plex-sans" />
     <Font cssVariable="--font-sorts-mill-goudy" />
     <style>
@@ -556,7 +530,6 @@ const target = targets[targetId];
         } catch {}
       }
 
-      // Restore from URL so settings can be shared / refreshed.
       const params = new URLSearchParams(window.location.search);
       const urlFallback = params.get('f');
       if (urlFallback) {

@@ -9,11 +9,6 @@ import Doodles from '../components/Doodles.astro';
 import Footer from '../components/Footer.astro';
 import me from '../assets/me.jpg';
 
-// Pre-resolve the LCP avatar as AVIF so the preload <link> matches the
-// first <source> in the <Picture> in AboutMe.astro. Browsers that don't
-// support AVIF skip this preload (per the type hint) and fetch the WebP
-// fallback from <picture>. Astro deduplicates the image transform, so
-// this does not generate an extra build artifact.
 const meOptimized = await getImage({
   src: me,
   format: 'avif',

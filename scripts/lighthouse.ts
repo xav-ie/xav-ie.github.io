@@ -1,16 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build the production bundle, serve it locally via `astro preview`, run
- * Lighthouse against it, fail if any category drops below the threshold.
- *
- * Env vars:
- *   PORT=4321               preferred port; astro preview will pick the
- *                           next free one if it's taken, and we'll use
- *                           whichever port it actually binds
- *   FORM_FACTOR=mobile      mobile|desktop
- *   SKIP_BUILD=1            reuse existing dist/
- *   LIGHTHOUSE_MIN=100      minimum category score to count as a pass
- *   CHROME_PATH=/usr/bin/.. override Chrome binary (otherwise auto-detected)
+ * Env vars: PORT, FORM_FACTOR (mobile|desktop), SKIP_BUILD, LIGHTHOUSE_MIN, CHROME_PATH.
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import { spawn, type ChildProcess } from "node:child_process";
@@ -107,8 +97,6 @@ try {
   cleanup();
 }
 
-// ----- helpers ---------------------------------------------------------------
-
 function runQuiet(cmd: string, arguments_: string[]) {
   return new Promise<void>((resolve, reject) => {
     const proc = spawn(cmd, arguments_, { stdio: ["ignore", "pipe", "pipe"] });
@@ -132,9 +120,6 @@ function runQuiet(cmd: string, arguments_: string[]) {
   });
 }
 
-// Astro preview falls back to the next free port when its requested
-// one is taken, so we trust its stdout banner ("Local  http://localhost:4322/")
-// rather than the port we asked for. Then we verify the URL responds.
 function waitForPreviewUrl(
   child: ChildProcess,
   timeoutMs: number,
@@ -148,17 +133,12 @@ function waitForPreviewUrl(
 
     const onData = (chunk: Buffer) => {
       buffer += chunk.toString();
-      // Astro colourises the URL with ANSI escapes that wrap, but never
-      // appear inside, the host/port — so the regex matches even without
-      // stripping them.
       const match = buffer.match(
         /https?:\/\/(?:localhost|127\.0\.0\.1):(\d+)\/?/,
       );
       if (match) {
         clearTimeout(timer);
         child.stdout?.off("data", onData);
-        // Normalise to http://localhost:<port> so Lighthouse and Chrome
-        // see the same host string regardless of which one Astro printed.
         resolve(`http://localhost:${match[1]}`);
       }
     };

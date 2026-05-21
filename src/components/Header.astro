@@ -17,7 +17,7 @@ import HeartGoldSvg from './HeartGoldSvg.astro';
     </div>
   </header>
 </div>
-<nav class="primary-nav row no-margin middle-xs shadow" aria-label="Primary">
+<nav class="row no-margin middle-xs shadow" aria-label="Primary">
   <ul class="header-links col-xs-12">
     <li><a href="#about_me">#about_me</a></li>
     <li><a href="#projects">#projects</a></li>
@@ -26,7 +26,7 @@ import HeartGoldSvg from './HeartGoldSvg.astro';
   </ul>
 </nav>
 
-<style is:global>
+<style>
   .header-links li {
     display: inline;
   }
@@ -34,10 +34,6 @@ import HeartGoldSvg from './HeartGoldSvg.astro';
   .logo {
     display: flex;
     align-items: center;
-  }
-
-  .logo object {
-    height: 6em;
   }
 
   .header-bleed {
@@ -74,7 +70,7 @@ import HeartGoldSvg from './HeartGoldSvg.astro';
     margin: 0;
   }
 
-  .primary-nav {
+  nav {
     background-color: var(--surface-bottom);
     background-image:
       var(--noise-image),
@@ -95,7 +91,7 @@ import HeartGoldSvg from './HeartGoldSvg.astro';
     padding: 0 1em;
   }
 
-  .primary-nav ul.header-links {
+  nav ul.header-links {
     background: transparent;
     margin: 0 auto;
     padding-top: 0;
@@ -106,7 +102,7 @@ import HeartGoldSvg from './HeartGoldSvg.astro';
     list-style: none;
   }
 
-  .primary-nav a {
+  nav a {
     padding: 0.65em 0.5em;
     display: inline-block;
   }

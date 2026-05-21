@@ -40,22 +40,18 @@ import me from '../assets/me.jpg';
   </div>
 </div>
 
-<style is:global>
+<style>
   .profileImage {
     width: 100%;
     max-width: 300px;
   }
 
-  /* <Picture> nests the <img> inside a <picture> element, so the layout
-     constraints live two selectors deep. aspect-ratio is set on the img
-     itself so the box is square the moment the element is parsed —
-     before the layout has settled or the bitmap has arrived. */
-  .profileImage > picture {
+  .profileImage > :global(picture) {
     display: block;
     line-height: 0;
   }
 
-  .profileImage img {
+  .profileImage :global(img) {
     width: 100%;
     height: auto;
     aspect-ratio: 1 / 1;
