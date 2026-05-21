@@ -11,9 +11,6 @@ importers:
       astro:
         specifier: ^6.2.2
         version: 6.2.2(@types/node@25.6.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.3)(yaml@2.8.4)
-      flexboxgrid:
-        specifier: ^6.3.1
-        version: 6.3.1
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.9
@@ -2050,9 +2047,6 @@ packages:
   flattie@1.1.1:
     resolution: {integrity: sha512-9UbaD6XdAL97+k/n+N7JwX46K/M6Zc6KcFYskrYL8wbBV/Uyk0CTAMY0VT+qiK5PM7AIc9aTWYtq65U7T+aCNQ==}
     engines: {node: '>=8'}
-
-  flexboxgrid@6.3.1:
-    resolution: {integrity: sha512-OS//6OHK9i3Hy5mLwD49uRYvnZ9fdfSkq7omO5uJPA2CD7JeBuDY7xleqN1h3MGJZNvKUskyNTv0ot0JKvOAsg==}
 
   fontace@0.4.1:
     resolution: {integrity: sha512-lDMvbAzSnHmbYMTEld5qdtvNH2/pWpICOqpean9IgC7vUbUJc3k+k5Dokp85CegamqQpFbXf0rAVkbzpyTA8aw==}
@@ -5489,8 +5483,6 @@ snapshots:
   flatted@3.4.2: {}
 
   flattie@1.1.1: {}
-
-  flexboxgrid@6.3.1: {}
 
   fontace@0.4.1:
     dependencies:

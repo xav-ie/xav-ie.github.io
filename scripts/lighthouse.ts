@@ -4,7 +4,9 @@
  * Lighthouse against it, fail if any category drops below the threshold.
  *
  * Env vars:
- *   PORT=4321               which port to serve on
+ *   PORT=4321               preferred port; astro preview will pick the
+ *                           next free one if it's taken, and we'll use
+ *                           whichever port it actually binds
  *   FORM_FACTOR=mobile      mobile|desktop
  *   SKIP_BUILD=1            reuse existing dist/
  *   LIGHTHOUSE_MIN=100      minimum category score to count as a pass
@@ -17,8 +19,7 @@ import lighthouse from "lighthouse";
 
 type FormFactor = "mobile" | "desktop";
 
-const PORT = Number(process.env.PORT ?? 4321);
-const URL = `http://localhost:${PORT}`;
+const PREFERRED_PORT = Number(process.env.PORT ?? 4321);
 const FORM_FACTOR = (process.env.FORM_FACTOR ?? "mobile") as FormFactor;
 const MIN_SCORE = Number(process.env.LIGHTHOUSE_MIN ?? 100);
 const SKIP_BUILD = process.env.SKIP_BUILD === "1";
@@ -32,9 +33,9 @@ if (!SKIP_BUILD) {
   console.log("done");
 }
 
-console.log(`→ Starting astro preview on :${PORT}…`);
-const preview = spawn("pnpm", ["preview", "--port", String(PORT)], {
-  stdio: ["ignore", "ignore", "inherit"],
+console.log(`→ Starting astro preview (preferred :${PREFERRED_PORT})…`);
+const preview = spawn("pnpm", ["preview", "--port", String(PREFERRED_PORT)], {
+  stdio: ["ignore", "pipe", "inherit"],
 });
 const cleanup = makeCleanup(preview);
 process.on("SIGINT", () => {
@@ -47,7 +48,8 @@ process.on("SIGTERM", () => {
 });
 
 try {
-  await waitForServer(URL, 10_000);
+  const URL = await waitForPreviewUrl(preview, 15_000);
+  console.log(`  preview ready at ${URL}`);
 
   console.log("→ Launching Chrome…");
   const chrome = await chromeLauncher.launch({
@@ -130,18 +132,43 @@ function runQuiet(cmd: string, arguments_: string[]) {
   });
 }
 
-async function waitForServer(url: string, timeoutMs: number) {
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    try {
-      const response = await fetch(url);
-      if (response.ok) return;
-    } catch {
-      // not up yet
-    }
-    await new Promise((r) => setTimeout(r, 200));
-  }
-  throw new Error(`Server did not respond at ${url} within ${timeoutMs}ms`);
+// Astro preview falls back to the next free port when its requested
+// one is taken, so we trust its stdout banner ("Local  http://localhost:4322/")
+// rather than the port we asked for. Then we verify the URL responds.
+function waitForPreviewUrl(
+  child: ChildProcess,
+  timeoutMs: number,
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    let buffer = "";
+    const timer = setTimeout(() => {
+      child.stdout?.off("data", onData);
+      reject(new Error(`astro preview produced no URL within ${timeoutMs}ms`));
+    }, timeoutMs);
+
+    const onData = (chunk: Buffer) => {
+      buffer += chunk.toString();
+      // Astro colourises the URL with ANSI escapes that wrap, but never
+      // appear inside, the host/port — so the regex matches even without
+      // stripping them.
+      const match = buffer.match(
+        /https?:\/\/(?:localhost|127\.0\.0\.1):(\d+)\/?/,
+      );
+      if (match) {
+        clearTimeout(timer);
+        child.stdout?.off("data", onData);
+        // Normalise to http://localhost:<port> so Lighthouse and Chrome
+        // see the same host string regardless of which one Astro printed.
+        resolve(`http://localhost:${match[1]}`);
+      }
+    };
+
+    child.stdout?.on("data", onData);
+    child.once("exit", (code) => {
+      clearTimeout(timer);
+      reject(new Error(`astro preview exited (${code}) before printing a URL`));
+    });
+  });
 }
 
 function pad(n: number): string {

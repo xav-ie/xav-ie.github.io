@@ -9,14 +9,16 @@ import Doodles from '../components/Doodles.astro';
 import Footer from '../components/Footer.astro';
 import me from '../assets/me.jpg';
 
-// Pre-resolve the LCP avatar so the preload <link> points at the same
-// hashed asset URLs that <Image> will request from AboutMe.astro.
-// Astro deduplicates the underlying image transforms, so this doesn't
-// generate extra output.
+// Pre-resolve the LCP avatar as AVIF so the preload <link> matches the
+// first <source> in the <Picture> in AboutMe.astro. Browsers that don't
+// support AVIF skip this preload (per the type hint) and fetch the WebP
+// fallback from <picture>. Astro deduplicates the image transform, so
+// this does not generate an extra build artifact.
 const meOptimized = await getImage({
   src: me,
+  format: 'avif',
   widths: [300, 600],
-  sizes: '(min-width: 75em) 300px, (min-width: 48em) 33vw, 100vw',
+  sizes: '300px',
 });
 ---
 
@@ -25,6 +27,7 @@ const meOptimized = await getImage({
     slot="head"
     rel="preload"
     as="image"
+    type="image/avif"
     href={meOptimized.src}
     imagesrcset={meOptimized.srcSet.attribute}
     imagesizes={meOptimized.attributes.sizes}

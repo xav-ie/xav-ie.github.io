@@ -1,5 +1,4 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignore": [".astro/**", "public/projects/**"],
-  "ignoreDependencies": ["flexboxgrid"]
+  "ignore": [".astro/**", "public/projects/**"]
 }

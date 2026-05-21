@@ -1,23 +1,207 @@
-@import "flexboxgrid/css/flexboxgrid.min.css";
+/* Minimal 12-column grid utilities — mirrors the flexboxgrid class
+   names this site already uses (.row, .col-xs-12, .col-sm-4, etc.) at
+   the same breakpoints (xs <48em, sm ≥48em, md ≥64em, lg ≥75em) so
+   markup stays unchanged. Implemented with CSS Grid instead of
+   flexboxgrid because the site only uses ~10 rules from the library,
+   and inlining them ourselves drops ~30 KB of CSS the bundler used to
+   ship.
+
+   .row is the 12-col base. More-specific overrides later in this file
+   (.section > ul.row, .section > ul.row.masonry-grid) intentionally
+   reshape rows that need a 2-col grid or a CSS-columns masonry — those
+   still win on specificity, so the cascade is preserved. */
+.row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.middle-xs {
+  align-items: center;
+}
+
+/* Full 12-col span utilities at every breakpoint. col-xs-* is the
+   mobile-first base; col-sm-* / col-md-* / col-lg-* override at
+   ≥48em / ≥64em / ≥75em respectively. grid-column: span N on a
+   non-grid parent is a no-op, so the utilities are safe on children
+   of overridden rows (e.g., .masonry-grid uses CSS columns). */
+.col-xs-1 {
+  grid-column: span 1;
+}
+.col-xs-2 {
+  grid-column: span 2;
+}
+.col-xs-3 {
+  grid-column: span 3;
+}
+.col-xs-4 {
+  grid-column: span 4;
+}
+.col-xs-5 {
+  grid-column: span 5;
+}
+.col-xs-6 {
+  grid-column: span 6;
+}
+.col-xs-7 {
+  grid-column: span 7;
+}
+.col-xs-8 {
+  grid-column: span 8;
+}
+.col-xs-9 {
+  grid-column: span 9;
+}
+.col-xs-10 {
+  grid-column: span 10;
+}
+.col-xs-11 {
+  grid-column: span 11;
+}
+.col-xs-12 {
+  grid-column: span 12;
+}
+
+@media (min-width: 48em) {
+  .col-sm-1 {
+    grid-column: span 1;
+  }
+  .col-sm-2 {
+    grid-column: span 2;
+  }
+  .col-sm-3 {
+    grid-column: span 3;
+  }
+  .col-sm-4 {
+    grid-column: span 4;
+  }
+  .col-sm-5 {
+    grid-column: span 5;
+  }
+  .col-sm-6 {
+    grid-column: span 6;
+  }
+  .col-sm-7 {
+    grid-column: span 7;
+  }
+  .col-sm-8 {
+    grid-column: span 8;
+  }
+  .col-sm-9 {
+    grid-column: span 9;
+  }
+  .col-sm-10 {
+    grid-column: span 10;
+  }
+  .col-sm-11 {
+    grid-column: span 11;
+  }
+  .col-sm-12 {
+    grid-column: span 12;
+  }
+}
+
+@media (min-width: 64em) {
+  .col-md-1 {
+    grid-column: span 1;
+  }
+  .col-md-2 {
+    grid-column: span 2;
+  }
+  .col-md-3 {
+    grid-column: span 3;
+  }
+  .col-md-4 {
+    grid-column: span 4;
+  }
+  .col-md-5 {
+    grid-column: span 5;
+  }
+  .col-md-6 {
+    grid-column: span 6;
+  }
+  .col-md-7 {
+    grid-column: span 7;
+  }
+  .col-md-8 {
+    grid-column: span 8;
+  }
+  .col-md-9 {
+    grid-column: span 9;
+  }
+  .col-md-10 {
+    grid-column: span 10;
+  }
+  .col-md-11 {
+    grid-column: span 11;
+  }
+  .col-md-12 {
+    grid-column: span 12;
+  }
+}
+
+@media (min-width: 75em) {
+  .col-lg-1 {
+    grid-column: span 1;
+  }
+  .col-lg-2 {
+    grid-column: span 2;
+  }
+  .col-lg-3 {
+    grid-column: span 3;
+  }
+  .col-lg-4 {
+    grid-column: span 4;
+  }
+  .col-lg-5 {
+    grid-column: span 5;
+  }
+  .col-lg-6 {
+    grid-column: span 6;
+  }
+  .col-lg-7 {
+    grid-column: span 7;
+  }
+  .col-lg-8 {
+    grid-column: span 8;
+  }
+  .col-lg-9 {
+    grid-column: span 9;
+  }
+  .col-lg-10 {
+    grid-column: span 10;
+  }
+  .col-lg-11 {
+    grid-column: span 11;
+  }
+  .col-lg-12 {
+    grid-column: span 12;
+  }
+}
 
 /* Metric-matched fallbacks for Sorts Mill Goudy, tuned per system font.
    The headings stack tries them in order: Palatino (macOS) first, then
-   Noto Serif (Android / many Linux distros). Each carries its own
-   descriptor overrides so glyph widths and baselines approximate Sorts
-   Mill Goudy until the web font swaps in. Tuned via /font-tuner. */
+   Noto Serif (Android / many Linux distros), then Georgia / Times New
+   Roman (Windows). Each carries its own descriptor overrides so glyph
+   widths and baselines approximate Sorts Mill Goudy until the web font
+   swaps in. Tuned via /font-tuner/heading. */
 @font-face {
   font-family: "Sorts Mill Goudy Fallback Palatino";
   src: local("Palatino");
-  size-adjust: 99.5%;
+  size-adjust: 97.5%;
   ascent-override: 73.5%;
   descent-override: 22.5%;
   line-gap-override: 0%;
 }
 
 @font-face {
-  font-family: "Sorts Mill Goudy Fallback Noto";
+  font-family: "Sorts Mill Goudy Fallback Noto Serif";
   src: local("Noto Serif");
-  size-adjust: 91%;
+  size-adjust: 92%;
   ascent-override: 76.5%;
   descent-override: 22.5%;
   line-gap-override: 0%;
@@ -29,6 +213,15 @@
   size-adjust: 98.5%;
   ascent-override: 74%;
   descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Sorts Mill Goudy Fallback Times New Roman";
+  src: local("Times New Roman");
+  size-adjust: 103%;
+  ascent-override: 70.5%;
+  descent-override: 22%;
   line-gap-override: 0%;
 }
 
@@ -81,15 +274,19 @@
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
 
+  /* astro:fonts registers --font-ibm-plex-sans / --font-sorts-mill-goudy
+     against a hashed @font-face family name, so reference them via var()
+     rather than the literal "IBM Plex Sans" / "Sorts Mill Goudy" strings.
+     The downstream fallbacks remain hand-tuned for metric matching. */
   --font-body:
-    "IBM Plex Sans", "IBM Plex Sans Fallback Helvetica Neue",
+    var(--font-ibm-plex-sans), "IBM Plex Sans Fallback Helvetica Neue",
     "IBM Plex Sans Fallback Roboto", "IBM Plex Sans Fallback Noto Sans",
     var(--font-system-sans);
   --font-code: var(--font-system-mono);
   --font-heading:
-    "Sorts Mill Goudy", "Sorts Mill Goudy Fallback Palatino",
-    "Sorts Mill Goudy Fallback Noto", "Sorts Mill Goudy Fallback Georgia",
-    "Times New Roman", serif;
+    var(--font-sorts-mill-goudy), "Sorts Mill Goudy Fallback Palatino",
+    "Sorts Mill Goudy Fallback Noto Serif", "Sorts Mill Goudy Fallback Georgia",
+    "Sorts Mill Goudy Fallback Times New Roman", serif;
 
   --noise-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' seed='0' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.02 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   --noise-size: 340px 340px;
@@ -226,7 +423,13 @@ h3 {
   transform: translateY(-1px);
 }
 
-.image-frame > img,
+.image-frame > picture {
+  display: block;
+  line-height: 0;
+  border-radius: inherit;
+}
+
+.image-frame img,
 .image-frame > svg,
 .image-frame > video {
   display: block;
@@ -275,26 +478,10 @@ main {
   margin: 0.25em 0 1em;
 }
 
-.section > ul.row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  margin: 0;
-}
-
-@media (min-width: 48em) {
-  .section > ul.row {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.section > ul.row > li {
-  padding: 0;
-  max-width: none;
-}
-
 /* CSS columns layout for Projects + Doodles (no JS). Items flow
-   column-major: top → bottom of column 1, then column 2. */
+   column-major: top → bottom of column 1, then column 2. Overrides
+   the .row grid display because masonry-via-columns can't be done
+   with CSS Grid. */
 .section > ul.row.masonry-grid {
   display: block;
   margin: 0;
@@ -351,7 +538,12 @@ main {
   width: 100%;
 }
 
-.cardImage .image-frame > img,
+.cardImage .image-frame > picture {
+  width: 100%;
+  height: 100%;
+}
+
+.cardImage .image-frame img,
 .cardImage .image-frame > svg,
 .cardImage .image-frame > video {
   width: 100%;
@@ -426,4 +618,28 @@ main {
   font-weight: 600;
   text-shadow: 0 2px 6px var(--shadow);
   word-break: break-word;
+}
+
+/* Honour OS-level "reduce motion" (Accessibility → Reduce Motion on macOS /
+   iOS, Settings → Ease of Access → Animations on Windows, similar on
+   GNOME/KDE). Vestibular-sensitive users get static styling: hover lifts
+   become no-ops and transitions snap to their end state instantly. Colour
+   and box-shadow changes still update, so focus/hover still have a visible
+   cue — just no spatial movement. Default users see motion exactly as
+   before. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+
+  .shadow:not(.card, .profileImage, nav, footer, .image-frame):hover,
+  .image-frame:hover,
+  .oss-card:hover {
+    transform: none;
+  }
 }

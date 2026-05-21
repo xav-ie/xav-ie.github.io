@@ -1,0 +1,612 @@
+---
+// Dev-only tuning page for the site fonts. Open
+// http://localhost:4321/font-tuner/body or /font-tuner/heading.
+// Overlay the fallback and the loaded web font, slide @font-face
+// descriptors until they visually align, then paste the generated
+// @font-face into src/styles/global.css.
+//
+// The loaded font comes from astro:fonts (the same subset+@font-face
+// shipped to production), so tuning here matches what users actually
+// see — unlike a generic Google Fonts CDN load.
+//
+// This is a dynamic route (rather than ?target=… query params) because
+// static builds resolve Astro.url.searchParams *once* at build time, so
+// query-param switching produced one page that always rendered the
+// default target. getStaticPaths generates one static page per target.
+
+import { Font } from 'astro:assets';
+
+type Preset = {
+  name: string;
+  sizeAdjust: number;
+  ascent: number;
+  descent: number;
+  lineGap: number;
+  srcUrl?: string;
+};
+
+type Sample = {
+  label: string;
+  text: string;
+  size: string;
+  weight?: number;
+};
+
+type Target = {
+  label: string;
+  // CSS variable defined by <Font cssVariable="..." /> that resolves to
+  // the hashed family name astro:fonts registers.
+  cssVariable: string;
+  fallbackPrefix: string;
+  // Generic fallback used in the fallback stack when no font matches
+  // (purely cosmetic for the tuner UI; production stacks handle this).
+  genericFallback: string;
+  presets: Preset[];
+  samples: Sample[];
+};
+
+const targets: Record<'body' | 'heading', Target> = {
+  body: {
+    label: 'Body (IBM Plex Sans)',
+    cssVariable: '--font-ibm-plex-sans',
+    fallbackPrefix: 'IBM Plex Sans Fallback',
+    genericFallback: 'sans-serif',
+    // Seeded from current production values in src/styles/global.css.
+    presets: [
+      { name: 'Helvetica Neue',  sizeAdjust: 101,   ascent: 95,    descent: 23, lineGap: 0 },
+      { name: 'Helvetica',       sizeAdjust: 100,   ascent: 95,    descent: 23, lineGap: 0 },
+      { name: 'Arial',           sizeAdjust: 105,   ascent: 90,    descent: 22, lineGap: 0 },
+      { name: 'Segoe UI',        sizeAdjust: 95,    ascent: 100,   descent: 25, lineGap: 0 },
+      {
+        name: 'Roboto',
+        sizeAdjust: 105.5,
+        ascent: 103.5,
+        descent: 25,
+        lineGap: 0,
+        srcUrl:
+          'https://cdn.jsdelivr.net/fontsource/fonts/roboto@latest/latin-400-normal.woff2',
+      },
+      {
+        name: 'Noto Sans',
+        sizeAdjust: 99.5,
+        ascent: 100,
+        descent: 25,
+        lineGap: 0,
+        srcUrl:
+          'https://cdn.jsdelivr.net/fontsource/fonts/noto-sans@latest/latin-400-normal.woff2',
+      },
+    ],
+    samples: [
+      {
+        label: 'Paragraph (intro)',
+        size: '1em',
+        text: "Hi, I'm Xavier and I live in Boston. I currently work in the e-commerce space, building tools to make stores fast, accessible, and well-tested.",
+      },
+      {
+        label: 'Project description',
+        size: '1em',
+        text: 'An email client that runs inside Neovim. Threaded message lists, structured per-field search, in-buffer composing with auto-saved drafts.',
+      },
+      {
+        label: 'Date / caption',
+        size: '0.9em',
+        text: 'February 2026 – Present',
+      },
+      {
+        label: 'Bold title',
+        size: '1.1em',
+        weight: 600,
+        text: 'himalaya-nvim',
+      },
+    ],
+  },
+  heading: {
+    label: 'Heading (Sorts Mill Goudy)',
+    cssVariable: '--font-sorts-mill-goudy',
+    fallbackPrefix: 'Sorts Mill Goudy Fallback',
+    genericFallback: 'serif',
+    // Seeded from current production values in src/styles/global.css.
+    presets: [
+      { name: 'Palatino',     sizeAdjust: 97.5, ascent: 73.5, descent: 22.5, lineGap: 0 },
+      {
+        name: 'Noto Serif',
+        sizeAdjust: 92,
+        ascent: 76.5,
+        descent: 22.5,
+        lineGap: 0,
+        srcUrl:
+          'https://cdn.jsdelivr.net/fontsource/fonts/noto-serif@latest/latin-400-normal.woff2',
+      },
+      { name: 'Georgia',      sizeAdjust: 98.5, ascent: 74,   descent: 22.5, lineGap: 0 },
+      { name: 'Times New Roman', sizeAdjust: 103, ascent: 70.5, descent: 22, lineGap: 0 },
+    ],
+    samples: [
+      {
+        label: 'Page title (h1)',
+        size: '2.5em',
+        text: 'Xavier Ruiz',
+      },
+      {
+        label: 'Subtitle (h2)',
+        size: '1.5em',
+        text: 'Software Developer',
+      },
+      {
+        label: 'Section heading (h2)',
+        size: '1.75em',
+        text: 'Projects',
+      },
+      {
+        label: 'About paragraph',
+        size: '1em',
+        text: "Hi, I'm Xavier and I live in Boston. I currently work in the e-commerce space, building tools to make stores fast, accessible.",
+      },
+    ],
+  },
+};
+
+export function getStaticPaths() {
+  // Dev-only tool: returning [] in production means Astro emits no
+  // /font-tuner/* routes into dist, so the page can't be hit on xav.ie
+  // and crawlers never see it. In dev the route is generated normally.
+  if (!import.meta.env.DEV) return [];
+  return [
+    { params: { target: 'body' } },
+    { params: { target: 'heading' } },
+  ];
+}
+
+const { target: targetId } = Astro.params as { target: keyof typeof targets };
+const target = targets[targetId];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{target.label} — Font Tuner</title>
+    {/* Load every web font on every page variant so toggling between
+        targets via the nav doesn't re-fetch — and so the loaded font
+        matches exactly what astro:fonts ships in production. */}
+    <Font cssVariable="--font-ibm-plex-sans" />
+    <Font cssVariable="--font-sorts-mill-goudy" />
+    <style>
+      :root {
+        --bg: #12081a;
+        --fg: #fff17b;
+        --alt: #51d136;
+        --fallback-color: #ff5c8a;
+        --loaded-color: #6cd9ff;
+        --panel: rgba(255, 255, 255, 0.06);
+        --rule: rgba(255, 255, 255, 0.08);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 2rem;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.5;
+      }
+      h1 { margin: 0 0 0.25em; }
+      .lede { opacity: 0.8; max-width: 60ch; margin: 0 0 1.5em; }
+
+      .target-nav {
+        display: flex;
+        gap: 0.5em;
+        margin-bottom: 1.25em;
+      }
+      .target-nav a {
+        color: var(--fg);
+        text-decoration: none;
+        padding: 0.4em 0.8em;
+        border: 1px solid var(--rule);
+        border-radius: 6px;
+        opacity: 0.7;
+      }
+      .target-nav a[aria-current="page"] {
+        background: var(--alt);
+        color: var(--bg);
+        border-color: var(--alt);
+        opacity: 1;
+      }
+
+      .legend {
+        display: flex;
+        gap: 1em;
+        margin-bottom: 1em;
+        font-size: 0.9em;
+      }
+      .swatch {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4em;
+      }
+      .swatch::before {
+        content: "";
+        display: inline-block;
+        width: 12px; height: 12px;
+        background: currentColor;
+        border-radius: 2px;
+      }
+      .swatch-fallback { color: var(--fallback-color); }
+      .swatch-loaded { color: var(--loaded-color); }
+
+      .layout {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: 320px 1fr;
+        align-items: start;
+      }
+      @media (max-width: 800px) {
+        .layout { grid-template-columns: 1fr; }
+      }
+
+      .controls {
+        position: sticky;
+        top: 1rem;
+        background: var(--panel);
+        padding: 1.25rem;
+        border-radius: 12px;
+        border: 1px solid var(--rule);
+        display: grid;
+        gap: 1rem;
+      }
+      .control { display: grid; gap: 0.35em; }
+      .control label { font-size: 0.85em; opacity: 0.85; }
+      .control select, .control input[type="range"] { width: 100%; }
+      .control .value {
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        color: var(--alt);
+      }
+      .radios { display: grid; gap: 0.3em; }
+      .radio {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        padding: 0.35em 0.5em;
+        border-radius: 6px;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+      .radio:hover { background: rgba(255, 255, 255, 0.04); }
+      .radio:has(input:checked) {
+        background: rgba(81, 209, 54, 0.12);
+        border-color: var(--alt);
+      }
+      .radio input { accent-color: var(--alt); }
+      .mode {
+        display: flex;
+        gap: 0.5em;
+        flex-wrap: wrap;
+      }
+      .mode button {
+        flex: 1;
+        background: transparent;
+        border: 1px solid var(--rule);
+        color: var(--fg);
+        padding: 0.4em 0.6em;
+        border-radius: 6px;
+        cursor: pointer;
+        font: inherit;
+      }
+      .mode button[aria-pressed="true"] {
+        background: var(--alt);
+        color: var(--bg);
+        border-color: var(--alt);
+      }
+
+      .preview { display: grid; gap: 1.5em; }
+      .sample {
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        padding: 1em 1.25em;
+        background: rgba(0, 0, 0, 0.25);
+      }
+      .sample-label {
+        font-size: 0.8em;
+        opacity: 0.6;
+        margin-bottom: 0.5em;
+        font-family: ui-monospace, SFMono-Regular, monospace;
+      }
+      .stack { position: relative; }
+      .layer {
+        margin: 0;
+        line-height: 1.4;
+      }
+      .layer-fallback {
+        font-family: 'Tuned Fallback', var(--web-fallback);
+        color: var(--fallback-color);
+      }
+      .layer-loaded {
+        position: absolute;
+        inset: 0;
+        font-family: var(--web-font);
+        color: var(--loaded-color);
+        pointer-events: none;
+      }
+      body[data-mode="fallback"] .layer-loaded { display: none; }
+      body[data-mode="loaded"] .layer-fallback { visibility: hidden; }
+      body[data-mode="loaded"] .layer-loaded { position: static; }
+
+      .output {
+        margin-top: 2em;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--rule);
+        border-radius: 10px;
+        padding: 1em 1.25em;
+      }
+      .output pre {
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-size: 0.85em;
+        margin: 0.5em 0 0;
+        overflow-x: auto;
+        color: var(--alt);
+        white-space: pre-wrap;
+      }
+      .copy {
+        background: var(--alt);
+        color: var(--bg);
+        border: none;
+        padding: 0.5em 0.9em;
+        border-radius: 6px;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 600;
+      }
+      .copy:active { transform: translateY(1px); }
+    </style>
+    <style id="tuned-face" is:inline></style>
+  </head>
+  <body
+    data-mode="overlay"
+    data-target={targetId}
+    data-fallback-prefix={target.fallbackPrefix}
+    style={`--web-font: var(${target.cssVariable}); --web-fallback: ${target.genericFallback};`}
+  >
+    <h1>Font Tuner — {target.label}</h1>
+    <p class="lede">
+      Tune <code>@font-face</code> descriptors on a local fallback so it
+      matches the loaded web font's metrics. Pink = your tuned fallback;
+      blue = the loaded web font (the same <code>astro:fonts</code>
+      subset shipped to production). When pink hides behind blue, the
+      swap will be invisible.
+    </p>
+
+    <nav class="target-nav" aria-label="Tuning target">
+      <a href="/font-tuner/body" aria-current={targetId === 'body' ? 'page' : undefined}>
+        Body
+      </a>
+      <a href="/font-tuner/heading" aria-current={targetId === 'heading' ? 'page' : undefined}>
+        Heading
+      </a>
+    </nav>
+
+    <div class="legend">
+      <span class="swatch swatch-fallback">tuned fallback</span>
+      <span class="swatch swatch-loaded">{target.label}</span>
+    </div>
+
+    <div class="layout">
+      <aside class="controls">
+        <div class="control">
+          <label>Fallback font</label>
+          <div class="radios" role="radiogroup" aria-label="Fallback font">
+            {target.presets.map((f, i) => (
+              <label class="radio">
+                <input
+                  type="radio"
+                  name="fallback"
+                  value={f.name}
+                  data-size-adjust={f.sizeAdjust}
+                  data-ascent={f.ascent}
+                  data-descent={f.descent}
+                  data-line-gap={f.lineGap}
+                  data-src-url={f.srcUrl ?? ''}
+                  checked={i === 0}
+                />
+                <span>{f.name}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div class="control">
+          <label for="size-adjust">
+            size-adjust <span class="value" id="v-size-adjust">100%</span>
+          </label>
+          <input id="size-adjust" type="range" min="50" max="200" step="0.5" value="100" />
+        </div>
+
+        <div class="control">
+          <label for="ascent-override">
+            ascent-override <span class="value" id="v-ascent-override">90%</span>
+          </label>
+          <input id="ascent-override" type="range" min="50" max="150" step="0.5" value="90" />
+        </div>
+
+        <div class="control">
+          <label for="descent-override">
+            descent-override <span class="value" id="v-descent-override">22%</span>
+          </label>
+          <input id="descent-override" type="range" min="0" max="60" step="0.5" value="22" />
+        </div>
+
+        <div class="control">
+          <label for="line-gap-override">
+            line-gap-override <span class="value" id="v-line-gap-override">0%</span>
+          </label>
+          <input id="line-gap-override" type="range" min="0" max="60" step="0.5" value="0" />
+        </div>
+
+        <div class="control">
+          <label>View</label>
+          <div class="mode" role="group" aria-label="View mode">
+            <button data-mode="overlay" aria-pressed="true">Overlay</button>
+            <button data-mode="fallback" aria-pressed="false">Fallback only</button>
+            <button data-mode="loaded" aria-pressed="false">Loaded only</button>
+          </div>
+        </div>
+      </aside>
+
+      <section class="preview">
+        {target.samples.map((s) => (
+          <div class="sample">
+            <div class="sample-label">{s.label}</div>
+            <div
+              class="stack"
+              style={`font-size:${s.size};${s.weight ? `font-weight:${s.weight};` : ''}`}
+            >
+              <div class="layer layer-fallback">{s.text}</div>
+              <div class="layer layer-loaded">{s.text}</div>
+            </div>
+          </div>
+        ))}
+
+        <div class="output">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:1em">
+            <strong>Generated CSS</strong>
+            <button class="copy" id="copy">Copy</button>
+          </div>
+          <pre id="generated"></pre>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const $ = <T extends Element = Element>(sel: string) =>
+        document.querySelector(sel) as T;
+
+      const body = document.body;
+      const fallbackPrefix = body.dataset.fallbackPrefix ?? 'Fallback';
+
+      const tunedFace = $('#tuned-face') as HTMLStyleElement;
+      const generated = $('#generated') as HTMLPreElement;
+
+      const fields = {
+        sizeAdjust: $('#size-adjust') as HTMLInputElement,
+        ascent: $('#ascent-override') as HTMLInputElement,
+        descent: $('#descent-override') as HTMLInputElement,
+        lineGap: $('#line-gap-override') as HTMLInputElement,
+      };
+      const valueLabels = {
+        sizeAdjust: $('#v-size-adjust') as HTMLSpanElement,
+        ascent: $('#v-ascent-override') as HTMLSpanElement,
+        descent: $('#v-descent-override') as HTMLSpanElement,
+        lineGap: $('#v-line-gap-override') as HTMLSpanElement,
+      };
+
+      const radios = document.querySelectorAll<HTMLInputElement>(
+        'input[name="fallback"]',
+      );
+      const getSelectedRadio = () =>
+        Array.from(radios).find((r) => r.checked) ?? radios[0];
+      const getFallback = () => getSelectedRadio().value;
+      const getSrcUrl = () => getSelectedRadio().dataset.srcUrl ?? '';
+
+      function render() {
+        const fallback = getFallback();
+        const srcUrl = getSrcUrl();
+        const sizeAdjust = fields.sizeAdjust.value;
+        const ascent = fields.ascent.value;
+        const descent = fields.descent.value;
+        const lineGap = fields.lineGap.value;
+
+        valueLabels.sizeAdjust.textContent = `${sizeAdjust}%`;
+        valueLabels.ascent.textContent = `${ascent}%`;
+        valueLabels.descent.textContent = `${descent}%`;
+        valueLabels.lineGap.textContent = `${lineGap}%`;
+
+        const src = srcUrl
+          ? `local('${fallback}'), url('${srcUrl}') format('woff2')`
+          : `local('${fallback}')`;
+
+        const productionFamily = `${fallbackPrefix} ${fallback}`;
+        const previewCss = `@font-face {
+  font-family: 'Tuned Fallback';
+  src: ${src};
+  size-adjust: ${sizeAdjust}%;
+  ascent-override: ${ascent}%;
+  descent-override: ${descent}%;
+  line-gap-override: ${lineGap}%;
+}`;
+        const productionCss = `@font-face {
+  font-family: "${productionFamily}";
+  src: local("${fallback}");
+  size-adjust: ${sizeAdjust}%;
+  ascent-override: ${ascent}%;
+  descent-override: ${descent}%;
+  line-gap-override: ${lineGap}%;
+}`;
+
+        tunedFace.textContent = previewCss;
+        generated.textContent = productionCss;
+
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.set('f', fallback);
+          url.searchParams.set('sa', sizeAdjust);
+          url.searchParams.set('a', ascent);
+          url.searchParams.set('d', descent);
+          url.searchParams.set('lg', lineGap);
+          history.replaceState(null, '', url.toString());
+        } catch {}
+      }
+
+      // Restore from URL so settings can be shared / refreshed.
+      const params = new URLSearchParams(window.location.search);
+      const urlFallback = params.get('f');
+      if (urlFallback) {
+        const match = Array.from(radios).find((r) => r.value === urlFallback);
+        if (match) match.checked = true;
+      }
+      const initial = getSelectedRadio();
+      fields.sizeAdjust.value = initial.dataset.sizeAdjust ?? '100';
+      fields.ascent.value = initial.dataset.ascent ?? '90';
+      fields.descent.value = initial.dataset.descent ?? '22';
+      fields.lineGap.value = initial.dataset.lineGap ?? '0';
+      if (params.get('sa')) fields.sizeAdjust.value = params.get('sa')!;
+      if (params.get('a')) fields.ascent.value = params.get('a')!;
+      if (params.get('d')) fields.descent.value = params.get('d')!;
+      if (params.get('lg')) fields.lineGap.value = params.get('lg')!;
+
+      for (const el of Object.values(fields)) {
+        el.addEventListener('input', render);
+      }
+
+      for (const r of radios) {
+        r.addEventListener('change', () => {
+          if (!r.checked) return;
+          fields.sizeAdjust.value = r.dataset.sizeAdjust ?? '100';
+          fields.ascent.value = r.dataset.ascent ?? '90';
+          fields.descent.value = r.dataset.descent ?? '22';
+          fields.lineGap.value = r.dataset.lineGap ?? '0';
+          render();
+        });
+      }
+
+      document.querySelectorAll<HTMLButtonElement>('.mode button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.dataset.mode!;
+          document.body.dataset.mode = mode;
+          document.querySelectorAll<HTMLButtonElement>('.mode button').forEach((b) => {
+            b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
+          });
+        });
+      });
+
+      ($('#copy') as HTMLButtonElement).addEventListener('click', async () => {
+        const btn = $('#copy') as HTMLButtonElement;
+        await navigator.clipboard.writeText(generated.textContent ?? '');
+        const original = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 1200);
+      });
+
+      render();
+    </script>
+  </body>
+</html>

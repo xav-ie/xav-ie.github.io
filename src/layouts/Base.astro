@@ -1,4 +1,5 @@
 ---
+import { Font } from 'astro:assets';
 import '../styles/global.css';
 
 type Props = {
@@ -10,6 +11,36 @@ const {
   title = 'xav.ie',
   description = 'Personal site of Xavier Ruiz — a full-stack developer in Boston.',
 } = Astro.props as Props;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Xavier Ruiz',
+  url: 'https://xav.ie',
+  email: 'hello@xav.ie',
+  jobTitle: 'Software Developer',
+  homeLocation: { '@type': 'Place', name: 'Boston, Massachusetts' },
+  knowsAbout: [
+    'TypeScript',
+    'Rust',
+    'Nix',
+    'NixOS',
+    'Neovim',
+    'Lua',
+    'Nushell',
+    'PipeWire',
+    'D-Bus',
+    'Model Context Protocol',
+    'E-commerce',
+    'Web performance',
+    'Accessibility',
+  ],
+  sameAs: [
+    'https://github.com/xav-ie',
+    'https://www.linkedin.com/in/xav-ie/',
+  ],
+  image: 'https://xav.ie/og.png',
+};
 ---
 
 <!doctype html>
@@ -18,8 +49,9 @@ const {
     <meta charset="utf-8" />
     <link rel="icon" href="/heart.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#150b1e" />
+    <meta name="theme-color" content="#12081a" />
     <meta name="description" content={description} />
+    <meta name="author" content="Xavier Ruiz" />
     <link rel="apple-touch-icon" href="/heart.svg" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="canonical" href="https://xav.ie/" />
@@ -28,25 +60,11 @@ const {
         by filling this slot. */}
     <slot name="head" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    {/* Non-blocking font load: parsed as a print stylesheet (which doesn't
-        block render), then promoted to "all" once it has loaded. The
-        <noscript> branch keeps fonts working when JS is disabled. */}
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&family=Sorts+Mill+Goudy&display=swap"
-      media="print"
-      onload={"this.media='all'"}
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&family=Sorts+Mill+Goudy&display=swap"
-      />
-    </noscript>
+    <Font cssVariable="--font-ibm-plex-sans" preload />
+    <Font cssVariable="--font-sorts-mill-goudy" preload />
 
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="xav.ie" />
     <meta property="og:title" content="Xavier Ruiz" />
     <meta property="og:description" content={description} />
@@ -59,6 +77,8 @@ const {
     <meta name="twitter:title" content="Xavier Ruiz" />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="https://xav.ie/og.png" />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 
     <title>{title}</title>
   </head>
