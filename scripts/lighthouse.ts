@@ -167,6 +167,7 @@ function makeCleanup(child: ChildProcess) {
   return () => {
     if (done) return;
     done = true;
+    child.stdout?.destroy();
     if (!child.killed) child.kill();
   };
 }

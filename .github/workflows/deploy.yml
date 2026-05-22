@@ -36,8 +36,8 @@ jobs:
         #      key file is reachable rejects the key permanently.)
         #   3. Uncomment the env block below and push. Subsequent deploys
         #      will submit built URLs to IndexNow (Bing/Yandex/etc.).
-        # env:
-        #   INDEXNOW_ENABLED: "1"
+        env:
+          INDEXNOW_ENABLED: '1'
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
