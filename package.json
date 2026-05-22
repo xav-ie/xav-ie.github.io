@@ -4,24 +4,27 @@
   "version": "0.0.0",
   "type": "module",
   "packageManager": "pnpm@10.33.2",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "fetch-avatar": "node scripts/fetch-avatar.mjs",
-    "build-og": "node scripts/build-og.mjs",
-    "build-icon": "node scripts/build-icon.mjs",
-    "prebuild-assets": "concurrently -c auto 'pnpm:fetch-avatar' 'pnpm:build-og' 'pnpm:build-icon'",
+    "prebuild-assets": "concurrently -c auto 'node scripts/fetch-avatar.mjs' 'node scripts/build-og.mjs' 'node scripts/build-icon.mjs'",
     "predev": "pnpm prebuild-assets",
     "prebuild": "pnpm prebuild-assets",
     "dev": "astro dev",
     "build": "astro check && astro build",
     "check": "concurrently -c auto 'pnpm:check:*'",
     "check:astro": "astro check --minimumFailingSeverity hint",
-    "check:lint": "eslint .",
-    "check:lighthouse": "node scripts/lighthouse.ts",
+    "check:fallow": "fallow check",
     "check:knip": "knip",
+    "check:lighthouse": "node scripts/lighthouse.ts",
+    "check:lint": "eslint .",
     "preview": "astro preview"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
+    "@jdevalk/astro-seo-graph": "^2.0.0",
+    "@jdevalk/seo-graph-core": "0.6.2",
     "astro": "^6.2.2"
   },
   "devDependencies": {
@@ -34,7 +37,14 @@
     "chrome-launcher": "^1.2.1",
     "concurrently": "^9.2.1",
     "eslint": "^10.3.0",
+    "eslint-plugin-astro": "^1.7.0",
+    "eslint-plugin-import-x": "^4.16.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-n": "^18.0.1",
+    "eslint-plugin-regexp": "^3.1.0",
+    "eslint-plugin-sonarjs": "^4.0.3",
     "eslint-plugin-unicorn": "^64.0.0",
+    "fallow": "^2.67.0",
     "globals": "^17.6.0",
     "knip": "^6.12.0",
     "lighthouse": "^13.2.0",

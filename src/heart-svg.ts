@@ -16,7 +16,24 @@ const CPU =
 
 const EXTRUSION = Array.from({ length: 14 }, (_, index) => (index + 1) / 14);
 
+// Compact numeric formatter: 3 decimals, trailing zeros dropped, "0." → ".".
+// Keeps the SVG bytes down — without this, JS template literals emit f64 noise
+// like 0.024999999999999998 for what should be 0.025.
+const n = (value: number): string =>
+  value
+    .toFixed(3)
+    .replace(/\.?0+$/, "") // eslint-disable-line sonarjs/slow-regex -- no nested quantifiers; not ReDoS-prone
+    .replace(/^0\./, ".")
+    .replace(/^-0\./, "-.") || "0";
+
+// The heart's outline (gold border path) + inner CPU-trace polygon are stamped
+// dozens of times across the layered extrusion, the mask, and the rim. Define
+// them once in <defs> and <use> from each call site: per-stamp cost drops from
+// ~1.1 KB of path data to ~80 B of <use href> markup.
+const SHAPE_DEFS = `<g id="hgs-shape"><path d="${GOLD_BORDER}"/><polygon points="${CPU}"/></g>`;
+
 const DEFS = `<defs>
+  ${SHAPE_DEFS}
   <radialGradient id="hgs-gold" cx="0.82" cy="0.18" r="0.92">
     <stop offset="0%" stop-color="#fffae0"/>
     <stop offset="50%" stop-color="#fff2b8"/>
@@ -68,30 +85,12 @@ const DEFS = `<defs>
     <stop offset="100%" stop-color="#a06c12"/>
   </radialGradient>
   <mask id="hgs-bottom-left-rim-mask">
-    <g transform="translate(-0.175, 0.175)">
-      <path d="${GOLD_BORDER}" fill="white"/>
-      <polygon points="${CPU}" fill="white"/>
-    </g>
-    <g transform="translate(-0.21, 0.14)">
-      <path d="${GOLD_BORDER}" fill="white"/>
-      <polygon points="${CPU}" fill="white"/>
-    </g>
-    <g transform="translate(-0.14, 0.21)">
-      <path d="${GOLD_BORDER}" fill="white"/>
-      <polygon points="${CPU}" fill="white"/>
-    </g>
-    <g transform="translate(0.0875, -0.0875)">
-      <path d="${GOLD_BORDER}" fill="black"/>
-      <polygon points="${CPU}" fill="black"/>
-    </g>
-    <g transform="translate(0.105, -0.07)">
-      <path d="${GOLD_BORDER}" fill="black"/>
-      <polygon points="${CPU}" fill="black"/>
-    </g>
-    <g transform="translate(0.07, -0.105)">
-      <path d="${GOLD_BORDER}" fill="black"/>
-      <polygon points="${CPU}" fill="black"/>
-    </g>
+    <use href="#hgs-shape" fill="white" transform="translate(-.175 .175)"/>
+    <use href="#hgs-shape" fill="white" transform="translate(-.21 .14)"/>
+    <use href="#hgs-shape" fill="white" transform="translate(-.14 .21)"/>
+    <use href="#hgs-shape" fill="black" transform="translate(.0875 -.0875)"/>
+    <use href="#hgs-shape" fill="black" transform="translate(.105 -.07)"/>
+    <use href="#hgs-shape" fill="black" transform="translate(.07 -.105)"/>
   </mask>
   <filter id="hgs-shadow" x="-30%" y="-30%" width="160%" height="160%">
     <feGaussianBlur in="SourceAlpha" stdDeviation="0.7"/>
@@ -112,35 +111,20 @@ const DEFS = `<defs>
 
 const BODY = `<g filter="url(#hgs-shadow)">
   ${EXTRUSION.map(
-    (t) => `<g transform="translate(${0.35 * t}, ${-0.35 * t})">
-    <path d="${GOLD_BORDER}" fill="url(#hgs-gold-body)"/>
-    <polygon points="${CPU}" fill="url(#hgs-gold-body)"/>
-  </g>`,
-  ).join("\n  ")}
+    (t) =>
+      `<use href="#hgs-shape" fill="url(#hgs-gold-body)" transform="translate(${n(0.35 * t)} ${n(-0.35 * t)})"/>`,
+  ).join("")}
   <polygon points="${HEART}" fill="url(#hgs-glass)" opacity="0.5"/>
   <polygon points="${HEART}" fill="none" stroke="rgba(0,30,10,0.55)" stroke-width="0.5" clip-path="url(#hgs-heart-clip)"/>
   <polygon points="${HEART}" fill="url(#hgs-glass-hotspot)" clip-path="url(#hgs-heart-clip)" filter="url(#hgs-glass-bloom)"/>
   ${EXTRUSION.map(
-    (t) => `<g transform="translate(${-0.15 * t}, ${0.25 * t})" opacity="0.082">
-    <path d="${GOLD_BORDER}" fill="url(#hgs-gold-shadow)"/>
-    <polygon points="${CPU}" fill="url(#hgs-gold-shadow)"/>
-  </g>`,
-  ).join("\n  ")}
-  <g>
-    <path d="${GOLD_BORDER}" fill="url(#hgs-gold)"/>
-    <polygon points="${CPU}" fill="url(#hgs-gold)"/>
-  </g>
-  <g clip-path="url(#hgs-gold-clip)">
-    <g transform="translate(-0.175, 0.175)">
-      <path d="${GOLD_BORDER}" fill="url(#hgs-gold-body)"/>
-      <polygon points="${CPU}" fill="url(#hgs-gold-body)"/>
-    </g>
-  </g>
+    (t) =>
+      `<use href="#hgs-shape" fill="url(#hgs-gold-shadow)" opacity=".082" transform="translate(${n(-0.15 * t)} ${n(0.25 * t)})"/>`,
+  ).join("")}
+  <use href="#hgs-shape" fill="url(#hgs-gold)"/>
+  <use href="#hgs-shape" fill="url(#hgs-gold-body)" clip-path="url(#hgs-gold-clip)" transform="translate(-.175 .175)"/>
   <rect x="-2" y="-2" width="36" height="36" fill="url(#hgs-gold-hotspot)" clip-path="url(#hgs-gold-clip)"/>
-  <g mask="url(#hgs-bottom-left-rim-mask)">
-    <path d="${GOLD_BORDER}" fill="url(#hgs-red-rim)"/>
-    <polygon points="${CPU}" fill="url(#hgs-red-rim)"/>
-  </g>
+  <use href="#hgs-shape" fill="url(#hgs-red-rim)" mask="url(#hgs-bottom-left-rim-mask)"/>
 </g>`;
 
 // The shared viewBox the heart draws into.

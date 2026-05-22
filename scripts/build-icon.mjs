@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Generates the stylized-heart icon assets shared with HeartGoldSvg
 // (see src/heart-svg.ts):
 //
@@ -28,11 +27,21 @@ import { writeFile, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { Resvg } from "@resvg/resvg-js";
+import sharp from "sharp";
 import {
   buildHeartInner,
   buildHeartSvg,
   HEART_VIEWBOX,
 } from "../src/heart-svg.ts";
+
+// Resvg emits truecolor PNGs; for icons with a small palette (gold heart on
+// a flat #12081a background) sharp's palette quantization gets us 3–5× smaller
+// without visible quality loss.
+async function quantizePng(rawPng) {
+  return sharp(rawPng)
+    .png({ palette: true, compressionLevel: 9, effort: 10 })
+    .toBuffer();
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDirectory = path.resolve(__dirname, "../public");
@@ -73,13 +82,13 @@ async function buildAppleTouch() {
   const inner = buildHeartInner();
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${APPLE_SIZE}" height="${APPLE_SIZE}" viewBox="0 0 ${APPLE_SIZE} ${APPLE_SIZE}"><rect width="${APPLE_SIZE}" height="${APPLE_SIZE}" fill="${BG}"/><svg x="0" y="0" width="${APPLE_SIZE}" height="${APPLE_SIZE}" viewBox="${HEART_VIEWBOX}" overflow="visible">${inner}</svg></svg>`;
 
-  const png = new Resvg(svg, {
+  const rawPng = new Resvg(svg, {
     fitTo: { mode: "width", value: APPLE_SIZE },
     background: BG,
   })
     .render()
     .asPng();
-
+  const png = await quantizePng(rawPng);
   await writeFile(appleTouchPath, png);
   console.log(`generated apple-touch-icon.png → public/ (${png.length} bytes)`);
 }
@@ -95,13 +104,13 @@ async function buildMaskable() {
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${MASK_SIZE}" height="${MASK_SIZE}" viewBox="0 0 ${MASK_SIZE} ${MASK_SIZE}"><rect width="${MASK_SIZE}" height="${MASK_SIZE}" fill="${BG}"/><svg x="${offset}" y="${offset}" width="${safeSize}" height="${safeSize}" viewBox="${HEART_VIEWBOX}" overflow="visible">${inner}</svg></svg>`;
 
-  const png = new Resvg(svg, {
+  const rawPng = new Resvg(svg, {
     fitTo: { mode: "width", value: MASK_SIZE },
     background: BG,
   })
     .render()
     .asPng();
-
+  const png = await quantizePng(rawPng);
   await writeFile(maskablePath, png);
   console.log(
     `generated icon-512-maskable.png → public/ (${png.length} bytes)`,

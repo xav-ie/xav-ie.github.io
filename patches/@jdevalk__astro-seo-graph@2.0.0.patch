@@ -1,0 +1,159 @@
+diff --git a/dist/aggregator.js b/dist/aggregator.js
+index da80222c1c70c5ff14086a45abb21cad56aae777..cb039b832e162f64149dcb31e0008dc90be58331 100644
+--- a/dist/aggregator.js
++++ b/dist/aggregator.js
+@@ -20,4 +20,3 @@ export function aggregate(options) {
+         '@graph': deduplicateByGraphId(pieces),
+     };
+ }
+-//# sourceMappingURL=aggregator.js.map
+\ No newline at end of file
+diff --git a/dist/alternates.js b/dist/alternates.js
+index 5ed937c7633ce0ba23e3db36b03122fada97904e..3ee0d94f3fda389b08295bc752d7117bcd6c2713 100644
+--- a/dist/alternates.js
++++ b/dist/alternates.js
+@@ -110,4 +110,3 @@ export function buildAlternateLinks(input) {
+     }
+     return [...validated, { rel: 'alternate', hreflang: 'x-default', href: defaultEntry.href }];
+ }
+-//# sourceMappingURL=alternates.js.map
+\ No newline at end of file
+diff --git a/dist/api-catalog.js b/dist/api-catalog.js
+index af01251ff93fd0b2c2571bc5eae7b466f5d28a7d..fdb1567107cc4650b5c33d621c05fe9b30da5bc4 100644
+--- a/dist/api-catalog.js
++++ b/dist/api-catalog.js
+@@ -85,4 +85,3 @@ export function createApiCatalog(options) {
+         return new Response(JSON.stringify({ linkset }, null, indent), { headers });
+     };
+ }
+-//# sourceMappingURL=api-catalog.js.map
+\ No newline at end of file
+diff --git a/dist/breadcrumbs.js b/dist/breadcrumbs.js
+index 16d45df8a876adc1e2dde5f3c831abe6086bb302..11ea4c6868b338a95c9b9c9f78c89fdc1542e52b 100644
+--- a/dist/breadcrumbs.js
++++ b/dist/breadcrumbs.js
+@@ -66,4 +66,3 @@ export function breadcrumbsFromUrl(input) {
+     items.push({ name: pageName, url: pageHref });
+     return items;
+ }
+-//# sourceMappingURL=breadcrumbs.js.map
+\ No newline at end of file
+diff --git a/dist/components/seo-context.js b/dist/components/seo-context.js
+index 6f0b0c4cc97b57f9147a4580babc85d5697840db..3b8bafbb099cab5639985292dc81ffc4a1971f16 100644
+--- a/dist/components/seo-context.js
++++ b/dist/components/seo-context.js
+@@ -189,4 +189,3 @@ export function buildSeoContext(props, pageUrl) {
+         ctx.graph = props.graph;
+     return ctx;
+ }
+-//# sourceMappingURL=seo-context.js.map
+\ No newline at end of file
+diff --git a/dist/components/seo-props.js b/dist/components/seo-props.js
+index 933a3b67dd10f0ba3ea12add5075ac1d14b4665d..007798997172dd2994159792f147b2a2497caf8c 100644
+--- a/dist/components/seo-props.js
++++ b/dist/components/seo-props.js
+@@ -4,4 +4,3 @@
+  * renders the resulting flat shape directly — no intermediate adapter.
+  */
+ export {};
+-//# sourceMappingURL=seo-props.js.map
+\ No newline at end of file
+diff --git a/dist/content-helpers.js b/dist/content-helpers.js
+index 0bee03d22ff45f2b1e041c89688a28e2f8721938..63a30486caa32cdaa678c604caf3147f9a2d9ac9 100644
+--- a/dist/content-helpers.js
++++ b/dist/content-helpers.js
+@@ -54,4 +54,3 @@ export function seoSchema(image) {
+         pageType: z.enum(['website', 'article']).default('website'),
+     });
+ }
+-//# sourceMappingURL=content-helpers.js.map
+\ No newline at end of file
+diff --git a/dist/git-lastmod.js b/dist/git-lastmod.js
+index af2dd6da394c4270e0cacdc3553407d4fdffc8fc..a915869b316c1bd7569f8032272bd562fc518a0b 100644
+--- a/dist/git-lastmod.js
++++ b/dist/git-lastmod.js
+@@ -28,4 +28,3 @@ export function gitLastmod(filePath, options = {}) {
+         return null;
+     }
+ }
+-//# sourceMappingURL=git-lastmod.js.map
+\ No newline at end of file
+diff --git a/dist/index.js b/dist/index.js
+index abc66ef4c471a0971dad9ece438cd95eee52d613..24b234a517869a9cc702e02b5ab0d794f53c57ee 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -15,4 +15,3 @@ export { renderMarkdownAlternate, deriveMdUrl } from './markdown-alternate.js';
+ export { createMarkdownEndpoint } from './markdown-routes.js';
+ export { gitLastmod } from './git-lastmod.js';
+ export { createApiCatalog, CATALOG_PATH } from './api-catalog.js';
+-//# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/dist/indexnow.js b/dist/indexnow.js
+index 60b468fce81be0d8f12378ccaeed5fcbf071277f..3bf98e2360a691a007188b93e4e3602d1aa7150a 100644
+--- a/dist/indexnow.js
++++ b/dist/indexnow.js
+@@ -25,4 +25,3 @@ export function createIndexNowKeyRoute(options) {
+     };
+ }
+ export { submitToIndexNow, validateIndexNowKey } from '@jdevalk/seo-graph-core';
+-//# sourceMappingURL=indexnow.js.map
+\ No newline at end of file
+diff --git a/dist/integration.js b/dist/integration.js
+index fb1ff724d90462d33a03cafcb5836d890a35b99e..ad515720d3d37b9089935ffd423c2f3ad2442080 100644
+--- a/dist/integration.js
++++ b/dist/integration.js
+@@ -270,7 +270,7 @@ export function findImagesWithoutAlt(html) {
+     const results = [];
+     for (const match of html.matchAll(/<img\b[^>]*>/gi)) {
+         const tag = match[0];
+-        if (/\balt\s*=/i.test(tag))
++        if (/\salt(?:\s*=|\s|\/?>|$)/i.test(tag))
+             continue;
+         if (/\brole\s*=\s*["'](?:presentation|none)["']/i.test(tag))
+             continue;
+@@ -773,4 +773,3 @@ export default function seoGraph(options = {}) {
+         },
+     };
+ }
+-//# sourceMappingURL=integration.js.map
+\ No newline at end of file
+diff --git a/dist/llms-txt.js b/dist/llms-txt.js
+index 64539f40eb674a8ff99501e39ff3a77a2146b770..b69d73033ab2df0ea5489b84392f13de03c0d052 100644
+--- a/dist/llms-txt.js
++++ b/dist/llms-txt.js
+@@ -50,4 +50,3 @@ export function renderLlmsTxt(input) {
+     }
+     return parts.join('\n\n') + '\n';
+ }
+-//# sourceMappingURL=llms-txt.js.map
+\ No newline at end of file
+diff --git a/dist/markdown-alternate.js b/dist/markdown-alternate.js
+index cb8fae41d6f98e734af4986161e5423378337f03..27f2db788afcf97bd0a3c307564b824e6ea98ae3 100644
+--- a/dist/markdown-alternate.js
++++ b/dist/markdown-alternate.js
+@@ -128,4 +128,3 @@ export function deriveMdUrl(canonical) {
+     url.pathname = newPath;
+     return url.toString();
+ }
+-//# sourceMappingURL=markdown-alternate.js.map
+\ No newline at end of file
+diff --git a/dist/markdown-routes.js b/dist/markdown-routes.js
+index bf4f636e2a96f9d6e994c944654e8d10fa0ca7a2..d1116e596da1aed9b4542036295fa6a33584c807 100644
+--- a/dist/markdown-routes.js
++++ b/dist/markdown-routes.js
+@@ -72,4 +72,3 @@ export function createMarkdownEndpoint(options) {
+         return new Response(rendered.markdown, { headers });
+     };
+ }
+-//# sourceMappingURL=markdown-routes.js.map
+\ No newline at end of file
+diff --git a/dist/routes.js b/dist/routes.js
+index 3a5de3f405a17041bbced83d7af445232a38b2a4..1b29baefcca4abaacd532b81b7dc38bbfc49f367 100644
+--- a/dist/routes.js
++++ b/dist/routes.js
+@@ -91,4 +91,3 @@ ${urls}
+         return new Response(xml, { headers });
+     };
+ }
+\ No newline at end of file
+-//# sourceMappingURL=routes.js.map

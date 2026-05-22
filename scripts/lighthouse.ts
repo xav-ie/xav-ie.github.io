@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Env vars: PORT, FORM_FACTOR (mobile|desktop), SKIP_BUILD, LIGHTHOUSE_MIN, CHROME_PATH.
  */
@@ -24,6 +23,7 @@ if (!SKIP_BUILD) {
 }
 
 console.log(`→ Starting astro preview (preferred :${PREFERRED_PORT})…`);
+// eslint-disable-next-line sonarjs/no-os-command-from-path -- intentional: pnpm is the package manager and must be on PATH
 const preview = spawn("pnpm", ["preview", "--port", String(PREFERRED_PORT)], {
   stdio: ["ignore", "pipe", "inherit"],
 });
@@ -78,9 +78,8 @@ try {
     for (const [k, v] of Object.entries(result.lhr.categories)) {
       const pct = Math.round((v.score ?? 0) * 100);
       const ok = pct >= MIN_SCORE;
-      console.log(
-        `  ${k.padEnd(20)} ${pct}${ok ? "" : `  ✗ below ${MIN_SCORE}`}`,
-      );
+      const threshold = ok ? "" : `  ✗ below ${MIN_SCORE}`;
+      console.log(`  ${k.padEnd(20)} ${pct}${threshold}`);
       if (!ok) failed.push(`${k} (${pct})`);
     }
 

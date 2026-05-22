@@ -1,0 +1,53 @@
+---
+type Props = {
+  href: string;
+  labelledById: string;
+  isExternal?: boolean;
+};
+
+const { href, labelledById, isExternal = false } = Astro.props as Props;
+const linkAttrs = isExternal
+  ? { target: '_blank' as const, rel: 'noreferrer' as const }
+  : {};
+---
+
+<a class="card-cta" href={href} aria-labelledby={labelledById} {...linkAttrs}>
+  <span aria-hidden="true">&rarr;</span>
+  {isExternal && <span class="sr-only">(opens in new tab)</span>}
+</a>
+
+<style>
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5em;
+    height: 2.5em;
+    padding: 0;
+    margin: 0;
+    border-radius: 50%;
+    font-size: 1.1em;
+    line-height: 1;
+    text-decoration: none;
+    color: inherit;
+    pointer-events: auto;
+    background-image: var(--bubble-bg-image);
+    background-size: var(--bubble-bg-size);
+    background-repeat: var(--bubble-bg-repeat);
+    box-shadow: var(--bubble-shadow);
+    transition:
+      transform 0.2s ease-in-out,
+      box-shadow 0.2s ease-in-out;
+  }
+
+  /* Extends the link's hit area to fill the nearest positioned ancestor
+     (the .card), so a click anywhere on the card activates this single
+     link. cursor: pointer is set explicitly because the default anchor
+     cursor doesn't reliably propagate to an absolutely-positioned ::before. */
+  .card-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    cursor: pointer;
+  }
+</style>

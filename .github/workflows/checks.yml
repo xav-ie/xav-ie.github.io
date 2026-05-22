@@ -48,6 +48,18 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm check:astro
 
+  fallow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check:fallow
+
   lighthouse:
     runs-on: ubuntu-latest
     steps:

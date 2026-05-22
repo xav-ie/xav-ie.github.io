@@ -1,25 +1,41 @@
 ---
 import { getImage } from 'astro:assets';
-import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
-import AboutMe from '../components/AboutMe.astro';
-import Projects from '../components/Projects.astro';
-import OpenSource from '../components/OpenSource.astro';
-import Doodles from '../components/Doodles.astro';
-import Footer from '../components/Footer.astro';
-import me from '../assets/me.jpg';
+import { buildWebPage, type GraphEntity } from '@jdevalk/seo-graph-core';
+import Base from '../layouts/base.astro';
+import AboutMe from '../components/about-me.astro';
+import Posts from '../components/posts.astro';
+import Projects from '../components/projects.astro';
+import OpenSource from '../components/open-source.astro';
+import Doodles from '../components/doodles.astro';
+import Footer from '../components/footer.astro';
+import me, { PROFILE_IMAGE_OPTS } from '../assets/profile';
+import { SITE_URL, ids } from '../lib/schema';
 
 const meOptimized = await getImage({
   src: me,
   format: 'avif',
-  quality: 60,
-  width: 300,
-  height: 300,
-  densities: [1, 2],
+  ...PROFILE_IMAGE_OPTS,
 });
+
+const pageUrl = `${SITE_URL}/`;
+const graphPieces: GraphEntity[] = [
+  buildWebPage(
+    {
+      url: pageUrl,
+      name: 'Xavier Ruiz — Software Developer',
+      description: 'Personal site of Xavier Ruiz — a full-stack developer in Boston.',
+      isPartOf: { '@id': ids.website },
+      inLanguage: 'en-US',
+      mainEntity: { '@id': ids.person },
+      about: { '@id': ids.person },
+    },
+    ids,
+    'ProfilePage',
+  ) as GraphEntity,
+];
 ---
 
-<Base>
+<Base title="Xavier Ruiz" graphPieces={graphPieces}>
   <link
     slot="head"
     rel="preload"
@@ -31,8 +47,8 @@ const meOptimized = await getImage({
     fetchpriority="high"
   />
   <div class="App">
-    <Header />
-    <main>
+    <main id="main-content">
+      <Posts />
       <AboutMe />
       <Projects />
       <OpenSource />

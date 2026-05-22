@@ -22,10 +22,19 @@ jobs:
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: "24"
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+        # IndexNow activation procedure (one-time):
+        #   1. Merge this workflow + key file route to main; let CI deploy.
+        #   2. Confirm https://xav.ie/746319963627bdb95c8404d2507c888c.txt
+        #      serves the key over HTTPS. (Mandatory — submitting before the
+        #      key file is reachable rejects the key permanently.)
+        #   3. Uncomment the env block below and push. Subsequent deploys
+        #      will submit built URLs to IndexNow (Bing/Yandex/etc.).
+        # env:
+        #   INDEXNOW_ENABLED: "1"
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

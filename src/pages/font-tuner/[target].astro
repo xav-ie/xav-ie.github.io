@@ -230,7 +230,7 @@ const target = targets[targetId];
         gap: 1rem;
       }
       .control { display: grid; gap: 0.35em; }
-      .control label { font-size: 0.85em; opacity: 0.85; }
+      .control label, .control-label { font-size: 0.85em; opacity: 0.85; margin: 0; }
       .control select, .control input[type="range"] { width: 100%; }
       .control .value {
         font-family: ui-monospace, SFMono-Regular, monospace;
@@ -316,7 +316,7 @@ const target = targets[targetId];
       .output pre {
         font-family: ui-monospace, SFMono-Regular, monospace;
         font-size: 0.85em;
-        margin: 0.5em 0 0;
+        margin: 0.25em 0 0;
         overflow-x: auto;
         color: var(--alt);
         white-space: pre-wrap;
@@ -367,7 +367,7 @@ const target = targets[targetId];
     <div class="layout">
       <aside class="controls">
         <div class="control">
-          <label>Fallback font</label>
+          <p class="control-label">Fallback font</p>
           <div class="radios" role="radiogroup" aria-label="Fallback font">
             {target.presets.map((f, i) => (
               <label class="radio">
@@ -417,7 +417,7 @@ const target = targets[targetId];
         </div>
 
         <div class="control">
-          <label>View</label>
+          <p class="control-label">View</p>
           <div class="mode" role="group" aria-label="View mode">
             <button data-mode="overlay" aria-pressed="true">Overlay</button>
             <button data-mode="fallback" aria-pressed="false">Fallback only</button>
@@ -451,8 +451,9 @@ const target = targets[targetId];
     </div>
 
     <script>
-      const $ = <T extends Element = Element>(sel: string) =>
-        document.querySelector(sel) as T;
+      function $<T extends Element = Element>(sel: string): T {
+        return document.querySelector(sel) as T;
+      }
 
       const body = document.body;
       const fallbackPrefix = body.dataset.fallbackPrefix ?? 'Fallback';
@@ -473,17 +474,15 @@ const target = targets[targetId];
         lineGap: $('#v-line-gap-override') as HTMLSpanElement,
       };
 
-      const radios = document.querySelectorAll<HTMLInputElement>(
-        'input[name="fallback"]',
-      );
+      const radios = [...document.querySelectorAll('input[name="fallback"]')] as HTMLInputElement[];
       const getSelectedRadio = () =>
-        Array.from(radios).find((r) => r.checked) ?? radios[0];
+        [...radios].find((r) => r.checked) ?? radios[0];
       const getFallback = () => getSelectedRadio().value;
-      const getSrcUrl = () => getSelectedRadio().dataset.srcUrl ?? '';
+      const getSourceUrl = () => getSelectedRadio().dataset.srcUrl ?? '';
 
       function render() {
         const fallback = getFallback();
-        const srcUrl = getSrcUrl();
+        const sourceUrl = getSourceUrl();
         const sizeAdjust = fields.sizeAdjust.value;
         const ascent = fields.ascent.value;
         const descent = fields.descent.value;
@@ -494,14 +493,14 @@ const target = targets[targetId];
         valueLabels.descent.textContent = `${descent}%`;
         valueLabels.lineGap.textContent = `${lineGap}%`;
 
-        const src = srcUrl
-          ? `local('${fallback}'), url('${srcUrl}') format('woff2')`
+        const source = sourceUrl
+          ? `local('${fallback}'), url('${sourceUrl}') format('woff2')`
           : `local('${fallback}')`;
 
         const productionFamily = `${fallbackPrefix} ${fallback}`;
         const previewCss = `@font-face {
   font-family: 'Tuned Fallback';
-  src: ${src};
+  src: ${source};
   size-adjust: ${sizeAdjust}%;
   ascent-override: ${ascent}%;
   descent-override: ${descent}%;
@@ -520,20 +519,22 @@ const target = targets[targetId];
         generated.textContent = productionCss;
 
         try {
-          const url = new URL(window.location.href);
+          const url = new URL(globalThis.location.href);
           url.searchParams.set('f', fallback);
           url.searchParams.set('sa', sizeAdjust);
           url.searchParams.set('a', ascent);
           url.searchParams.set('d', descent);
           url.searchParams.set('lg', lineGap);
-          history.replaceState(null, '', url.toString());
-        } catch {}
+          history.replaceState(undefined, '', url.toString());
+        } catch {
+          // ignore invalid URL
+        }
       }
 
-      const params = new URLSearchParams(window.location.search);
-      const urlFallback = params.get('f');
+      const parameters = new URLSearchParams(globalThis.location.search);
+      const urlFallback = parameters.get('f');
       if (urlFallback) {
-        const match = Array.from(radios).find((r) => r.value === urlFallback);
+        const match = [...radios].find((r) => r.value === urlFallback);
         if (match) match.checked = true;
       }
       const initial = getSelectedRadio();
@@ -541,13 +542,13 @@ const target = targets[targetId];
       fields.ascent.value = initial.dataset.ascent ?? '90';
       fields.descent.value = initial.dataset.descent ?? '22';
       fields.lineGap.value = initial.dataset.lineGap ?? '0';
-      if (params.get('sa')) fields.sizeAdjust.value = params.get('sa')!;
-      if (params.get('a')) fields.ascent.value = params.get('a')!;
-      if (params.get('d')) fields.descent.value = params.get('d')!;
-      if (params.get('lg')) fields.lineGap.value = params.get('lg')!;
+      if (parameters.get('sa')) fields.sizeAdjust.value = parameters.get('sa')!;
+      if (parameters.get('a')) fields.ascent.value = parameters.get('a')!;
+      if (parameters.get('d')) fields.descent.value = parameters.get('d')!;
+      if (parameters.get('lg')) fields.lineGap.value = parameters.get('lg')!;
 
-      for (const el of Object.values(fields)) {
-        el.addEventListener('input', render);
+      for (const element of Object.values(fields)) {
+        element.addEventListener('input', render);
       }
 
       for (const r of radios) {
@@ -561,22 +562,22 @@ const target = targets[targetId];
         });
       }
 
-      document.querySelectorAll<HTMLButtonElement>('.mode button').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const mode = btn.dataset.mode!;
+      for (const button of document.querySelectorAll<HTMLButtonElement>('.mode button')) {
+        button.addEventListener('click', () => {
+          const mode = button.dataset.mode!;
           document.body.dataset.mode = mode;
-          document.querySelectorAll<HTMLButtonElement>('.mode button').forEach((b) => {
+          for (const b of document.querySelectorAll<HTMLButtonElement>('.mode button')) {
             b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
-          });
+          }
         });
-      });
+      }
 
       ($('#copy') as HTMLButtonElement).addEventListener('click', async () => {
-        const btn = $('#copy') as HTMLButtonElement;
+        const button = $('#copy') as HTMLButtonElement;
         await navigator.clipboard.writeText(generated.textContent ?? '');
-        const original = btn.textContent;
-        btn.textContent = 'Copied!';
-        setTimeout(() => { btn.textContent = original; }, 1200);
+        const original = button.textContent;
+        button.textContent = 'Copied!';
+        setTimeout(() => { button.textContent = original; }, 1200);
       });
 
       render();

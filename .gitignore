@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Astro content-collection cache; regenerated on every build.
+.astro/
+
 # Prebuild-generated assets
 public/og.png
 public/me.jpg

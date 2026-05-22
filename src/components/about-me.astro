@@ -1,22 +1,19 @@
 ---
 import { Picture } from 'astro:assets';
-import me from '../assets/me.jpg';
+import me, { PROFILE_IMAGE_OPTS } from '../assets/profile';
 ---
 
-<div id="about_me" class="col-span-12 section">
-  <h2>About Me</h2>
+<section id="about_me" class="col-span-12 section" aria-labelledby="about-me-heading">
+  <h2 id="about-me-heading">About Me</h2>
   <div class="grid grid-cols-12 gap-4">
     <div class="col-span-12 sm:col-span-4 lg:col-span-3">
       <div class="profileImage shadow round image-frame">
         <Picture
           src={me}
           alt="Xavier Ruiz"
-          width={300}
-          height={300}
+          {...PROFILE_IMAGE_OPTS}
           formats={['avif', 'webp']}
           fallbackFormat="webp"
-          quality={60}
-          densities={[1, 2]}
           loading="eager"
           fetchpriority="high"
         />
@@ -41,7 +38,7 @@ import me from '../assets/me.jpg';
       </p>
     </div>
   </div>
-</div>
+</section>
 
 <style>
   .profileImage {

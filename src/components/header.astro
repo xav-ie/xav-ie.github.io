@@ -1,30 +1,45 @@
 ---
-import GodRays from './GodRays.astro';
-import HeartGoldSvg from './HeartGoldSvg.astro';
-import ThemeToggle from './ThemeToggle.astro';
+import GodRays from './god-rays.astro';
+import HeartGoldSvg from './heart-gold-svg.astro';
+import ThemeToggle from './theme-toggle.astro';
+
+type Props = {
+  /**
+   * Heading level for the brand name. Use 1 only on the home page (the
+   * brand is the page's primary heading); use 2 elsewhere so the page's
+   * own content h1 stays the primary heading and the astro-seo-graph
+   * H1 validator doesn't see duplicates.
+   */
+  brandLevel?: 1 | 2;
+};
+
+const { brandLevel = 2 } = Astro.props as Props;
 ---
 
 <div class="header-bleed">
   <GodRays />
   <header>
-    <div class="col-span-12 headerInner">
+    <a class="brand col-span-12 headerInner" href="/" aria-label="xav.ie home">
       <div class="logo">
         <HeartGoldSvg size="7em" title="Heart" />
       </div>
       <div class="title">
-        <h1>Xavier Ruiz</h1>
-        <h2>Software Developer</h2>
+        {brandLevel === 1
+          ? <h1>Xavier Ruiz</h1>
+          : <h2>Xavier Ruiz</h2>}
+        <p class="brand-tagline">Software Developer</p>
       </div>
-    </div>
+    </a>
   </header>
 </div>
 <nav class="shadow bg-noise-gradient-180" aria-label="Primary">
   <div class="nav-inner">
     <ul class="header-links" role="list">
-      <li><a href="#about_me">#about_me</a></li>
-      <li><a href="#projects">#projects</a></li>
-      <li><a href="#oss">#oss</a></li>
-      <li><a href="#doodles">#doodles</a></li>
+      <li><a href="/#posts">#posts</a></li>
+      <li><a href="/#about_me">#about_me</a></li>
+      <li><a href="/#projects">#projects</a></li>
+      <li><a href="/#oss">#oss</a></li>
+      <li><a href="/#doodles">#doodles</a></li>
     </ul>
     <ThemeToggle />
   </div>
@@ -66,12 +81,25 @@ import ThemeToggle from './ThemeToggle.astro';
     flex-direction: column;
     justify-content: center;
   }
-  header h1 {
+
+  /* Brand name renders as <h1> on home and <h2> elsewhere so the page's
+     own content h1 stays primary — but the visual treatment is identical
+     across pages, so both heading levels get the home-page h1 size. */
+  header .title h1,
+  header .title h2 {
     margin: 0;
+    font-family: var(--font-heading);
+    font-size: 3em;
   }
 
-  header h2 {
+  header .brand-tagline {
     margin: 0;
+    font-size: 2em;
+  }
+
+  .brand {
+    color: inherit;
+    text-decoration: none;
   }
 
   nav {

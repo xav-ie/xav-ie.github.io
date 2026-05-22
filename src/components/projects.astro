@@ -1,5 +1,5 @@
 ---
-import Project, { type ProjectData } from './Project.astro';
+import Project, { type ProjectData } from './project.astro';
 // `?raw` gives us the SVG markup as a string so we can inline it into
 // the page (via Project.astro's <Fragment set:html>). Inlined SVGs
 // inherit the host document's theme variables, so the .c-* classes
@@ -62,7 +62,7 @@ const currentProjects: ProjectData[] = [
     imageSvg: xnixvim,
   },
   {
-    name: 'SpooKeyBoard',
+    name: 'Spoo<wbr>Key<wbr>Board',
     date: 'June 2024',
     desc: 'A small Python tool that reads ANSI escape sequences over SSH and replays them as keystrokes on the receiving machine via Linux uinput — essentially a remote keyboard pipeline.',
     technologiesUsed: ['Python', 'uinput', 'ANSI escapes'],
@@ -72,9 +72,9 @@ const currentProjects: ProjectData[] = [
 ];
 ---
 
-<div id="projects" class="col-span-12 section">
-  <h2>Projects</h2>
-  <ul class="masonry-grid list-none">
+<section id="projects" class="col-span-12 section" aria-labelledby="projects-heading">
+  <h2 id="projects-heading">Projects</h2>
+  <ul class="masonry-grid list-none" role="list">
     {currentProjects.map((p) => <Project project={p} />)}
   </ul>
-</div>
+</section>

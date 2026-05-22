@@ -1,0 +1,263 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { formatLinkText } from '../format-link';
+import CardCta from './card-cta.astro';
+import ExternalLinkIcon from './external-link-icon.astro';
+
+export type ProjectData = {
+  /** Rendered as HTML in the heading, so callers can include inline
+   *  break hints like `<wbr>` for camelCase names (e.g. `Spoo<wbr>Key<wbr>Board`). */
+  name: string;
+  date: string;
+  desc: string;
+  technologiesUsed: string[];
+  url: string;
+  /** Raster source processed by astro:assets (Picture / AVIF + WebP). */
+  image?: ImageMetadata;
+  /** Pre-loaded SVG markup (Vite `?raw`); inlined so theme classes
+   *  resolve against the host page's :root vars in global.css. */
+  imageSvg?: string;
+};
+
+type Props = { project: ProjectData; eager?: boolean; cardLink?: boolean };
+const { project, eager = false, cardLink = false } = Astro.props as Props;
+
+const isExternal = /^https?:\/\//.test(project.url);
+const linkAttrs = isExternal
+  ? { target: '_blank' as const, rel: 'noreferrer' as const }
+  : {};
+const hasImage = Boolean(project.imageSvg || project.image);
+const titleId = `card-title-${project.url.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`;
+---
+
+<li class="project col-span-12 md:col-span-6">
+  <article aria-labelledby={titleId} class:list={['shadow', 'card', 'round', 'bg-noise-gradient-155', cardLink && 'card--linked']}>
+    {hasImage && (
+      <div class="cardImage">
+        {project.imageSvg ? (
+          <div class="shadow round image-frame" aria-hidden="true" set:html={project.imageSvg} />
+        ) : project.image && (
+          <div class="shadow round image-frame">
+            <Picture
+              src={project.image}
+              alt=""
+              formats={['avif', 'webp']}
+              fallbackFormat="webp"
+              quality={60}
+              widths={[300, 600]}
+              sizes="(min-width: 48em) 300px, 100vw"
+              loading={eager ? 'eager' : 'lazy'}
+              decoding={eager ? 'sync' : 'async'}
+            />
+          </div>
+        )}
+        {cardLink ? (
+          <CardCta href={project.url} labelledById={titleId} isExternal={isExternal} />
+        ) : (
+          <a class="cta-link" href={project.url} {...linkAttrs}>
+            <span class="cta-link-text">{formatLinkText(project.url)}</span>
+            {isExternal && <ExternalLinkIcon class="cta-link-ext" />}
+            {isExternal && <span class="sr-only">(opens in new tab)</span>}
+          </a>
+        )}
+      </div>
+    )}
+    <div class="cardContent">
+      <h3 id={titleId} set:html={project.name} />
+      <p class="date">{project.date}</p>
+      {cardLink && !hasImage ? (
+        <div class="desc-row">
+          <p>
+            <span class="cta-spacer">
+              <CardCta
+                href={project.url}
+                labelledById={titleId}
+                isExternal={isExternal}
+              />
+            </span>
+            {project.desc}
+          </p>
+        </div>
+      ) : (
+        <p>{project.desc}</p>
+      )}
+      {project.technologiesUsed.length > 0 && (
+        <p class="technologies">
+          <span class="sr-only">Technologies: </span>
+          {project.technologiesUsed.join(', ')}
+        </p>
+      )}
+      {!cardLink && !hasImage && (
+        <a class="bare-link" href={project.url} {...linkAttrs}>
+          <span class="cta-link-text">{formatLinkText(project.url)}</span>
+          {isExternal && <ExternalLinkIcon class="cta-link-ext" />}
+          {isExternal && <span class="sr-only">(opens in new tab)</span>}
+        </a>
+      )}
+    </div>
+  </article>
+</li>
+
+<style>
+  .card {
+    padding: 1em;
+    position: relative;
+  }
+
+  /* Bottom-right "float" trick: the flex wrapper gives the <p> a definite
+     height so .cta-spacer can use height: 100%, and shape-outside carves
+     wrap region only at the bottom 2.5em — text flows freely above the
+     spacer and wraps around just the bottom-right corner.
+     See: https://css-tricks.com/float-an-element-to-the-bottom-corner/ */
+  .desc-row {
+    display: flex;
+  }
+
+  .desc-row > p {
+    width: 100%;
+  }
+
+  .project .cta-spacer {
+    float: right;
+    width: 2.5em;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    shape-outside: inset(calc(100% - 3.5em) 0 1em);
+    pointer-events: none;
+  }
+
+  .card--linked:hover,
+  .card--linked:focus-within {
+    transform: translateY(-1px);
+    box-shadow:
+      14px 14px 30px -2px var(--shadow),
+      -3px -3px 6px -3px var(--highlight),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.18),
+      inset 6px 6px 14px rgba(255, 255, 255, 0.06),
+      inset -4px -4px 5px rgba(0, 0, 0, 0.25),
+      inset 0 2px 0 rgba(255, 255, 255, 0.13),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+      inset -1px 0 0 rgba(255, 255, 255, 0.12);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card--linked:hover,
+    .card--linked:focus-within {
+      transform: none;
+    }
+  }
+
+  .cardContent {
+    padding: 0 1em;
+  }
+
+  .project h3 {
+    font-family: var(--font-code);
+  }
+
+  .card::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+
+  .cardImage {
+    margin-bottom: 0;
+    max-width: 300px;
+    position: relative;
+  }
+
+  .cardImage .image-frame {
+    aspect-ratio: 2 / 1;
+    width: 100%;
+  }
+
+  .cardImage .image-frame > :global(picture) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .cardImage .image-frame :global(img),
+  .cardImage .image-frame > :global(svg) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cardImage .cta-link {
+    display: block;
+    margin: 0.25em 0 0;
+    word-break: break-word;
+    padding-bottom: 0.25em;
+  }
+
+  .cta-link :global(.cta-link-ext),
+  .bare-link :global(.cta-link-ext) {
+    margin-left: 0.35em;
+  }
+
+  .cardImage:has(.cta-link:hover) :global(.cta-link-ext),
+  .cardImage:has(.cta-link:focus-visible) :global(.cta-link-ext),
+  .bare-link:hover :global(.cta-link-ext),
+  .bare-link:focus-visible :global(.cta-link-ext) {
+    transform: translate(1px, -1px);
+  }
+
+  /* Extends the link's hover target up over the image. Hovering anywhere
+     in .cardImage hits this ::before, which triggers the image lift via
+     :has() below. */
+  .cardImage .cta-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+  }
+
+  .cardImage:has(.cta-link:hover) .image-frame {
+    transform: translateY(-1px);
+    box-shadow:
+      14px 14px 30px -2px var(--shadow),
+      -3px -3px 6px -3px var(--highlight);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cardImage:has(.cta-link:hover) .image-frame {
+      transform: none;
+    }
+  }
+
+  @media (min-width: 48em) {
+    .cardImage {
+      float: right;
+      width: 50%;
+      margin-left: 0.5em;
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  .project a {
+    padding: 0.75em;
+    padding-bottom: 0;
+    margin-left: -0.75em;
+    display: inline-block;
+    word-break: break-word;
+    border-radius: 2em;
+  }
+
+  .project .date {
+    font-size: 0.9em;
+    opacity: 0.75;
+    margin: 0 0 0.5em;
+  }
+
+  .technologies {
+    font-style: italic;
+    opacity: 0.85;
+  }
+
+</style>

@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import Project, { type ProjectData } from './project.astro';
+import { formatDate } from '../format-date';
+
+// ProjectData.name is rendered as HTML (so it can contain <wbr> break hints),
+// so post titles need to be escaped before being passed through.
+const escapeHtml = (s: string) =>
+  s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+
+const all = await getCollection('posts');
+const posts: ProjectData[] = all
+  .filter((p) => !p.data.draft)
+  .toSorted((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .map((post) => ({
+    name: escapeHtml(post.data.title),
+    date: formatDate(post.data.pubDate),
+    desc: post.data.description,
+    technologiesUsed: [],
+    url: `/posts/${post.id}/`,
+  }));
+---
+
+<section id="posts" class="col-span-12 section" aria-labelledby="posts-heading">
+  <h2 id="posts-heading">Posts</h2>
+  <ul class="masonry-grid list-none" role="list">
+    {posts.map((p) => <Project project={p} cardLink />)}
+  </ul>
+</section>

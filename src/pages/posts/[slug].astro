@@ -1,6 +1,10 @@
 ---
 import { getCollection, render } from 'astro:content';
-import Base from '../../layouts/Base.astro';
+import { breadcrumbsFromUrl } from '@jdevalk/astro-seo-graph';
+import Base from '../../layouts/base.astro';
+import Breadcrumb from '../../components/breadcrumb.astro';
+import { SITE_URL, postPieces } from '../../lib/schema';
+import { formatDate } from '../../format-date';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -12,22 +16,34 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const { title, description, pubDate, updatedDate } = post.data;
+
+const crumbs = breadcrumbsFromUrl({
+  url: Astro.url,
+  siteUrl: SITE_URL,
+  pageName: title,
+  names: { posts: 'Posts' },
+});
+
+const graphPieces = postPieces(post);
 ---
 
-<Base title={`${title} — xav.ie`} description={description}>
-  <main>
+<Base
+  title={`${title} — xav.ie`}
+  description={description}
+  ogType="article"
+  article={{ publishedTime: pubDate, modifiedTime: updatedDate }}
+  graphPieces={graphPieces}
+>
+  <main id="main-content">
+    <Breadcrumb crumbs={crumbs} />
     <article>
       <h1>{title}</h1>
       <p class="meta">
-        <time datetime={pubDate.toISOString()}>
-          {pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-        </time>
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
         {updatedDate && (
           <>
             {' · updated '}
-            <time datetime={updatedDate.toISOString()}>
-              {updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </time>
+            <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time>
           </>
         )}
       </p>
@@ -37,9 +53,12 @@ const { title, description, pubDate, updatedDate } = post.data;
 </Base>
 
 <style>
-  article {
-    max-width: 65ch;
+  main {
+    max-width: 39em;
     margin: 2em auto;
+  }
+  article {
+    margin: 0;
   }
   .meta {
     opacity: 0.7;

@@ -149,6 +149,19 @@
   --noise-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' seed='0' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.02 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   --noise-size: 340px 340px;
 
+  /* Shared "bubble" surface used by small round buttons (post card-cta arrow,
+     dark-mode theme toggle). Same noise+gradient look as bg-noise-gradient-155,
+     paired with a corner-only shadow scaled for ~40px targets. */
+  --bubble-bg-image:
+    var(--noise-image),
+    linear-gradient(155deg, var(--surface-top) 0%, var(--surface-bottom) 100%);
+  --bubble-bg-size: var(--noise-size), auto;
+  --bubble-bg-repeat: repeat, no-repeat;
+  --bubble-shadow:
+    6px 6px 14px -2px var(--shadow), -2px -2px 4px -3px var(--highlight),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.14),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.2);
+
   /* Transition the registered color vars themselves so any var()
      reference (including layered background-image gradients) re-resolves
      smoothly when light-dark() flips. Without this, the body's solid
@@ -190,6 +203,7 @@ html[data-theme="dark"] {
 
 body {
   margin: 0;
+  min-height: 100dvh;
   font-size: 16px;
   font-family: var(--font-body);
   line-height: 1.55;
@@ -206,7 +220,7 @@ body {
 }
 
 p {
-  max-width: 65ch;
+  max-width: 39em;
 }
 
 code {
@@ -225,6 +239,24 @@ a {
 :focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  padding: 0.5em 1em;
+  background: var(--background);
+  color: var(--foreground);
+  border: 2px solid var(--foreground);
+  border-radius: 0.25em;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  z-index: 9999;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 1rem;
 }
 
 h1 {

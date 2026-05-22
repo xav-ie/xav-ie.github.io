@@ -1,0 +1,13 @@
+diff --git a/dist/node/chunks/config.js b/dist/node/chunks/config.js
+index 3b4037b181a77ebf015364d2511380e75264b15a..96ee2b7de526a850e96c2a88b705f8228fe7a972 100644
+--- a/dist/node/chunks/config.js
++++ b/dist/node/chunks/config.js
+@@ -22303,7 +22303,7 @@ const ENCODING = {
+ function toHeaders(name, stats, isEtag) {
+ 	let enc = ENCODING[name.slice(-3)];
+ 	let ctype = lookup(name.slice(0, enc && -3)) || "";
+-	if (ctype === "text/html") ctype += ";charset=utf-8";
++	if (ctype.startsWith("text/") && ctype !== "text/javascript" && ctype !== "text/css") ctype += ";charset=utf-8";
+ 	let headers = {
+ 		"Content-Length": stats.size,
+ 		"Content-Type": ctype,

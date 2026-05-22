@@ -1,0 +1,93 @@
+---
+import { Font } from 'astro:assets';
+import Seo from '@jdevalk/astro-seo-graph/Seo.astro';
+import type { GraphEntity } from '@jdevalk/seo-graph-core';
+import Header from '../components/header.astro';
+import { siteGraph } from '../lib/schema';
+import '../styles/global.css';
+
+type Props = {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'profile' | 'book';
+  article?: {
+    publishedTime?: Date | string;
+    modifiedTime?: Date | string;
+    tags?: readonly string[];
+  };
+  noindex?: boolean;
+  graphPieces?: readonly GraphEntity[];
+};
+
+const {
+  title = 'xav.ie',
+  description = 'Personal site of Xavier Ruiz — a full-stack developer in Boston.',
+  ogImage = 'https://xav.ie/og.png',
+  ogType = 'website',
+  article,
+  noindex = false,
+  graphPieces = [],
+} = Astro.props as Props;
+
+const isHome = Astro.url.pathname === '/';
+const graph = noindex ? null : siteGraph(graphPieces);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#12081a" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="alternate" type="application/rss+xml" title="xav.ie" href="https://xav.ie/rss.xml" />
+
+    <Seo
+      title={title}
+      description={description}
+      ogType={ogType}
+      ogImage={ogImage}
+      ogImageAlt="Xavier Ruiz"
+      ogImageWidth={1200}
+      ogImageHeight={630}
+      siteName="xav.ie"
+      author="Xavier Ruiz"
+      twitter={{ card: 'summary_large_image' }}
+      article={article}
+      noindex={noindex}
+      graph={graph}
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    {ogType === 'article' && <meta property="article:author" content="https://xav.ie/" />}
+
+    {/* Apply any stored theme override before first paint to avoid a
+        light/dark flash on subsequent visits. Must be is:inline so
+        Astro doesn't defer it; runs synchronously in <head>. */}
+    <script is:inline>
+      try {
+        const t = localStorage.getItem("theme");
+        if (t === "light" || t === "dark") {
+          document.documentElement.dataset.theme = t;
+        }
+      } catch {
+        /* localStorage unavailable — fall back to color-scheme. */
+      }
+    </script>
+
+    <slot name="head" />
+
+    <Font cssVariable="--font-ibm-plex-sans" preload />
+    <Font cssVariable="--font-sorts-mill-goudy" preload />
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <Header brandLevel={isHome ? 1 : 2} />
+    <slot />
+  </body>
+</html>
