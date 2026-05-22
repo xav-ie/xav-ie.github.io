@@ -37,7 +37,12 @@ const {
   >
     <slot name="image" />
     <div class="cardContent">
-      <h3 id={titleId} set:html={name} transition:name={transitionName} />
+      <h3
+        id={titleId}
+        set:html={name}
+        transition:name={transitionName}
+        class:list={[transitionName && 'vt-post-title']}
+      />
       <p class="date" transition:name={dateTransitionName}>{date}</p>
       <slot />
     </div>
@@ -73,6 +78,10 @@ const {
 
   .cardContent {
     padding: 0 1em;
+  }
+
+  .vt-post-title {
+    view-transition-class: post-title;
   }
 
   .project h3 {

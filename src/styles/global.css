@@ -335,6 +335,22 @@ main {
   animation-duration: 0.18s;
 }
 
+/* Scale-only transition for post titles (card h3 → post h1).
+   Hides the old capture so only the new element is visible as the
+   group bounding-box animates from card size/position to heading size/position.
+   Requires view-transition-class support (Chrome 125+); degrades gracefully. */
+::view-transition-group(.post-title) {
+  animation-duration: 0.28s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+::view-transition-old(.post-title) {
+  animation: none;
+  opacity: 0;
+}
+::view-transition-new(.post-title) {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -8,16 +8,17 @@
 
 <div
   id="theme-toggle"
-  role="group"
+  role="radiogroup"
   aria-label="Color theme"
   class="theme-toggle"
 >
   <button
     type="button"
+    role="radio"
     class="theme-btn"
     data-theme="light"
     aria-label="Light mode"
-    aria-pressed="false"
+    aria-checked="false"
   >
     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
       <circle cx="12" cy="12" r="4.5" fill="currentColor"></circle>
@@ -35,10 +36,11 @@
   </button>
   <button
     type="button"
+    role="radio"
     class="theme-btn"
     data-theme="auto"
     aria-label="System theme"
-    aria-pressed="false"
+    aria-checked="false"
   >
     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
       <rect
@@ -70,10 +72,11 @@
   </button>
   <button
     type="button"
+    role="radio"
     class="theme-btn"
     data-theme="dark"
     aria-label="Dark mode"
-    aria-pressed="false"
+    aria-checked="false"
   >
     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
       <path
@@ -84,7 +87,7 @@
 </div>
 
 {
-  /* Runs synchronously as the parser reaches this point — sets aria-pressed
+  /* Runs synchronously as the parser reaches this point — sets aria-checked
      on the correct slot before first paint, matching the FOUC-applied theme. */
 }
 <script is:inline>
@@ -100,7 +103,7 @@
     if (!container) return;
     for (const button of container.querySelectorAll('[data-theme]')) {
       button.setAttribute(
-        'aria-pressed',
+        'aria-checked',
         button.dataset.theme === mode ? 'true' : 'false',
       );
     }
@@ -140,20 +143,14 @@
       '[data-theme]',
     )) {
       button.setAttribute(
-        'aria-pressed',
+        'aria-checked',
         button.dataset.theme === mode ? 'true' : 'false',
       );
     }
   }
 
-  // AbortController so click listeners can be torn down before new ones are
-  // added. Necessary because transition:persist keeps the nav (and toggle)
-  // alive across navigations — without cleanup astro:page-load would stack
-  // a new listener on the same element each time.
-  let clickController = new AbortController();
-
-  // Before the View Transition swap: carry data-theme and data-no-transition
-  // into the incoming document, and abort stale click listeners.
+  // Carry data-theme and data-no-transition into the incoming document on
+  // every View Transition. Astro deduplicates module scripts, so this runs once.
   document.addEventListener(
     'astro:before-swap',
     (event_: Event & { newDocument: Document }) => {
@@ -162,16 +159,21 @@
         event_.newDocument.documentElement.dataset.theme = theme;
       }
       event_.newDocument.documentElement.dataset.noTransition = '';
-      clickController.abort();
-      clickController = new AbortController();
     },
   );
 
-  // astro:page-load fires on both initial load and after every View
-  // Transition — re-attach to the (possibly same, persisted) container.
+  // astro:page-load fires on both initial load and after every View Transition.
+  // syncButtons keeps the pill in sync after each navigation. The click listener
+  // is attached only once: the nav (and its children) persist across navigations
+  // via transition:persist, so a data-bound guard prevents duplicate listeners.
   document.addEventListener('astro:page-load', () => {
+    // Double-RAF: ensures data-no-transition is removed after two paint cycles
+    // so CSS has fully resolved the suppressed state before re-enabling
+    // @property transitions. A single RAF can fire mid-paint on slow machines.
     requestAnimationFrame(() => {
-      delete document.documentElement.dataset.noTransition;
+      requestAnimationFrame(() => {
+        delete document.documentElement.dataset.noTransition;
+      });
     });
 
     const container = document.querySelector<HTMLElement>('#theme-toggle');
@@ -179,18 +181,17 @@
 
     syncButtons(container);
 
-    for (const button of container.querySelectorAll<HTMLButtonElement>(
-      '[data-theme]',
-    )) {
-      button.addEventListener(
-        'click',
-        () => {
-          applyMode(button.dataset.theme as ThemeMode);
-          syncButtons(container);
-        },
-        { signal: clickController.signal },
+    if (container.dataset.bound) return;
+    container.dataset.bound = '1';
+
+    container.addEventListener('click', (event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>(
+        '[data-theme]',
       );
-    }
+      if (!button) return;
+      applyMode(button.dataset.theme as ThemeMode);
+      syncButtons(container);
+    });
   });
 </script>
 
@@ -229,12 +230,12 @@
     transition: opacity 0.15s ease-in-out;
   }
 
-  .theme-btn:hover:not([aria-pressed='true']) {
+  .theme-btn:hover:not([aria-checked='true']) {
     opacity: 0.65;
   }
 
   /* Active slot: raised pill above the trough */
-  .theme-btn[aria-pressed='true'] {
+  .theme-btn[aria-checked='true'] {
     opacity: 1;
     background-color: var(--surface-top);
     box-shadow:
@@ -250,9 +251,10 @@
   }
 
   /* Dark mode: active slot uses the shared bubble surface (noise + gradient),
-     matching the post card-cta arrow button. Same two-rule split as before. */
+     matching the post card-cta arrow button.
+     Case 1: OS is dark AND user chose auto or dark. */
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) .theme-btn[aria-pressed='true'] {
+    :root:not([data-theme='light']) .theme-btn[aria-checked='true'] {
       background-color: transparent;
       background-image: var(--bubble-bg-image);
       background-size: var(--bubble-bg-size);
@@ -261,7 +263,8 @@
     }
   }
 
-  :root[data-theme='dark'] .theme-btn[aria-pressed='true'] {
+  /* Case 2: User forced dark regardless of OS preference. */
+  :root[data-theme='dark'] .theme-btn[aria-checked='true'] {
     background-color: transparent;
     background-image: var(--bubble-bg-image);
     background-size: var(--bubble-bg-size);
