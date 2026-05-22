@@ -14,12 +14,14 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "check": "concurrently -c auto 'pnpm:check:*'",
+    "check:astro": "astro check --minimumFailingSeverity hint",
     "check:lint": "eslint .",
     "check:lighthouse": "node scripts/lighthouse.ts",
     "check:knip": "knip",
     "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.18",
     "astro": "^6.2.2"
   },
   "devDependencies": {

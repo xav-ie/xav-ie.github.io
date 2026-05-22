@@ -6,5 +6,5 @@
     "scripts/**/*",
     "astro.config.mjs"
   ],
-  "exclude": ["dist", "node_modules", "public", ".astro", ".devenv", ".direnv"]
+  "exclude": ["dist", "node_modules", "public", ".devenv", ".direnv"]
 }

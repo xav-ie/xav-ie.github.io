@@ -11,6 +11,7 @@
   type="button"
   class="theme-toggle shadow"
   aria-label="Toggle light and dark theme"
+  aria-pressed="false"
 >
   <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
     <circle cx="12" cy="12" r="4.5" fill="currentColor" />
@@ -39,19 +40,34 @@
   // listen for clicks and toggle.
   const button = document.querySelector<HTMLButtonElement>("#theme-toggle");
   if (button) {
+    const darkQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
+
     function currentTheme(): "light" | "dark" {
       const attribute = document.documentElement.dataset.theme;
       if (attribute === "light" || attribute === "dark") return attribute;
       // No explicit choice yet — derive from the OS preference so the
       // toggle flips to the *opposite* of what's currently displayed.
-      return globalThis.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
+      return darkQuery.matches ? "dark" : "light";
     }
+
+    // aria-pressed = "is dark mode active right now". SSR ships
+    // aria-pressed="false" because the server can't know the user's OS
+    // preference; we correct it here on mount.
+    const syncPressed = () => {
+      button.setAttribute("aria-pressed", String(currentTheme() === "dark"));
+    };
+    syncPressed();
+
+    // Keep aria-pressed in sync when the OS preference changes while the
+    // user hasn't picked an explicit theme.
+    darkQuery.addEventListener("change", () => {
+      if (!document.documentElement.dataset.theme) syncPressed();
+    });
 
     button.addEventListener("click", () => {
       const next = currentTheme() === "dark" ? "light" : "dark";
       document.documentElement.dataset.theme = next;
+      syncPressed();
       try {
         localStorage.setItem("theme", next);
       } catch {
