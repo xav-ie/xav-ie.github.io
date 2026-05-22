@@ -1,5 +1,6 @@
 ---
 import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
 import Seo from '@jdevalk/astro-seo-graph/Seo.astro';
 import type { GraphEntity } from '@jdevalk/seo-graph-core';
 import Header from '../components/header.astro';
@@ -81,16 +82,21 @@ const graph = noindex ? null : siteGraph(graphPieces);
         Astro doesn't defer it; runs synchronously in <head>. */
     }
     <script is:inline>
+      // Suppress @property initial-value transitions before first paint.
+      // theme-toggle.astro removes this attribute after the first frame.
+      document.documentElement.dataset.noTransition = '';
       try {
         const t = localStorage.getItem('theme');
         if (t === 'light' || t === 'dark') {
           document.documentElement.dataset.theme = t;
         }
+        // 'auto', null, or anything else: no data-theme → follows prefers-color-scheme
       } catch {
         /* localStorage unavailable — fall back to color-scheme. */
       }
     </script>
 
+    <ClientRouter />
     <slot name="head" />
 
     <Font cssVariable="--font-ibm-plex-sans" preload />

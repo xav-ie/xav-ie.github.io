@@ -30,7 +30,11 @@ const { brandLevel = 2 } = Astro.props as Props;
     </a>
   </header>
 </div>
-<nav class="shadow bg-noise-gradient-180" aria-label="Primary">
+<nav
+  class="shadow bg-noise-gradient-180"
+  aria-label="Primary"
+  transition:persist
+>
   <div class="nav-inner">
     <ul class="header-links" role="list">
       <li><a href="/#posts">#posts</a></li>

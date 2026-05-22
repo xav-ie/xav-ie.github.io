@@ -4,11 +4,27 @@ type Props = {
   date: string;
   titleId: string;
   linked?: boolean;
+  headingFont?: boolean;
+  transitionName?: string;
+  dateTransitionName?: string;
 };
-const { name, date, titleId, linked = false } = Astro.props as Props;
+const {
+  name,
+  date,
+  titleId,
+  linked = false,
+  headingFont = false,
+  transitionName,
+  dateTransitionName,
+} = Astro.props as Props;
 ---
 
-<li class="project col-span-12 md:col-span-6">
+<li
+  class:list={[
+    'project col-span-12 md:col-span-6',
+    headingFont && 'title-heading',
+  ]}
+>
   <article
     aria-labelledby={titleId}
     class:list={[
@@ -21,8 +37,8 @@ const { name, date, titleId, linked = false } = Astro.props as Props;
   >
     <slot name="image" />
     <div class="cardContent">
-      <h3 id={titleId} set:html={name} />
-      <p class="date">{date}</p>
+      <h3 id={titleId} set:html={name} transition:name={transitionName} />
+      <p class="date" transition:name={dateTransitionName}>{date}</p>
       <slot />
     </div>
   </article>
@@ -61,6 +77,10 @@ const { name, date, titleId, linked = false } = Astro.props as Props;
 
   .project h3 {
     font-family: var(--font-code);
+  }
+
+  .title-heading.project h3 {
+    font-family: var(--font-heading);
   }
 
   /* Clearfix for float children (e.g. the cardImage float in project.astro). */

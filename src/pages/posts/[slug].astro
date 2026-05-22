@@ -37,8 +37,8 @@ const graphPieces = postPieces(post);
   <main id="main-content">
     <Breadcrumb crumbs={crumbs} />
     <article>
-      <h1>{title}</h1>
-      <p class="meta">
+      <h1 transition:name={`post-title-${post.id}`}>{title}</h1>
+      <p class="meta" transition:name={`post-date-${post.id}`}>
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
         {
           updatedDate && (

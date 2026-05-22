@@ -1,41 +1,91 @@
 ---
-// Two-state toggle: light ↔ dark. When the user hasn't clicked it,
-// the site follows their OS preference via color-scheme: light dark
-// (see global.css). Click sets <html data-theme="..."> and stores the
-// choice in localStorage. The FOUC-prevention script in Base.astro
-// re-applies the stored choice before first paint on later visits.
+// Three-state theme selector: light | auto (system) | dark
+// All three slots are always visible; clicking a slot selects it directly.
+// The FOUC-prevention script in Base.astro applies the stored choice before
+// first paint. data-no-transition (set there, removed here after first frame)
+// prevents the @property initial-value flash on every page load.
 ---
 
-<button
+<div
   id="theme-toggle"
-  type="button"
-  class="theme-toggle shadow"
-  aria-label="Toggle light and dark theme"
-  aria-pressed="false"
+  role="group"
+  aria-label="Color theme"
+  class="theme-toggle"
 >
-  <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="12" r="4.5" fill="currentColor"></circle>
-    <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <line x1="12" y1="2" x2="12" y2="5"></line>
-      <line x1="12" y1="19" x2="12" y2="22"></line>
-      <line x1="2" y1="12" x2="5" y2="12"></line>
-      <line x1="19" y1="12" x2="22" y2="12"></line>
-      <line x1="4.5" y1="4.5" x2="6.6" y2="6.6"></line>
-      <line x1="17.4" y1="17.4" x2="19.5" y2="19.5"></line>
-      <line x1="4.5" y1="19.5" x2="6.6" y2="17.4"></line>
-      <line x1="17.4" y1="6.6" x2="19.5" y2="4.5"></line>
-    </g>
-  </svg>
-  <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
-    <path fill="currentColor" d="M21 13.5A9 9 0 1 1 10.5 3a7 7 0 0 0 10.5 10.5Z"
-    ></path>
-  </svg>
-</button>
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme="light"
+    aria-label="Light mode"
+    aria-pressed="false"
+  >
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.5" fill="currentColor"></circle>
+      <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="12" y1="2" x2="12" y2="5"></line>
+        <line x1="12" y1="19" x2="12" y2="22"></line>
+        <line x1="2" y1="12" x2="5" y2="12"></line>
+        <line x1="19" y1="12" x2="22" y2="12"></line>
+        <line x1="4.5" y1="4.5" x2="6.6" y2="6.6"></line>
+        <line x1="17.4" y1="17.4" x2="19.5" y2="19.5"></line>
+        <line x1="4.5" y1="19.5" x2="6.6" y2="17.4"></line>
+        <line x1="17.4" y1="6.6" x2="19.5" y2="4.5"></line>
+      </g>
+    </svg>
+  </button>
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme="auto"
+    aria-label="System theme"
+    aria-pressed="false"
+  >
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+      <rect
+        x="2"
+        y="3"
+        width="20"
+        height="14"
+        rx="2"
+        stroke="currentColor"
+        stroke-width="2"
+        fill="none"></rect>
+      <line
+        x1="8"
+        y1="21"
+        x2="16"
+        y2="21"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"></line>
+      <line
+        x1="12"
+        y1="17"
+        x2="12"
+        y2="21"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"></line>
+    </svg>
+  </button>
+  <button
+    type="button"
+    class="theme-btn"
+    data-theme="dark"
+    aria-label="Dark mode"
+    aria-pressed="false"
+  >
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M21 13.5A9 9 0 1 1 10.5 3a7 7 0 0 0 10.5 10.5Z"></path>
+    </svg>
+  </button>
+</div>
 
 {
-  /* Runs synchronously as the parser reaches this point — the button is
-    already in the DOM so we can correct aria-pressed before first paint,
-    matching the theme the FOUC script applied in Base.astro. */
+  /* Runs synchronously as the parser reaches this point — sets aria-pressed
+     on the correct slot before first paint, matching the FOUC-applied theme. */
 }
 <script is:inline>
   (function () {
@@ -45,161 +95,164 @@
     } catch {
       /* empty */
     }
-    const isDark =
-      stored === 'dark' ||
-      (!stored &&
-        globalThis.matchMedia('(prefers-color-scheme: dark)').matches);
-    const button = document.querySelector('#theme-toggle');
-    if (button) button.setAttribute('aria-pressed', String(isDark));
+    const mode = stored === 'light' || stored === 'dark' ? stored : 'auto';
+    const container = document.querySelector('#theme-toggle');
+    if (!container) return;
+    for (const button of container.querySelectorAll('[data-theme]')) {
+      button.setAttribute(
+        'aria-pressed',
+        button.dataset.theme === mode ? 'true' : 'false',
+      );
+    }
   })();
 </script>
 
 <script>
-  // Runs after DOMContentLoaded; the FOUC-prevention script in
-  // Base.astro has already applied any stored choice. We just need to
-  // listen for clicks and toggle.
-  const button = document.querySelector<HTMLButtonElement>('#theme-toggle');
-  if (button) {
-    const darkQuery = globalThis.matchMedia('(prefers-color-scheme: dark)');
+  type ThemeMode = 'auto' | 'light' | 'dark';
 
-    function currentTheme(): 'light' | 'dark' {
-      const attribute = document.documentElement.dataset.theme;
-      if (attribute === 'light' || attribute === 'dark') return attribute;
-      // No explicit choice yet — derive from the OS preference so the
-      // toggle flips to the *opposite* of what's currently displayed.
-      return darkQuery.matches ? 'dark' : 'light';
-    }
-
-    // aria-pressed = "is dark mode active right now". SSR ships
-    // aria-pressed="false" because the server can't know the user's OS
-    // preference; we correct it here on mount.
-    const syncPressed = () => {
-      button.setAttribute('aria-pressed', String(currentTheme() === 'dark'));
-    };
-    syncPressed();
-
-    // Keep aria-pressed in sync when the OS preference changes while the
-    // user hasn't picked an explicit theme.
-    darkQuery.addEventListener('change', () => {
-      if (!document.documentElement.dataset.theme) syncPressed();
-    });
-
-    button.addEventListener('click', () => {
-      const next = currentTheme() === 'dark' ? 'light' : 'dark';
-      document.documentElement.dataset.theme = next;
-      syncPressed();
-      try {
-        localStorage.setItem('theme', next);
-      } catch {
-        // localStorage may throw in private-mode or quota-exceeded
-        // scenarios — fail silently; the in-memory dataset change still
-        // takes effect for this session.
-      }
-    });
+  function currentMode(): ThemeMode {
+    const t = document.documentElement.dataset.theme;
+    if (t === 'light' || t === 'dark') return t;
+    return 'auto';
   }
+
+  function applyMode(mode: ThemeMode) {
+    if (mode === 'auto') {
+      delete document.documentElement.dataset.theme;
+      try {
+        localStorage.removeItem('theme');
+      } catch {
+        /* ignore */
+      }
+    } else {
+      document.documentElement.dataset.theme = mode;
+      try {
+        localStorage.setItem('theme', mode);
+      } catch {
+        /* ignore */
+      }
+    }
+  }
+
+  function syncButtons(container: Element) {
+    const mode = currentMode();
+    for (const button of container.querySelectorAll<HTMLButtonElement>(
+      '[data-theme]',
+    )) {
+      button.setAttribute(
+        'aria-pressed',
+        button.dataset.theme === mode ? 'true' : 'false',
+      );
+    }
+  }
+
+  // AbortController so click listeners can be torn down before new ones are
+  // added. Necessary because transition:persist keeps the nav (and toggle)
+  // alive across navigations — without cleanup astro:page-load would stack
+  // a new listener on the same element each time.
+  let clickController = new AbortController();
+
+  // Before the View Transition swap: carry data-theme and data-no-transition
+  // into the incoming document, and abort stale click listeners.
+  document.addEventListener(
+    'astro:before-swap',
+    (event_: Event & { newDocument: Document }) => {
+      const theme = document.documentElement.dataset.theme;
+      if (theme) {
+        event_.newDocument.documentElement.dataset.theme = theme;
+      }
+      event_.newDocument.documentElement.dataset.noTransition = '';
+      clickController.abort();
+      clickController = new AbortController();
+    },
+  );
+
+  // astro:page-load fires on both initial load and after every View
+  // Transition — re-attach to the (possibly same, persisted) container.
+  document.addEventListener('astro:page-load', () => {
+    requestAnimationFrame(() => {
+      delete document.documentElement.dataset.noTransition;
+    });
+
+    const container = document.querySelector<HTMLElement>('#theme-toggle');
+    if (!container) return;
+
+    syncButtons(container);
+
+    for (const button of container.querySelectorAll<HTMLButtonElement>(
+      '[data-theme]',
+    )) {
+      button.addEventListener(
+        'click',
+        () => {
+          applyMode(button.dataset.theme as ThemeMode);
+          syncButtons(container);
+        },
+        { signal: clickController.signal },
+      );
+    }
+  });
 </script>
 
 <style>
+  /* Pill container — inset trough so the active slot reads as raised above it */
   .theme-toggle {
-    /* 2.75em ≈ 44px at the body's 16px base, hitting the WCAG 2.5.5
-       minimum touch target. The .shadow utility from uno.config.ts
-       ships the embossed surface used by the project cards, but its
-       10px drop offset is sized for ~300px elements and visually
-       pulls a 44px button below its geometric centre. Overriding
-       box-shadow here with proportionally smaller offsets keeps the
-       same embossed look at button scale.
-
-       Position: relative anchors the absolutely-positioned icons
-       below so they cross-fade in place instead of snapping via
-       display none/block. */
-    position: relative;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 2.75em;
-    height: 2.75em;
-    padding: 0;
-    background-color: var(--surface-bottom);
-    color: var(--foreground);
-    border: none;
     border-radius: 999px;
-    cursor: pointer;
-    /* The .shadow utility carries three thin 1px edge highlights
-       (top / bottom / right) that read nicely on a 300px card but on
-       a 44px circle stack hard against the diffuse inset shadows and
-       look like banding. Dropped here in favour of just the corner-
-       based diffuse insets for a cleaner embossed read at button
-       scale. */
+    padding: 3px;
+    gap: 2px;
+    background-color: var(--surface-bottom);
     box-shadow:
-      4px 4px 12px -2px var(--shadow),
-      -1px -1px 2px -1px var(--highlight),
-      inset 1px 1px 1px rgba(255, 255, 255, 0.14),
-      inset 3px 3px 7px rgba(255, 255, 255, 0.04),
-      inset -2px -2px 3px rgba(0, 0, 0, 0.25),
-      inset -1px -1px 0 rgba(255, 255, 255, 0.1);
-    /* Opt out of the .shadow utility's property-level transitions on
-       color / box-shadow / background. The @property-registered theme
-       vars on :root already animate themselves (see global.css's
-       `transition: --background, --shadow, ...`), so the resolved
-       values on this element re-evaluate each frame *through* the var
-       interpolation. Declaring a parallel property transition causes
-       the browser to re-fire the property transition on every frame
-       of the var animation, producing the jitter. */
+      inset 3px 3px 8px -1px var(--shadow),
+      inset -1px -1px 3px -1px var(--highlight);
     transition: none;
   }
 
-  /* Both icons live in the same spot. Whichever opacity is 1 wins;
-     the other fades behind it. Cross-fade matches the duration of
-     the .shadow utility's color / background transition so the whole
-     theme swap reads as one motion. */
-  .theme-toggle .icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 1.5em;
-    height: 1.5em;
+  /* Individual slot */
+  .theme-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25em;
+    height: 2.25em;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--foreground);
+    cursor: pointer;
+    opacity: 0.38;
+    /* Only transition opacity — box-shadow and background reference @property
+       vars that already animate via :root, adding a parallel transition here
+       causes re-fire jitter during theme switches. */
+    transition: opacity 0.15s ease-in-out;
+  }
+
+  .theme-btn:hover:not([aria-pressed='true']) {
+    opacity: 0.65;
+  }
+
+  /* Active slot: raised pill above the trough */
+  .theme-btn[aria-pressed='true'] {
+    opacity: 1;
+    background-color: var(--surface-top);
+    box-shadow:
+      3px 3px 8px -2px var(--shadow),
+      -1px -1px 3px -1px var(--highlight),
+      inset 0.5px 0.5px 1px rgba(255, 255, 255, 0.12);
+  }
+
+  .icon {
     display: block;
-    transform: translate(-50%, -50%);
-    transition: opacity 0.2s ease-in-out;
+    width: 1.25em;
+    height: 1.25em;
   }
 
-  /* Show the icon that represents *what a click will switch TO*:
-     moon when the page is currently light, sun when currently dark.
-     prefers-color-scheme handles the no-override case; the
-     [data-theme] rules below take over once the user clicks. */
-  .theme-toggle .icon-sun {
-    opacity: 0;
-  }
-  .theme-toggle .icon-moon {
-    opacity: 1;
-  }
+  /* Dark mode: active slot uses the shared bubble surface (noise + gradient),
+     matching the post card-cta arrow button. Same two-rule split as before. */
   @media (prefers-color-scheme: dark) {
-    .theme-toggle .icon-sun {
-      opacity: 1;
-    }
-    .theme-toggle .icon-moon {
-      opacity: 0;
-    }
-  }
-
-  :root[data-theme='light'] .theme-toggle .icon-sun {
-    opacity: 0;
-  }
-  :root[data-theme='light'] .theme-toggle .icon-moon {
-    opacity: 1;
-  }
-  :root[data-theme='dark'] .theme-toggle .icon-sun {
-    opacity: 1;
-  }
-  :root[data-theme='dark'] .theme-toggle .icon-moon {
-    opacity: 0;
-  }
-
-  /* Dark-mode look: matches the post card-cta arrow button via the shared
-     --bubble-* tokens in global.css. Two-rule split mirrors the icon
-     pattern above (OS preference vs explicit [data-theme="dark"] override). */
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']) .theme-toggle {
+    :root:not([data-theme='light']) .theme-btn[aria-pressed='true'] {
       background-color: transparent;
       background-image: var(--bubble-bg-image);
       background-size: var(--bubble-bg-size);
@@ -208,7 +261,7 @@
     }
   }
 
-  :root[data-theme='dark'] .theme-toggle {
+  :root[data-theme='dark'] .theme-btn[aria-pressed='true'] {
     background-color: transparent;
     background-image: var(--bubble-bg-image);
     background-size: var(--bubble-bg-size);

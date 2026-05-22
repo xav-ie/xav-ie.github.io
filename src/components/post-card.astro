@@ -15,16 +15,32 @@ const { post } = Astro.props as Props;
 
 const isExternal = /^https?:\/\//.test(post.url);
 const titleId = `card-title-${post.url.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`;
+const slug = isExternal
+  ? undefined
+  : post.url.replace(/^\/posts\//, '').replace(/\/$/, '');
+const titleTransitionName = slug ? `post-title-${slug}` : undefined;
+const dateTransitionName = slug ? `post-date-${slug}` : undefined;
+const descTransitionName = slug ? `post-desc-${slug}` : undefined;
+const ctaTransitionName = slug ? `post-cta-${slug}` : undefined;
 ---
 
-<ProjectCard name={post.name} date={post.date} titleId={titleId} linked>
+<ProjectCard
+  name={post.name}
+  date={post.date}
+  titleId={titleId}
+  linked
+  headingFont
+  transitionName={titleTransitionName}
+  dateTransitionName={dateTransitionName}
+>
   <div class="desc-row">
-    <p>
+    <p transition:name={descTransitionName}>
       <span class="cta-spacer">
         <CardCta
           href={post.url}
           labelledById={titleId}
           isExternal={isExternal}
+          transitionName={ctaTransitionName}
         />
       </span>
       {post.desc}

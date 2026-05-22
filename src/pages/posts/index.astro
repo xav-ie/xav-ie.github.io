@@ -8,13 +8,23 @@ import {
 } from '@jdevalk/seo-graph-core';
 import Base from '../../layouts/base.astro';
 import Breadcrumb from '../../components/breadcrumb.astro';
+import PostCard, { type PostData } from '../../components/post-card.astro';
 import { SITE_URL, ids } from '../../lib/schema';
 import { formatDate } from '../../format-date';
 
+const escapeHtml = (s: string) =>
+  s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+
 const all = await getCollection('posts');
-const posts = all
+const posts: PostData[] = all
   .filter((p) => !p.data.draft)
-  .toSorted((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  .toSorted((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .map((post) => ({
+    name: escapeHtml(post.data.title),
+    date: formatDate(post.data.pubDate),
+    desc: post.data.description,
+    url: `/posts/${post.id}/`,
+  }));
 
 const pageUrl = Astro.url.href;
 const pageName = 'Posts';
@@ -53,38 +63,14 @@ const graphPieces: GraphEntity[] = [
     <p>
       Also available as <a href="/rss.xml">RSS</a>.
     </p>
-    <ul class="list-none" role="list">
-      {
-        posts.map((post) => (
-          <li>
-            <a href={`/posts/${post.id}/`}>{post.data.title}</a>
-            <time datetime={post.data.pubDate.toISOString()}>
-              {formatDate(post.data.pubDate)}
-            </time>
-            <p>{post.data.description}</p>
-          </li>
-        ))
-      }
+    <ul class="masonry-grid list-none" role="list">
+      {posts.map((p) => <PostCard post={p} />)}
     </ul>
   </main>
 </Base>
 
 <style>
   main {
-    max-width: 39em;
     margin: 2em auto;
-  }
-  ul {
-    display: grid;
-    gap: 1.5em;
-  }
-  li time {
-    opacity: 0.7;
-    font-size: 0.9em;
-    margin-left: 0.5em;
-  }
-  li p {
-    margin: 0.25em 0 0;
-    opacity: 0.85;
   }
 </style>

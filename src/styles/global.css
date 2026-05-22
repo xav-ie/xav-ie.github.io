@@ -180,6 +180,15 @@
     --rim 0.2s ease-in-out;
 }
 
+/* The @property initial-values are dark. On every page load the cascade
+   resolves them to their light-dark() values, which triggers the
+   transition and causes a dark→light flash for light-mode users.
+   The inline script in base.astro sets this attribute before first
+   paint; theme-toggle.astro removes it after the first frame. */
+html[data-no-transition] {
+  transition: none !important;
+}
+
 html {
   background-color: var(--background);
   color-scheme: light dark;
@@ -315,6 +324,15 @@ main {
 }
 .c-alts-fill {
   fill: var(--alt-shadow);
+}
+
+/* Tighten the default morph duration for named view-transition elements.
+   Astro's root page-fade uses the same pseudo-elements but its keyframe
+   durations are set explicitly, so this mainly affects element-level morphs. */
+::view-transition-group(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 0.18s;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -3,15 +3,27 @@ type Props = {
   href: string;
   labelledById: string;
   isExternal?: boolean;
+  transitionName?: string;
 };
 
-const { href, labelledById, isExternal = false } = Astro.props as Props;
+const {
+  href,
+  labelledById,
+  isExternal = false,
+  transitionName,
+} = Astro.props as Props;
 const linkAttrs = isExternal
   ? { target: '_blank' as const, rel: 'noreferrer' as const }
   : {};
 ---
 
-<a class="card-cta" href={href} aria-labelledby={labelledById} {...linkAttrs}>
+<a
+  class="card-cta"
+  href={href}
+  aria-labelledby={labelledById}
+  transition:name={transitionName}
+  {...linkAttrs}
+>
   <span aria-hidden="true">&rarr;</span>
   {isExternal && <span class="sr-only">(opens in new tab)</span>}
 </a>
