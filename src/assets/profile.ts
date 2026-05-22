@@ -1,4 +1,4 @@
-export { default } from "./me.jpg";
+export { default } from './me.jpg';
 
 export const PROFILE_IMAGE_OPTS = {
   width: 300,

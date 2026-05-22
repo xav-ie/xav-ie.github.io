@@ -16,9 +16,11 @@
     "check": "concurrently -c auto 'pnpm:check:*'",
     "check:astro": "astro check --minimumFailingSeverity hint",
     "check:fallow": "fallow check",
+    "check:format": "prettier --check .",
     "check:knip": "knip",
     "check:lighthouse": "node scripts/lighthouse.ts",
     "check:lint": "eslint .",
+    "format": "prettier --write .",
     "preview": "astro preview"
   },
   "dependencies": {
@@ -48,6 +50,8 @@
     "globals": "^17.6.0",
     "knip": "^6.12.0",
     "lighthouse": "^13.2.0",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
     "satori": "^0.26.0",
     "sharp": "^0.34.5",
     "typescript": "~6.0.3",

@@ -50,7 +50,11 @@ const artAndDoodles: ProjectData[] = [
 ];
 ---
 
-<section id="doodles" class="col-span-12 section" aria-labelledby="doodles-heading">
+<section
+  id="doodles"
+  class="col-span-12 section"
+  aria-labelledby="doodles-heading"
+>
   <h2 id="doodles-heading">Art and Doodles</h2>
   <ul class="masonry-grid list-none" role="list">
     {artAndDoodles.map((p) => <Project project={p} />)}

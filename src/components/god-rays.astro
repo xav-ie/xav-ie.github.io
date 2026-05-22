@@ -4,7 +4,7 @@ import { DEFAULT_RAY_CONFIG } from '../god-rays-config';
 const c = DEFAULT_RAY_CONFIG;
 
 const lcg = (seed: number) => {
-  let s = (seed | 0) || 1;
+  let s = seed | 0 || 1;
   return () => {
     s = Math.imul(s, 1664525) + 1013904223;
     return (s >>> 0) / 0xffffffff;
@@ -37,9 +37,10 @@ const maskFalloff = Math.max(5, Math.min(95, c.maskFalloff));
 >
   <defs>
     <radialGradient id="gr-mask-grad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="white" stop-opacity="1" />
-      <stop offset={`${maskFalloff}%`} stop-color="white" stop-opacity="0.55" />
-      <stop offset="100%" stop-color="white" stop-opacity="0" />
+      <stop offset="0%" stop-color="white" stop-opacity="1"></stop>
+      <stop offset={`${maskFalloff}%`} stop-color="white" stop-opacity="0.55"
+      ></stop>
+      <stop offset="100%" stop-color="white" stop-opacity="0"></stop>
     </radialGradient>
 
     <mask
@@ -55,37 +56,43 @@ const maskFalloff = Math.max(5, Math.min(95, c.maskFalloff));
         y={-maskExtent}
         width={maskExtent * 2}
         height={maskExtent * 2}
-        fill="url(#gr-mask-grad)"
-      />
+        fill="url(#gr-mask-grad)"></rect>
     </mask>
 
     <filter id="gr-blur" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation={c.blur} />
+      <feGaussianBlur stdDeviation={c.blur}></feGaussianBlur>
     </filter>
   </defs>
 
   <g transform={`translate(${sunX} ${sunY})`}>
     <g class="rays" mask="url(#gr-ray-mask)" filter="url(#gr-blur)">
-      {rays.map((r) => {
-        const length = c.rayLength * r.lengthScale;
-        return (
-          <line
-            x1="0"
-            y1="0"
-            x2="0"
-            y2={-length}
-            stroke={c.color}
-            stroke-width={r.strokeWidth}
-            stroke-opacity={r.opacity}
-            transform={`rotate(${r.angle})`}
-          />
-        );
-      })}
+      {
+        rays.map((r) => {
+          const length = c.rayLength * r.lengthScale;
+          return (
+            <line
+              x1="0"
+              y1="0"
+              x2="0"
+              y2={-length}
+              stroke={c.color}
+              stroke-width={r.strokeWidth}
+              stroke-opacity={r.opacity}
+              transform={`rotate(${r.angle})`}
+            />
+          );
+        })
+      }
     </g>
   </g>
 </svg>
 
-<style define:vars={{ rayIntensity: c.intensity, rayIntensityLight: Math.min(1, c.intensity * 3.5) }}>
+<style
+  define:vars={{
+    rayIntensity: c.intensity,
+    rayIntensityLight: Math.min(1, c.intensity * 3.5),
+  }}
+>
   .god-rays {
     position: absolute;
     inset: 0;
@@ -113,10 +120,10 @@ const maskFalloff = Math.max(5, Math.min(95, c.maskFalloff));
 
   /* Manual theme override (see ThemeToggle.astro) — pinning beats the
      OS preference, so re-state the per-scheme opacity here. */
-  :root[data-theme="dark"] .god-rays .rays {
+  :root[data-theme='dark'] .god-rays .rays {
     opacity: var(--rayIntensity);
   }
-  :root[data-theme="light"] .god-rays .rays {
+  :root[data-theme='light'] .god-rays .rays {
     opacity: var(--rayIntensityLight);
   }
 </style>

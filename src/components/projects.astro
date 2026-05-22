@@ -72,7 +72,11 @@ const currentProjects: ProjectData[] = [
 ];
 ---
 
-<section id="projects" class="col-span-12 section" aria-labelledby="projects-heading">
+<section
+  id="projects"
+  class="col-span-12 section"
+  aria-labelledby="projects-heading"
+>
   <h2 id="projects-heading">Projects</h2>
   <ul class="masonry-grid list-none" role="list">
     {currentProjects.map((p) => <Project project={p} />)}

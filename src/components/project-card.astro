@@ -1,0 +1,78 @@
+---
+type Props = {
+  name: string;
+  date: string;
+  titleId: string;
+  linked?: boolean;
+};
+const { name, date, titleId, linked = false } = Astro.props as Props;
+---
+
+<li class="project col-span-12 md:col-span-6">
+  <article
+    aria-labelledby={titleId}
+    class:list={[
+      'shadow',
+      'card',
+      'round',
+      'bg-noise-gradient-155',
+      linked && 'card--linked',
+    ]}
+  >
+    <slot name="image" />
+    <div class="cardContent">
+      <h3 id={titleId} set:html={name} />
+      <p class="date">{date}</p>
+      <slot />
+    </div>
+  </article>
+</li>
+
+<style>
+  .card {
+    padding: 1em;
+    position: relative;
+  }
+
+  .card--linked:hover,
+  .card--linked:focus-within {
+    transform: translateY(-1px);
+    box-shadow:
+      14px 14px 30px -2px var(--shadow),
+      -3px -3px 6px -3px var(--highlight),
+      inset 1px 1px 2px rgba(255, 255, 255, 0.18),
+      inset 6px 6px 14px rgba(255, 255, 255, 0.06),
+      inset -4px -4px 5px rgba(0, 0, 0, 0.25),
+      inset 0 2px 0 rgba(255, 255, 255, 0.13),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.12),
+      inset -1px 0 0 rgba(255, 255, 255, 0.12);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card--linked:hover,
+    .card--linked:focus-within {
+      transform: none;
+    }
+  }
+
+  .cardContent {
+    padding: 0 1em;
+  }
+
+  .project h3 {
+    font-family: var(--font-code);
+  }
+
+  /* Clearfix for float children (e.g. the cardImage float in project.astro). */
+  .card::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
+  .project .date {
+    font-size: 0.9em;
+    opacity: 0.75;
+    margin: 0 0 0.5em;
+  }
+</style>

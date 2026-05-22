@@ -1,0 +1,62 @@
+---
+import CardCta from './card-cta.astro';
+import ProjectCard from './project-card.astro';
+
+export type PostData = {
+  /** Rendered as HTML; callers must escape plain-text titles before passing. */
+  name: string;
+  date: string;
+  desc: string;
+  url: string;
+};
+
+type Props = { post: PostData };
+const { post } = Astro.props as Props;
+
+const isExternal = /^https?:\/\//.test(post.url);
+const titleId = `card-title-${post.url.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`;
+---
+
+<ProjectCard name={post.name} date={post.date} titleId={titleId} linked>
+  <div class="desc-row">
+    <p>
+      <span class="cta-spacer">
+        <CardCta
+          href={post.url}
+          labelledById={titleId}
+          isExternal={isExternal}
+        />
+      </span>
+      {post.desc}
+    </p>
+  </div>
+</ProjectCard>
+
+<style>
+  /* Bottom-right "float" trick: the flex wrapper gives the <p> a definite
+     height so .cta-spacer can use height: 100%, and shape-outside carves
+     wrap region only at the bottom 2.75em — text flows freely above the
+     spacer and wraps around just the bottom-right corner.
+     See: https://css-tricks.com/float-an-element-to-the-bottom-corner/
+     Width/shape are 2.75em (not 2.5em) because .card-cta sets font-size: 1.1em
+     on itself, so its own 2.5em = 44px; the spacer must match at the parent's
+     16px base: 2.75em = 44px. */
+  .desc-row {
+    display: flex;
+  }
+
+  .desc-row > p {
+    width: 100%;
+  }
+
+  .cta-spacer {
+    float: right;
+    width: 2.75em;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    shape-outside: inset(calc(100% - 3.75em) 0 1em);
+    pointer-events: none;
+  }
+</style>

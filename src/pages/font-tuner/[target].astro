@@ -34,10 +34,28 @@ const targets: Record<'body' | 'heading', Target> = {
     fallbackPrefix: 'IBM Plex Sans Fallback',
     genericFallback: 'sans-serif',
     presets: [
-      { name: 'Helvetica Neue',  sizeAdjust: 101,   ascent: 95,    descent: 23, lineGap: 0 },
-      { name: 'Helvetica',       sizeAdjust: 100,   ascent: 95,    descent: 23, lineGap: 0 },
-      { name: 'Arial',           sizeAdjust: 105,   ascent: 90,    descent: 22, lineGap: 0 },
-      { name: 'Segoe UI',        sizeAdjust: 95,    ascent: 100,   descent: 25, lineGap: 0 },
+      {
+        name: 'Helvetica Neue',
+        sizeAdjust: 101,
+        ascent: 95,
+        descent: 23,
+        lineGap: 0,
+      },
+      {
+        name: 'Helvetica',
+        sizeAdjust: 100,
+        ascent: 95,
+        descent: 23,
+        lineGap: 0,
+      },
+      { name: 'Arial', sizeAdjust: 105, ascent: 90, descent: 22, lineGap: 0 },
+      {
+        name: 'Segoe UI',
+        sizeAdjust: 95,
+        ascent: 100,
+        descent: 25,
+        lineGap: 0,
+      },
       {
         name: 'Roboto',
         sizeAdjust: 105.5,
@@ -87,7 +105,13 @@ const targets: Record<'body' | 'heading', Target> = {
     fallbackPrefix: 'Sorts Mill Goudy Fallback',
     genericFallback: 'serif',
     presets: [
-      { name: 'Palatino',     sizeAdjust: 97.5, ascent: 73.5, descent: 22.5, lineGap: 0 },
+      {
+        name: 'Palatino',
+        sizeAdjust: 97.5,
+        ascent: 73.5,
+        descent: 22.5,
+        lineGap: 0,
+      },
       {
         name: 'Noto Serif',
         sizeAdjust: 92,
@@ -97,8 +121,20 @@ const targets: Record<'body' | 'heading', Target> = {
         srcUrl:
           'https://cdn.jsdelivr.net/fontsource/fonts/noto-serif@latest/latin-400-normal.woff2',
       },
-      { name: 'Georgia',      sizeAdjust: 98.5, ascent: 74,   descent: 22.5, lineGap: 0 },
-      { name: 'Times New Roman', sizeAdjust: 103, ascent: 70.5, descent: 22, lineGap: 0 },
+      {
+        name: 'Georgia',
+        sizeAdjust: 98.5,
+        ascent: 74,
+        descent: 22.5,
+        lineGap: 0,
+      },
+      {
+        name: 'Times New Roman',
+        sizeAdjust: 103,
+        ascent: 70.5,
+        descent: 22,
+        lineGap: 0,
+      },
     ],
     samples: [
       {
@@ -127,10 +163,7 @@ const targets: Record<'body' | 'heading', Target> = {
 
 export function getStaticPaths() {
   if (!import.meta.env.DEV) return [];
-  return [
-    { params: { target: 'body' } },
-    { params: { target: 'heading' } },
-  ];
+  return [{ params: { target: 'body' } }, { params: { target: 'heading' } }];
 }
 
 const { target: targetId } = Astro.params as { target: keyof typeof targets };
@@ -156,17 +189,26 @@ const target = targets[targetId];
         --panel: rgba(255, 255, 255, 0.06);
         --rule: rgba(255, 255, 255, 0.08);
       }
-      * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
         padding: 2rem;
         background: var(--bg);
         color: var(--fg);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         line-height: 1.5;
       }
-      h1 { margin: 0 0 0.25em; }
-      .lede { opacity: 0.8; max-width: 60ch; margin: 0 0 1.5em; }
+      h1 {
+        margin: 0 0 0.25em;
+      }
+      .lede {
+        opacity: 0.8;
+        max-width: 60ch;
+        margin: 0 0 1.5em;
+      }
 
       .target-nav {
         display: flex;
@@ -181,7 +223,7 @@ const target = targets[targetId];
         border-radius: 6px;
         opacity: 0.7;
       }
-      .target-nav a[aria-current="page"] {
+      .target-nav a[aria-current='page'] {
         background: var(--alt);
         color: var(--bg);
         border-color: var(--alt);
@@ -200,14 +242,19 @@ const target = targets[targetId];
         gap: 0.4em;
       }
       .swatch::before {
-        content: "";
+        content: '';
         display: inline-block;
-        width: 12px; height: 12px;
+        width: 12px;
+        height: 12px;
         background: currentColor;
         border-radius: 2px;
       }
-      .swatch-fallback { color: var(--fallback-color); }
-      .swatch-loaded { color: var(--loaded-color); }
+      .swatch-fallback {
+        color: var(--fallback-color);
+      }
+      .swatch-loaded {
+        color: var(--loaded-color);
+      }
 
       .layout {
         display: grid;
@@ -216,7 +263,9 @@ const target = targets[targetId];
         align-items: start;
       }
       @media (max-width: 800px) {
-        .layout { grid-template-columns: 1fr; }
+        .layout {
+          grid-template-columns: 1fr;
+        }
       }
 
       .controls {
@@ -229,14 +278,28 @@ const target = targets[targetId];
         display: grid;
         gap: 1rem;
       }
-      .control { display: grid; gap: 0.35em; }
-      .control label, .control-label { font-size: 0.85em; opacity: 0.85; margin: 0; }
-      .control select, .control input[type="range"] { width: 100%; }
+      .control {
+        display: grid;
+        gap: 0.35em;
+      }
+      .control label,
+      .control-label {
+        font-size: 0.85em;
+        opacity: 0.85;
+        margin: 0;
+      }
+      .control select,
+      .control input[type='range'] {
+        width: 100%;
+      }
       .control .value {
         font-family: ui-monospace, SFMono-Regular, monospace;
         color: var(--alt);
       }
-      .radios { display: grid; gap: 0.3em; }
+      .radios {
+        display: grid;
+        gap: 0.3em;
+      }
       .radio {
         display: flex;
         align-items: center;
@@ -246,12 +309,16 @@ const target = targets[targetId];
         cursor: pointer;
         border: 1px solid transparent;
       }
-      .radio:hover { background: rgba(255, 255, 255, 0.04); }
+      .radio:hover {
+        background: rgba(255, 255, 255, 0.04);
+      }
       .radio:has(input:checked) {
         background: rgba(81, 209, 54, 0.12);
         border-color: var(--alt);
       }
-      .radio input { accent-color: var(--alt); }
+      .radio input {
+        accent-color: var(--alt);
+      }
       .mode {
         display: flex;
         gap: 0.5em;
@@ -267,13 +334,16 @@ const target = targets[targetId];
         cursor: pointer;
         font: inherit;
       }
-      .mode button[aria-pressed="true"] {
+      .mode button[aria-pressed='true'] {
         background: var(--alt);
         color: var(--bg);
         border-color: var(--alt);
       }
 
-      .preview { display: grid; gap: 1.5em; }
+      .preview {
+        display: grid;
+        gap: 1.5em;
+      }
       .sample {
         border: 1px solid var(--rule);
         border-radius: 10px;
@@ -286,7 +356,9 @@ const target = targets[targetId];
         margin-bottom: 0.5em;
         font-family: ui-monospace, SFMono-Regular, monospace;
       }
-      .stack { position: relative; }
+      .stack {
+        position: relative;
+      }
       .layer {
         margin: 0;
         line-height: 1.4;
@@ -302,9 +374,15 @@ const target = targets[targetId];
         color: var(--loaded-color);
         pointer-events: none;
       }
-      body[data-mode="fallback"] .layer-loaded { display: none; }
-      body[data-mode="loaded"] .layer-fallback { visibility: hidden; }
-      body[data-mode="loaded"] .layer-loaded { position: static; }
+      body[data-mode='fallback'] .layer-loaded {
+        display: none;
+      }
+      body[data-mode='loaded'] .layer-fallback {
+        visibility: hidden;
+      }
+      body[data-mode='loaded'] .layer-loaded {
+        position: static;
+      }
 
       .output {
         margin-top: 2em;
@@ -331,7 +409,9 @@ const target = targets[targetId];
         font: inherit;
         font-weight: 600;
       }
-      .copy:active { transform: translateY(1px); }
+      .copy:active {
+        transform: translateY(1px);
+      }
     </style>
     <style id="tuned-face" is:inline></style>
   </head>
@@ -343,18 +423,24 @@ const target = targets[targetId];
   >
     <h1>Font Tuner — {target.label}</h1>
     <p class="lede">
-      Tune <code>@font-face</code> descriptors on a local fallback so it
-      matches the loaded web font's metrics. Pink = your tuned fallback;
-      blue = the loaded web font (the same <code>astro:fonts</code>
-      subset shipped to production). When pink hides behind blue, the
-      swap will be invisible.
+      Tune <code>@font-face</code> descriptors on a local fallback so it matches the
+      loaded web font's metrics. Pink = your tuned fallback; blue = the loaded web
+      font (the same <code>astro:fonts</code>
+      subset shipped to production). When pink hides behind blue, the swap will be
+      invisible.
     </p>
 
     <nav class="target-nav" aria-label="Tuning target">
-      <a href="/font-tuner/body" aria-current={targetId === 'body' ? 'page' : undefined}>
+      <a
+        href="/font-tuner/body"
+        aria-current={targetId === 'body' ? 'page' : undefined}
+      >
         Body
       </a>
-      <a href="/font-tuner/heading" aria-current={targetId === 'heading' ? 'page' : undefined}>
+      <a
+        href="/font-tuner/heading"
+        aria-current={targetId === 'heading' ? 'page' : undefined}
+      >
         Heading
       </a>
     </nav>
@@ -369,22 +455,24 @@ const target = targets[targetId];
         <div class="control">
           <p class="control-label">Fallback font</p>
           <div class="radios" role="radiogroup" aria-label="Fallback font">
-            {target.presets.map((f, i) => (
-              <label class="radio">
-                <input
-                  type="radio"
-                  name="fallback"
-                  value={f.name}
-                  data-size-adjust={f.sizeAdjust}
-                  data-ascent={f.ascent}
-                  data-descent={f.descent}
-                  data-line-gap={f.lineGap}
-                  data-src-url={f.srcUrl ?? ''}
-                  checked={i === 0}
-                />
-                <span>{f.name}</span>
-              </label>
-            ))}
+            {
+              target.presets.map((f, i) => (
+                <label class="radio">
+                  <input
+                    type="radio"
+                    name="fallback"
+                    value={f.name}
+                    data-size-adjust={f.sizeAdjust}
+                    data-ascent={f.ascent}
+                    data-descent={f.descent}
+                    data-line-gap={f.lineGap}
+                    data-src-url={f.srcUrl ?? ''}
+                    checked={i === 0}
+                  />
+                  <span>{f.name}</span>
+                </label>
+              ))
+            }
           </div>
         </div>
 
@@ -392,56 +480,95 @@ const target = targets[targetId];
           <label for="size-adjust">
             size-adjust <span class="value" id="v-size-adjust">100%</span>
           </label>
-          <input id="size-adjust" type="range" min="50" max="200" step="0.5" value="100" />
+          <input
+            id="size-adjust"
+            type="range"
+            min="50"
+            max="200"
+            step="0.5"
+            value="100"
+          />
         </div>
 
         <div class="control">
           <label for="ascent-override">
-            ascent-override <span class="value" id="v-ascent-override">90%</span>
+            ascent-override <span class="value" id="v-ascent-override">90%</span
+            >
           </label>
-          <input id="ascent-override" type="range" min="50" max="150" step="0.5" value="90" />
+          <input
+            id="ascent-override"
+            type="range"
+            min="50"
+            max="150"
+            step="0.5"
+            value="90"
+          />
         </div>
 
         <div class="control">
           <label for="descent-override">
-            descent-override <span class="value" id="v-descent-override">22%</span>
+            descent-override <span class="value" id="v-descent-override"
+              >22%</span
+            >
           </label>
-          <input id="descent-override" type="range" min="0" max="60" step="0.5" value="22" />
+          <input
+            id="descent-override"
+            type="range"
+            min="0"
+            max="60"
+            step="0.5"
+            value="22"
+          />
         </div>
 
         <div class="control">
           <label for="line-gap-override">
-            line-gap-override <span class="value" id="v-line-gap-override">0%</span>
+            line-gap-override <span class="value" id="v-line-gap-override"
+              >0%</span
+            >
           </label>
-          <input id="line-gap-override" type="range" min="0" max="60" step="0.5" value="0" />
+          <input
+            id="line-gap-override"
+            type="range"
+            min="0"
+            max="60"
+            step="0.5"
+            value="0"
+          />
         </div>
 
         <div class="control">
           <p class="control-label">View</p>
           <div class="mode" role="group" aria-label="View mode">
             <button data-mode="overlay" aria-pressed="true">Overlay</button>
-            <button data-mode="fallback" aria-pressed="false">Fallback only</button>
+            <button data-mode="fallback" aria-pressed="false"
+              >Fallback only</button
+            >
             <button data-mode="loaded" aria-pressed="false">Loaded only</button>
           </div>
         </div>
       </aside>
 
       <section class="preview">
-        {target.samples.map((s) => (
-          <div class="sample">
-            <div class="sample-label">{s.label}</div>
-            <div
-              class="stack"
-              style={`font-size:${s.size};${s.weight ? `font-weight:${s.weight};` : ''}`}
-            >
-              <div class="layer layer-fallback">{s.text}</div>
-              <div class="layer layer-loaded">{s.text}</div>
+        {
+          target.samples.map((s) => (
+            <div class="sample">
+              <div class="sample-label">{s.label}</div>
+              <div
+                class="stack"
+                style={`font-size:${s.size};${s.weight ? `font-weight:${s.weight};` : ''}`}
+              >
+                <div class="layer layer-fallback">{s.text}</div>
+                <div class="layer layer-loaded">{s.text}</div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        }
 
         <div class="output">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:1em">
+          <div
+            style="display:flex;align-items:center;justify-content:space-between;gap:1em"
+          >
             <strong>Generated CSS</strong>
             <button class="copy" id="copy">Copy</button>
           </div>
@@ -474,7 +601,9 @@ const target = targets[targetId];
         lineGap: $('#v-line-gap-override') as HTMLSpanElement,
       };
 
-      const radios = [...document.querySelectorAll('input[name="fallback"]')] as HTMLInputElement[];
+      const radios = [
+        ...document.querySelectorAll('input[name="fallback"]'),
+      ] as HTMLInputElement[];
       const getSelectedRadio = () =>
         [...radios].find((r) => r.checked) ?? radios[0];
       const getFallback = () => getSelectedRadio().value;
@@ -562,11 +691,15 @@ const target = targets[targetId];
         });
       }
 
-      for (const button of document.querySelectorAll<HTMLButtonElement>('.mode button')) {
+      for (const button of document.querySelectorAll<HTMLButtonElement>(
+        '.mode button',
+      )) {
         button.addEventListener('click', () => {
           const mode = button.dataset.mode!;
           document.body.dataset.mode = mode;
-          for (const b of document.querySelectorAll<HTMLButtonElement>('.mode button')) {
+          for (const b of document.querySelectorAll<HTMLButtonElement>(
+            '.mode button',
+          )) {
             b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
           }
         });
@@ -577,7 +710,9 @@ const target = targets[targetId];
         await navigator.clipboard.writeText(generated.textContent ?? '');
         const original = button.textContent;
         button.textContent = 'Copied!';
-        setTimeout(() => { button.textContent = original; }, 1200);
+        setTimeout(() => {
+          button.textContent = original;
+        }, 1200);
       });
 
       render();

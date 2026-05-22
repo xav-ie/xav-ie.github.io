@@ -2,11 +2,11 @@
 
 Click the link below to find out more:
 
-***
+---
 
 <p align="center"><a href="https://xav.ie">xav.ie</a></p>
 
-***
+---
 
 Built with [Astro](https://astro.build) and TypeScript. Dev shell managed via [devenv](https://devenv.sh) on Nix.
 

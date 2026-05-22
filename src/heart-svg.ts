@@ -8,11 +8,11 @@ export type HeartSvgOptions = {
 };
 
 const HEART =
-  "0.5 5.5 3.5 5.5 3.5 0.5 13.5 0.5 13.5 5.5 18.5 5.5 18.5 0.5 28.5 0.52 28.5 5.5 31.5 5.5 31.5 16.5 27.5 16.43 27.5 20.5 23.5 20.5 23.46 26.5 19.5 26.5 19.5 31.5 12.5 31.5 12.5 26.5 8.5 26.5 8.5 20.5 4.5 20.5 4.5 16.5 0.5 16.5 0.5 5.5";
+  '0.5 5.5 3.5 5.5 3.5 0.5 13.5 0.5 13.5 5.5 18.5 5.5 18.5 0.5 28.5 0.52 28.5 5.5 31.5 5.5 31.5 16.5 27.5 16.43 27.5 20.5 23.5 20.5 23.46 26.5 19.5 26.5 19.5 31.5 12.5 31.5 12.5 26.5 8.5 26.5 8.5 20.5 4.5 20.5 4.5 16.5 0.5 16.5 0.5 5.5';
 const GOLD_BORDER =
-  "M20,32H12V27H8V21H4V17H0V5H3V0H14V5h4V0L29,0V5h3V17l-4-.07V21H24L24,27H20Zm-7-1h6V26h4l0-6h4V15.92L31,16V6H28V1L19,1V6H13V1H4V6H1V16H5v4H9v6h4Z";
+  'M20,32H12V27H8V21H4V17H0V5H3V0H14V5h4V0L29,0V5h3V17l-4-.07V21H24L24,27H20Zm-7-1h6V26h4l0-6h4V15.92L31,16V6H28V1L19,1V6H13V1H4V6H1V16H5v4H9v6h4Z';
 const CPU =
-  "28 10 28 11 20 11 20 15 18 15 18 13 17 13 17 10 24 10 24 4 25 4 25 2 22 2 22 4 23 4 23 9 17 9 16 9 9 9 9 4 10 4 10 2 7 2 7 4 8 4 8 10 16 10 16 13 14 13 14 14 12 14 12 11 4 11 4 10 2 10 2 13 4 13 4 12 11 12 11 14 7 14 7 17 6 17 6 19 9 19 9 17 8 17 8 15 11 15 14 15 14 17 15 17 14.99 19 11 19 11 23 10 23 10 25 13 25 13 23 12 23 12 20 15 20 15 28 14 28 14 30 17 30 17 28 16 28 16 20 20 20 20 23 19 23 19 25 22 25 22 23 21 23 21 19 16 19 16 17 18 17 18 16 20 16 20 18 24 18 24 19 26 19 26 16 24 16 24 17 21 17 21 16 21 15 21 12 28 12 28 13 30 13 30 10 28 10";
+  '28 10 28 11 20 11 20 15 18 15 18 13 17 13 17 10 24 10 24 4 25 4 25 2 22 2 22 4 23 4 23 9 17 9 16 9 9 9 9 4 10 4 10 2 7 2 7 4 8 4 8 10 16 10 16 13 14 13 14 14 12 14 12 11 4 11 4 10 2 10 2 13 4 13 4 12 11 12 11 14 7 14 7 17 6 17 6 19 9 19 9 17 8 17 8 15 11 15 14 15 14 17 15 17 14.99 19 11 19 11 23 10 23 10 25 13 25 13 23 12 23 12 20 15 20 15 28 14 28 14 30 17 30 17 28 16 28 16 20 20 20 20 23 19 23 19 25 22 25 22 23 21 23 21 19 16 19 16 17 18 17 18 16 20 16 20 18 24 18 24 19 26 19 26 16 24 16 24 17 21 17 21 16 21 15 21 12 28 12 28 13 30 13 30 10 28 10';
 
 const EXTRUSION = Array.from({ length: 14 }, (_, index) => (index + 1) / 14);
 
@@ -22,9 +22,9 @@ const EXTRUSION = Array.from({ length: 14 }, (_, index) => (index + 1) / 14);
 const n = (value: number): string =>
   value
     .toFixed(3)
-    .replace(/\.?0+$/, "") // eslint-disable-line sonarjs/slow-regex -- no nested quantifiers; not ReDoS-prone
-    .replace(/^0\./, ".")
-    .replace(/^-0\./, "-.") || "0";
+    .replace(/\.?0+$/, '') // eslint-disable-line sonarjs/slow-regex -- no nested quantifiers; not ReDoS-prone
+    .replace(/^0\./, '.')
+    .replace(/^-0\./, '-.') || '0';
 
 // The heart's outline (gold border path) + inner CPU-trace polygon are stamped
 // dozens of times across the layered extrusion, the mask, and the rim. Define
@@ -113,14 +113,14 @@ const BODY = `<g filter="url(#hgs-shadow)">
   ${EXTRUSION.map(
     (t) =>
       `<use href="#hgs-shape" fill="url(#hgs-gold-body)" transform="translate(${n(0.35 * t)} ${n(-0.35 * t)})"/>`,
-  ).join("")}
+  ).join('')}
   <polygon points="${HEART}" fill="url(#hgs-glass)" opacity="0.5"/>
   <polygon points="${HEART}" fill="none" stroke="rgba(0,30,10,0.55)" stroke-width="0.5" clip-path="url(#hgs-heart-clip)"/>
   <polygon points="${HEART}" fill="url(#hgs-glass-hotspot)" clip-path="url(#hgs-heart-clip)" filter="url(#hgs-glass-bloom)"/>
   ${EXTRUSION.map(
     (t) =>
       `<use href="#hgs-shape" fill="url(#hgs-gold-shadow)" opacity=".082" transform="translate(${n(-0.15 * t)} ${n(0.25 * t)})"/>`,
-  ).join("")}
+  ).join('')}
   <use href="#hgs-shape" fill="url(#hgs-gold)"/>
   <use href="#hgs-shape" fill="url(#hgs-gold-body)" clip-path="url(#hgs-gold-clip)" transform="translate(-.175 .175)"/>
   <rect x="-2" y="-2" width="36" height="36" fill="url(#hgs-gold-hotspot)" clip-path="url(#hgs-gold-clip)"/>
@@ -128,7 +128,7 @@ const BODY = `<g filter="url(#hgs-shadow)">
 </g>`;
 
 // The shared viewBox the heart draws into.
-export const HEART_VIEWBOX = "-2 -3.25 36 36";
+export const HEART_VIEWBOX = '-2 -3.25 36 36';
 
 /**
  * Full <svg> markup for the stylized heart logo. Used in the header
@@ -142,8 +142,8 @@ export const HEART_VIEWBOX = "-2 -3.25 36 36";
 export function buildHeartSvg(
   options: HeartSvgOptions & { dropShadow?: boolean } = {},
 ): string {
-  const { size = "6em", title = "Heart", dropShadow = true } = options;
-  const sizeAttribute = typeof size === "number" ? `${size}` : size;
+  const { size = '6em', title = 'Heart', dropShadow = true } = options;
+  const sizeAttribute = typeof size === 'number' ? `${size}` : size;
   const style = dropShadow
     ? `width:${sizeAttribute};height:${sizeAttribute};display:block;overflow:visible;filter:drop-shadow(10px -5px 10px #f9e43e36) drop-shadow(-10px 5px 10px #17031c30)`
     : `width:${sizeAttribute};height:${sizeAttribute};display:block;overflow:visible`;

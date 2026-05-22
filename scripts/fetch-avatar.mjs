@@ -1,10 +1,10 @@
-import { writeFile, stat } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
+import { writeFile, stat } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const target = path.resolve(__dirname, "../src/assets/me.jpg");
-const source = "https://github.com/xav-ie.png?size=600";
+const target = path.resolve(__dirname, '../src/assets/me.jpg');
+const source = 'https://github.com/xav-ie.png?size=600';
 const TTL_MS = 24 * 60 * 60 * 1000;
 
 try {
@@ -17,7 +17,7 @@ try {
   } catch {
     /* missing file → fall through to fetch */
   }
-  const response = await fetch(source, { redirect: "follow" });
+  const response = await fetch(source, { redirect: 'follow' });
   if (!response.ok)
     throw new Error(`HTTP ${response.status} ${response.statusText}`);
   const buf = Buffer.from(await response.arrayBuffer());

@@ -40,12 +40,16 @@ const graphPieces = postPieces(post);
       <h1>{title}</h1>
       <p class="meta">
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
-        {updatedDate && (
-          <>
-            {' · updated '}
-            <time datetime={updatedDate.toISOString()}>{formatDate(updatedDate)}</time>
-          </>
-        )}
+        {
+          updatedDate && (
+            <>
+              {' · updated '}
+              <time datetime={updatedDate.toISOString()}>
+                {formatDate(updatedDate)}
+              </time>
+            </>
+          )
+        }
       </p>
       <Content />
     </article>

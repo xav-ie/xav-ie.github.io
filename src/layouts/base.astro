@@ -43,7 +43,12 @@ const graph = noindex ? null : siteGraph(graphPieces);
     <meta name="theme-color" content="#12081a" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="alternate" type="application/rss+xml" title="xav.ie" href="https://xav.ie/rss.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="xav.ie"
+      href="https://xav.ie/rss.xml"
+    />
 
     <Seo
       title={title}
@@ -64,15 +69,21 @@ const graph = noindex ? null : siteGraph(graphPieces);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    {ogType === 'article' && <meta property="article:author" content="https://xav.ie/" />}
+    {
+      ogType === 'article' && (
+        <meta property="article:author" content="https://xav.ie/" />
+      )
+    }
 
-    {/* Apply any stored theme override before first paint to avoid a
+    {
+      /* Apply any stored theme override before first paint to avoid a
         light/dark flash on subsequent visits. Must be is:inline so
-        Astro doesn't defer it; runs synchronously in <head>. */}
+        Astro doesn't defer it; runs synchronously in <head>. */
+    }
     <script is:inline>
       try {
-        const t = localStorage.getItem("theme");
-        if (t === "light" || t === "dark") {
+        const t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') {
           document.documentElement.dataset.theme = t;
         }
       } catch {

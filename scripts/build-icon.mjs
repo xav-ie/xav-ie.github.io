@@ -23,16 +23,16 @@
 //                                       the logo (per the maskable icon
 //                                       spec).
 
-import { writeFile, stat } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-import { Resvg } from "@resvg/resvg-js";
-import sharp from "sharp";
+import { writeFile, stat } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import { Resvg } from '@resvg/resvg-js';
+import sharp from 'sharp';
 import {
   buildHeartInner,
   buildHeartSvg,
   HEART_VIEWBOX,
-} from "../src/heart-svg.ts";
+} from '../src/heart-svg.ts';
 
 // Resvg emits truecolor PNGs; for icons with a small palette (gold heart on
 // a flat #12081a background) sharp's palette quantization gets us 3–5× smaller
@@ -44,20 +44,20 @@ async function quantizePng(rawPng) {
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicDirectory = path.resolve(__dirname, "../public");
-const faviconPath = path.resolve(publicDirectory, "favicon.svg");
-const appleTouchPath = path.resolve(publicDirectory, "apple-touch-icon.png");
-const maskablePath = path.resolve(publicDirectory, "icon-512-maskable.png");
+const publicDirectory = path.resolve(__dirname, '../public');
+const faviconPath = path.resolve(publicDirectory, 'favicon.svg');
+const appleTouchPath = path.resolve(publicDirectory, 'apple-touch-icon.png');
+const maskablePath = path.resolve(publicDirectory, 'icon-512-maskable.png');
 
 const APPLE_SIZE = 180;
 const MASK_SIZE = 512;
 const MASK_SAFE = 0.8; // content fits in the inner 80% (safe zone for masks)
-const BG = "#12081a"; // matches theme-color
+const BG = '#12081a'; // matches theme-color
 
 // Strip newlines and runs of whitespace between tags. Safe for SVG since
 // none of our text/attr values contain meaningful runs of spaces.
 function minifySvg(svg) {
-  return svg.replaceAll(/>\s+</g, "><").replaceAll(/\s+/g, " ").trim();
+  return svg.replaceAll(/>\s+</g, '><').replaceAll(/\s+/g, ' ').trim();
 }
 
 async function buildFavicon() {
@@ -67,7 +67,7 @@ async function buildFavicon() {
   // contexts and not others. The internal hgs-shadow SVG filter still
   // gives the heart its inset shadow.
   const svg = minifySvg(
-    buildHeartSvg({ size: "32", title: "xav.ie", dropShadow: false }),
+    buildHeartSvg({ size: '32', title: 'xav.ie', dropShadow: false }),
   );
   await writeFile(faviconPath, svg);
   console.log(`generated favicon.svg → public/ (${svg.length} bytes)`);
@@ -83,7 +83,7 @@ async function buildAppleTouch() {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${APPLE_SIZE}" height="${APPLE_SIZE}" viewBox="0 0 ${APPLE_SIZE} ${APPLE_SIZE}"><rect width="${APPLE_SIZE}" height="${APPLE_SIZE}" fill="${BG}"/><svg x="0" y="0" width="${APPLE_SIZE}" height="${APPLE_SIZE}" viewBox="${HEART_VIEWBOX}" overflow="visible">${inner}</svg></svg>`;
 
   const rawPng = new Resvg(svg, {
-    fitTo: { mode: "width", value: APPLE_SIZE },
+    fitTo: { mode: 'width', value: APPLE_SIZE },
     background: BG,
   })
     .render()
@@ -105,7 +105,7 @@ async function buildMaskable() {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${MASK_SIZE}" height="${MASK_SIZE}" viewBox="0 0 ${MASK_SIZE} ${MASK_SIZE}"><rect width="${MASK_SIZE}" height="${MASK_SIZE}" fill="${BG}"/><svg x="${offset}" y="${offset}" width="${safeSize}" height="${safeSize}" viewBox="${HEART_VIEWBOX}" overflow="visible">${inner}</svg></svg>`;
 
   const rawPng = new Resvg(svg, {
-    fitTo: { mode: "width", value: MASK_SIZE },
+    fitTo: { mode: 'width', value: MASK_SIZE },
     background: BG,
   })
     .render()

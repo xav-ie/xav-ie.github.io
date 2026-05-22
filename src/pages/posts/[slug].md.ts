@@ -1,9 +1,9 @@
-import { getCollection } from "astro:content";
-import { createMarkdownEndpoint } from "@jdevalk/astro-seo-graph";
-import { postUrl } from "../../lib/schema";
+import { getCollection } from 'astro:content';
+import { createMarkdownEndpoint } from '@jdevalk/astro-seo-graph';
+import { postUrl } from '../../lib/schema';
 
 export const getStaticPaths = async () => {
-  const posts = await getCollection("posts");
+  const posts = await getCollection('posts');
   return posts
     .filter((p) => !p.data.draft)
     .map((p) => ({ params: { slug: p.id } }));
@@ -11,7 +11,7 @@ export const getStaticPaths = async () => {
 
 export const GET = createMarkdownEndpoint({
   entries: async () => {
-    const posts = await getCollection("posts");
+    const posts = await getCollection('posts');
     return posts.filter((p) => !p.data.draft);
   },
   mapper: (post, slug) =>
@@ -22,10 +22,10 @@ export const GET = createMarkdownEndpoint({
             canonical: postUrl(post),
             pubDate: post.data.pubDate,
             updatedDate: post.data.updatedDate,
-            author: "Xavier Ruiz",
+            author: 'Xavier Ruiz',
             description: post.data.description,
           },
-          body: post.body ?? "",
+          body: post.body ?? '',
         }
       : // eslint-disable-next-line unicorn/no-null -- API requires null
         null,

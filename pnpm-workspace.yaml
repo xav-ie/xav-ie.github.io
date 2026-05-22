@@ -8,5 +8,5 @@ onlyBuiltDependencies:
   - sharp
   - unrs-resolver
 patchedDependencies:
-  "@jdevalk/astro-seo-graph@2.0.0": patches/@jdevalk__astro-seo-graph@2.0.0.patch
+  '@jdevalk/astro-seo-graph@2.0.0': patches/@jdevalk__astro-seo-graph@2.0.0.patch
   vite@7.3.2: patches/vite@7.3.2.patch

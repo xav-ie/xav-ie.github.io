@@ -1,7 +1,7 @@
 /* Tuned via /font-tuner/heading. */
 @font-face {
-  font-family: "Sorts Mill Goudy Fallback Palatino";
-  src: local("Palatino");
+  font-family: 'Sorts Mill Goudy Fallback Palatino';
+  src: local('Palatino');
   size-adjust: 97.5%;
   ascent-override: 73.5%;
   descent-override: 22.5%;
@@ -9,8 +9,8 @@
 }
 
 @font-face {
-  font-family: "Sorts Mill Goudy Fallback Noto Serif";
-  src: local("Noto Serif");
+  font-family: 'Sorts Mill Goudy Fallback Noto Serif';
+  src: local('Noto Serif');
   size-adjust: 92%;
   ascent-override: 76.5%;
   descent-override: 22.5%;
@@ -18,8 +18,8 @@
 }
 
 @font-face {
-  font-family: "Sorts Mill Goudy Fallback Georgia";
-  src: local("Georgia");
+  font-family: 'Sorts Mill Goudy Fallback Georgia';
+  src: local('Georgia');
   size-adjust: 98.5%;
   ascent-override: 74%;
   descent-override: 22.5%;
@@ -27,8 +27,8 @@
 }
 
 @font-face {
-  font-family: "Sorts Mill Goudy Fallback Times New Roman";
-  src: local("Times New Roman");
+  font-family: 'Sorts Mill Goudy Fallback Times New Roman';
+  src: local('Times New Roman');
   size-adjust: 103%;
   ascent-override: 70.5%;
   descent-override: 22%;
@@ -37,8 +37,8 @@
 
 /* Tuned via /font-tuner/body. */
 @font-face {
-  font-family: "IBM Plex Sans Fallback Helvetica Neue";
-  src: local("Helvetica Neue");
+  font-family: 'IBM Plex Sans Fallback Helvetica Neue';
+  src: local('Helvetica Neue');
   size-adjust: 101%;
   ascent-override: 95%;
   descent-override: 23%;
@@ -46,8 +46,8 @@
 }
 
 @font-face {
-  font-family: "IBM Plex Sans Fallback Roboto";
-  src: local("Roboto");
+  font-family: 'IBM Plex Sans Fallback Roboto';
+  src: local('Roboto');
   size-adjust: 105.5%;
   ascent-override: 103.5%;
   descent-override: 25%;
@@ -55,8 +55,8 @@
 }
 
 @font-face {
-  font-family: "IBM Plex Sans Fallback Noto Sans";
-  src: local("Noto Sans");
+  font-family: 'IBM Plex Sans Fallback Noto Sans';
+  src: local('Noto Sans');
   size-adjust: 99.5%;
   ascent-override: 100%;
   descent-override: 25%;
@@ -69,47 +69,47 @@
    solid background-colors that use the same vars transition smoothly —
    giving the illusion of mismatched durations. */
 @property --background {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: #12081a;
 }
 @property --foreground {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: #fff17b;
 }
 @property --alt {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: #51d136;
 }
 @property --shadow {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: #000000;
 }
 @property --highlight {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: #ffffff;
 }
 @property --surface-top {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: #000000;
 }
 @property --surface-bottom {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: #000000;
 }
 @property --alt-shadow {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: #000000;
 }
 @property --rim {
-  syntax: "<color>";
+  syntax: '<color>';
   inherits: true;
   initial-value: rgba(255, 255, 255, 0.08);
 }
@@ -130,21 +130,21 @@
   --rim: rgba(255, 255, 255, 0.08);
 
   --font-system-sans:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-system-mono:
-    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
 
   --font-body:
-    var(--font-ibm-plex-sans), "IBM Plex Sans Fallback Helvetica Neue",
-    "IBM Plex Sans Fallback Roboto", "IBM Plex Sans Fallback Noto Sans",
+    var(--font-ibm-plex-sans), 'IBM Plex Sans Fallback Helvetica Neue',
+    'IBM Plex Sans Fallback Roboto', 'IBM Plex Sans Fallback Noto Sans',
     var(--font-system-sans);
   --font-code: var(--font-system-mono);
   --font-heading:
-    var(--font-sorts-mill-goudy), "Sorts Mill Goudy Fallback Palatino",
-    "Sorts Mill Goudy Fallback Noto Serif", "Sorts Mill Goudy Fallback Georgia",
-    "Sorts Mill Goudy Fallback Times New Roman", serif;
+    var(--font-sorts-mill-goudy), 'Sorts Mill Goudy Fallback Palatino',
+    'Sorts Mill Goudy Fallback Noto Serif', 'Sorts Mill Goudy Fallback Georgia',
+    'Sorts Mill Goudy Fallback Times New Roman', serif;
 
   --noise-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='2' seed='0' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.02 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   --noise-size: 340px 340px;
@@ -190,10 +190,10 @@ html {
    set, it pins `color-scheme` so light-dark() resolves to that
    value regardless of the user's OS preference. No attribute means the
    page follows `prefers-color-scheme` per the html rule above. */
-html[data-theme="light"] {
+html[data-theme='light'] {
   color-scheme: light;
 }
-html[data-theme="dark"] {
+html[data-theme='dark'] {
   color-scheme: dark;
 }
 
