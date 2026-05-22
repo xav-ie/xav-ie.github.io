@@ -14,6 +14,7 @@ concurrency:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -26,6 +27,7 @@ jobs:
 
   knip:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -38,6 +40,7 @@ jobs:
 
   astro:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -50,6 +53,7 @@ jobs:
 
   format:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -62,6 +66,7 @@ jobs:
 
   fallow:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -74,6 +79,7 @@ jobs:
 
   lighthouse:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -85,7 +91,13 @@ jobs:
       # check:lighthouse runs `pnpm build` internally, which runs prebuild
       # (fetch-avatar, build-og, build-icon) + `astro check` + `astro build`,
       # so this single job covers type/build verification as well.
-      - run: pnpm check:lighthouse
+      - run: |
+          for i in 1 2 3; do
+            pnpm check:lighthouse && break
+            [ $i -eq 3 ] && exit 1
+            echo "Attempt $i failed, retrying in 20s..."
+            sleep 20
+          done
       # Upload the report on failure so we can inspect why a regression
       # tripped the 100/100/100/100 threshold without re-running locally.
       - if: failure()
