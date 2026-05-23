@@ -162,10 +162,24 @@
     },
   );
 
+  // Delegate clicks to document rather than the toggle node. document survives
+  // every View Transition, so there's no node-identity assumption: binding the
+  // listener to the persisted #theme-toggle and tracking it with a data-bound
+  // flag is fragile because back/forward and bfcache swaps can carry the flag
+  // across without the listener, silently freezing the toggle. Astro dedupes
+  // module scripts, so this runs once.
+  document.addEventListener('click', (event) => {
+    const button = (event.target as Element).closest<HTMLButtonElement>(
+      '#theme-toggle [data-theme]',
+    );
+    if (!button) return;
+    applyMode(button.dataset.theme as ThemeMode);
+    const container = button.closest('#theme-toggle');
+    if (container) syncButtons(container);
+  });
+
   // astro:page-load fires on both initial load and after every View Transition.
-  // syncButtons keeps the pill in sync after each navigation. The click listener
-  // is attached only once: the nav (and its children) persist across navigations
-  // via transition:persist, so a data-bound guard prevents duplicate listeners.
+  // syncButtons keeps the pill in sync after each navigation.
   document.addEventListener('astro:page-load', () => {
     // Double-RAF: ensures data-no-transition is removed after two paint cycles
     // so CSS has fully resolved the suppressed state before re-enabling
@@ -180,18 +194,6 @@
     if (!container) return;
 
     syncButtons(container);
-
-    if (container.dataset.bound) return;
-    container.dataset.bound = '1';
-
-    container.addEventListener('click', (event) => {
-      const button = (event.target as Element).closest<HTMLButtonElement>(
-        '[data-theme]',
-      );
-      if (!button) return;
-      applyMode(button.dataset.theme as ThemeMode);
-      syncButtons(container);
-    });
   });
 </script>
 
