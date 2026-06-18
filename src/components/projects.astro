@@ -9,6 +9,7 @@ import virtualHeadset from '../assets/projects/virtual-headset.svg?raw';
 import dots from '../assets/projects/dots.svg?raw';
 import nuenv from '../assets/projects/nuenv.svg?raw';
 import browserSessionMcp from '../assets/projects/browser-session-mcp.svg?raw';
+import imageNvim from '../assets/projects/image-nvim.svg?raw';
 import xnixvim from '../assets/projects/xnixvim.svg?raw';
 import spooKeyBoard from '../assets/projects/SpooKeyBoard.svg?raw';
 
@@ -48,10 +49,18 @@ const currentProjects: ProjectData[] = [
   {
     name: 'browser-session-mcp',
     date: 'April 2026 – Present',
-    desc: 'An MCP server that gives each caller an isolated browser session against a shared persistent Chrome, and captures every console + network event to disk losslessly regardless of MCP transport churn. The session is a tool argument, not a transport concept — so sessions survive reconnects.',
-    technologiesUsed: ['Rust', 'Puppeteer', 'MCP'],
-    url: 'https://github.com/xav-ie/dots/tree/main/packages/browser-session-mcp',
+    desc: 'An MCP server that gives each caller an isolated, long-lived browser session against one shared Chrome. The session is a tool argument, not a transport concept — addressed by an id you pass into every call, so it survives reconnects and even MCP-subprocess restarts. A separate daemon captures every console + network event to disk losslessly, and the stack is tuned to drive real sites without tripping bot gates.',
+    technologiesUsed: ['Rust', 'CDP', 'MCP'],
+    url: 'https://github.com/xav-ie/browser-session-mcp',
     imageSvg: browserSessionMcp,
+  },
+  {
+    name: 'image.nvim',
+    date: 'June 2026 – Present',
+    desc: 'A fork of 3rd/image.nvim, which displays real images inside Neovim. I hardened it for the setups upstream handles worst — scrolling through images in tmux, over SSH — so they stay sharp instead of flickering, tearing, or vanishing when you scroll or switch tmux windows.',
+    technologiesUsed: ['Lua', 'Neovim', 'Kitty Graphics', 'tmux'],
+    url: 'https://github.com/xav-ie/image.nvim',
+    imageSvg: imageNvim,
   },
   {
     name: 'xnixvim',
