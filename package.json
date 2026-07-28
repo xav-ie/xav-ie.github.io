@@ -26,7 +26,7 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "@jdevalk/astro-seo-graph": "^2.0.0",
-    "@jdevalk/seo-graph-core": "0.6.2",
+    "@jdevalk/seo-graph-core": "0.7.0",
     "astro": "^6.2.2"
   },
   "devDependencies": {
