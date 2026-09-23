@@ -1,0 +1,195 @@
+body {
+  background: #eee;
+  font-family: 'Space Mono', monospace;
+  color: #111;
+  margin: 0;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+h2 {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-top: 2.5rem;
+}
+
+.main {
+  padding: 2.5%;
+  max-width: 1100px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Prose gets a readable measure; the plots stay full width of .main. */
+.main p,
+.main h1,
+.main h2,
+.cards {
+  max-width: 70ch;
+}
+
+.lede {
+  font-size: 1.05rem;
+}
+
+.caveat {
+  font-size: 0.9rem;
+  color: #555;
+  border-left: 3px solid #81e3ae;
+  padding-left: 0.75rem;
+}
+
+.links a {
+  color: #111;
+}
+
+.main-svg {
+  border-radius: 35px;
+  box-shadow: 0 0 10px #ddd;
+}
+
+/* Plotly emits the figure at height:550px. Reserving that up front means the
+   first load and every subsequent swap don't shift the page. */
+.map {
+  min-height: 550px;
+}
+
+/* Holds the label lifted out of the colorbar. Reserves two lines, because below
+   roughly 480px the long labels ("Water-Backflow/Cross Connect Inspect",
+   "Native Hawaiian and Other Pacific Islander alone") wrap — with a one-line
+   floor the map shifted down by a line on selection at mobile widths. */
+.map-title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  min-height: 3.2em;
+  line-height: 1.6;
+}
+
+/* Hidden visually but still announced. display:none or visibility:hidden would
+   drop it from the a11y tree, which defeats the point for a <legend>. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The radio groups are fieldsets for the grouping semantics; the default border
+   and padding are not wanted. */
+fieldset {
+  border: 0;
+  margin: 0;
+}
+
+/* Visually hidden rather than display:none — display:none pulls the radios out
+   of the a11y tree and makes them unfocusable, which kills the browser's native
+   arrow-key roving within a radio group. Absolute positioning keeps them out of
+   the flex flow so they don't eat a `gap`. */
+input[type='radio'] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+input[type='radio']:focus-visible + label {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+label {
+  display: inline-block;
+  background-color: #ddd;
+  padding: 4px 11px;
+  font-size: 15px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 6px;
+}
+
+input[type='radio']:checked + label {
+  background-color: #81e3ae !important;
+}
+
+/* Was a fixed 200px-tall column-wrapping flex box, which forced wide horizontal
+   overflow for the 23-item departments and left a big empty grey slab for the
+   1-item ones. Row wrap sizes to its contents instead.
+
+   Only the DPW page needs a reserved height (see .varied-categories below);
+   race-data's single row never changes size. */
+#radioContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  background-color: #ddd;
+  padding: 8px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+/* ponytail: a floor for the tallest department, measured at 1440px — Cust (23
+   entries) renders 200px against 16px of padding, so 184px of content pins it
+   exactly and switching to a 1-entry department can't shrink the page and pop
+   the scrollbar. Narrower viewports wrap to more rows and the box grows past it
+   — fine, it only needs to stop the shrink. Swap for a ResizeObserver that
+   tracks the real max if the label set ever changes. */
+.varied-categories #radioContainer {
+  min-height: 184px;
+}
+
+#categoryContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: #aaa;
+  padding: 8px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+#categoryContainer label {
+  background: #ccc;
+}
+
+canvas {
+  border-radius: 35px;
+}
+
+.button {
+  text-decoration: none;
+  background: white;
+  box-shadow: 0 0 10px #0003;
+  padding: 11px;
+  display: inline-block;
+  border-radius: 10px;
+  transition: background 0.2s ease-in-out;
+  color: black;
+}
+
+.button:hover {
+  background: #81e3ae;
+}
+
+.cards {
+  list-style: none;
+  padding: 0;
+}
+
+.cards li {
+  margin: 1.5rem 0;
+}
+
+.cards span {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}

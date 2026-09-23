@@ -1,0 +1,99 @@
+---
+// Standalone from the rest of the site on purpose: this is a 2021 university
+// project kept at its original URL, with its own Space Mono look rather than
+// the site theme.
+import '../../styles/choropleths.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Revere Choropleths</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Interactive choropleth maps of City of Revere public works data and census demographics, by census tract."
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="main">
+      <h1>Revere Choropleth Maps</h1>
+
+      <p class="lede">
+        Interactive maps of city services and demographics in Revere,
+        Massachusetts, aggregated to US Census tracts.
+      </p>
+
+      <ul class="cards">
+        <li>
+          <a class="button" href="./dpw-data/">DPW Data</a>
+          <span>
+            183 categories of Department of Public Works jobs completed &mdash;
+            potholes, street cleaning, drains, snow, parks, water, signs and
+            more.
+          </span>
+        </li>
+        <li>
+          <a class="button" href="./race-data/">Race and Ethnicity Data</a>
+          <span>
+            Population by race and ethnicity from the 2014&ndash;2019 5-year
+            American Community Survey.
+          </span>
+        </li>
+      </ul>
+
+      <h2>How to read these</h2>
+      <p>
+        Each map shades every census tract in Revere by a count: for the DPW
+        maps that is the number of jobs of the selected type completed in that
+        tract, and for the demographic maps it is the number of residents in
+        that group. Darker means more. The buttons sit below each map: on the
+        DPW page, pick a department and then a job type; on the demographics
+        page there is a single list. Hover a tract to see its exact value.
+      </p>
+      <p class="caveat">
+        Counts are raw, not per-capita &mdash; a tract with more people or more
+        roads will naturally show more jobs. Read them as &ldquo;where the work
+        happened&rdquo;, not as a rate.
+      </p>
+
+      <h2>Where this came from</h2>
+      <p>
+        These were built for the
+        <strong>City of Revere Service Data Project</strong>
+        (BU CS506 Data Science / BU Spark!, Spring 2021), a study of whether city
+        services in Revere are distributed equitably across demographic lines. The
+        client was the City of Revere; the team was Yuanming Chai, Mackenzie Knox,
+        Quinn Relyea, Giancarlo Sirio and myself, with Lingyang Jiang as project manager.
+      </p>
+      <p>
+        I owned the DPW pipeline behind these maps: cleaning the city&rsquo;s
+        raw work-order export, geocoding addresses to coordinates, joining each
+        job to its census tract with Census TIGER shapefiles, and generating the
+        maps you see here. The DPW headline finding was that
+        <strong>Tract 1708 receives the most services of any tract</strong>, in
+        nearly every category.
+      </p>
+      <p>
+        The full report&rsquo;s statistical tests found no significant city-wide
+        disparity in 311 reporting by race, largely because ACS data can&rsquo;t
+        be segmented finely enough. The maps linked above are the exploratory
+        layer underneath that conclusion.
+      </p>
+
+      <p class="links">
+        <a
+          href="https://github.com/BU-Spark/CS506Spring2021Repository/tree/master/City%20of%20Revere%20Service%20Data%20Project"
+        >
+          Source and notebooks on GitHub
+        </a>
+      </p>
+    </div>
+  </body>
+</html>

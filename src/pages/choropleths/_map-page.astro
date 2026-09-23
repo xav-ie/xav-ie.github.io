@@ -1,0 +1,72 @@
+---
+// Shared shell for the two map pages. Deliberately not src/layouts/base.astro:
+// these are a 2021 university project kept at their original URL, with their own
+// Space Mono look rather than the site theme.
+//
+// The slot holds each page's intro copy and its renderChoropleths() call; the
+// three elements the renderer looks up (#mapTitle, #mapHost, #controls) live
+// here so both pages can't drift apart. The pages' <script> goes in the same
+// default slot — a named slot would make Astro treat it as is:inline, which
+// turns off TypeScript and import resolution. Astro hoists it either way, so
+// where it sits in the markup doesn't matter.
+import '../../styles/choropleths.css';
+
+type Props = {
+  title: string;
+  heading: string;
+  description: string;
+  /**
+   * DPW passes 'varied-categories', which reserves height for the job-type row:
+   * departments range from 1 entry (WSD) to 23 (Cust), and letting the box
+   * shrink resized the page and popped the scrollbar.
+   */
+  bodyClass?: string;
+};
+
+const { title, heading, description, bodyClass } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    {
+      /* Pinned, not plotly-latest. The two are byte-identical apart from a
+        deprecation console.error, but the version is load-bearing: v2+ moved
+        these figures' trace types. SRI because this script has DOM access.
+        is:inline so Astro leaves the CDN URL and integrity hash alone. */
+    }
+    <script
+      is:inline
+      src="https://cdn.plot.ly/plotly-1.58.5.min.js"
+      integrity="sha384-W7FXNbEY44RgDK8MunBe4gETSKi3Qo2bJAXX3PH8v5l3hdabFb9dbCIn3X69OFjX"
+      crossorigin="anonymous"></script>
+  </head>
+
+  <body class={bodyClass}>
+    <div class="main">
+      <a href="../" class="button">&larr; Back</a>
+      <h1>{heading}</h1>
+      <slot />
+      {
+        /* aria-live: this is the only text saying which map is on screen, and it
+           changes without focus moving. */
+      }
+      <h2 class="map-title" id="mapTitle" aria-live="polite"></h2>
+      <div id="mapHost" class="map"></div>
+      {
+        /* Controls sit below the map on purpose. Their height changes with the
+           selection, and above the map that shoved the map up and down. */
+      }
+      <div id="controls"></div>
+    </div>
+  </body>
+</html>

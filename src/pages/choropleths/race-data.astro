@@ -1,0 +1,38 @@
+---
+import MapPage from './_map-page.astro';
+---
+
+<MapPage
+  title="Race and Ethnicity Data — Revere Choropleths"
+  heading="Race and Ethnicity Data"
+  description="Population by race and ethnicity in Revere, MA, by census tract, from the 2014-2019 5-year ACS."
+>
+  <p class="lede">
+    Population by race and ethnicity in Revere, shaded by census tract. Darker
+    means more residents in that group.
+  </p>
+  <p class="caveat">
+    Source: 2014&ndash;2019 5-year American Community Survey, table B03002.
+    These are counts, not shares of the tract population.
+  </p>
+
+  <script>
+    import { renderChoropleths } from './_choropleth';
+
+    // The ACS category names double as the button labels here, so no separate
+    // label table — unlike DPW, where the id is the readable name.
+    try {
+      await renderChoropleths({
+        legend: 'Race or ethnicity',
+        label: (map) => map.title,
+      });
+    } catch (error) {
+      // data.json is the page's only runtime dependency, and its failure mode
+      // is otherwise a silent empty grey box. #mapTitle is aria-live, so this
+      // is announced too.
+      console.error(error);
+      const title = document.querySelector('#mapTitle');
+      if (title) title.textContent = 'Could not load the map data.';
+    }
+  </script>
+</MapPage>

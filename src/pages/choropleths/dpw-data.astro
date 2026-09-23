@@ -1,0 +1,38 @@
+---
+import MapPage from './_map-page.astro';
+---
+
+<MapPage
+  title="DPW Data — Revere Choropleths"
+  heading="DPW Data"
+  description="Department of Public Works jobs completed in Revere, MA, by census tract."
+  bodyClass="varied-categories"
+>
+  <p class="lede">
+    Department of Public Works jobs completed in Revere, shaded by census tract.
+    Darker means more jobs. Pick a department under the map, then a job type.
+  </p>
+  <p class="caveat">
+    Counts are raw, not per-capita. Source: City of Revere DPW work orders,
+    geocoded and joined to Census TIGER tract boundaries.
+  </p>
+
+  <script>
+    import { renderChoropleths } from './_choropleth';
+
+    try {
+      await renderChoropleths({
+        groupBy: (id) => id.split('-')[0]!,
+        groupLegend: 'Department',
+        legend: 'Job type',
+      });
+    } catch (error) {
+      // data.json is the page's only runtime dependency, and its failure mode
+      // is otherwise a silent empty grey box. #mapTitle is aria-live, so this
+      // is announced too.
+      console.error(error);
+      const title = document.querySelector('#mapTitle');
+      if (title) title.textContent = 'Could not load the map data.';
+    }
+  </script>
+</MapPage>
